@@ -1,0 +1,65 @@
+CITADEL-MATH SOURCE-AVAILABLE LICENSE (v1.0)
+(Read & Run Permitted — Modification and Derivative Rights Reserved)
+================================================================================
+CITADEL-MATH KAYNAK-AÇIK LİSANSI (v1.0)
+(İnceleme ve Çalıştırma Serbest — Değiştirme ve Türev Geliştirme Hakları Saklıdır)
+
+Copyright (c) 2026 Mekserina Karaosmanoğlu.
+All Modification and Derivative Rights Reserved / Tüm Değiştirme ve Türev Hakları Saklıdır.
+
+--------------------------------------------------------------------------------
+[TÜRKÇE HÜKÜMLER]
+--------------------------------------------------------------------------------
+
+1. İZİN VERİLEN KULLANIMLAR (İNCELEME VE ÇALIŞTIRMA):
+   Bu yazılımın ("Citadel-Math", "citadel_math_core", "kmath-mcp") kaynak kodunu,
+   kanonik denklem veritabanını ve belgelerini inceleme, indirme, derleme ve
+   DEĞİŞTİRMEDEN olduğu gibi ("AS-IS") çalıştırma, test etme veya yerel yapay zekâ
+   (MCP) ajanlarına bağlama hakkı ücretsiz olarak herkese tanınmıştır.
+
+2. SAKLI HAKLAR (DEĞİŞTİRME VE TÜREV ESER YASAĞI):
+   Telif hakkı sahibinin önceden yazılı izni olmaksızın:
+   (a) Kaynak kodunda, algoritmalarda, doğrulama çekirdeğinde veya kanonik veri
+       tabanında değişiklik yapılması (modification),
+   (b) Yazılımdan türev eserler (derivative works) üretilmesi veya başka bir
+       projeye/ürün içerisine değiştirilerek gömülmesi,
+   (c) Değiştirilmiş sürümlerin yayınlanması, dağıtılması veya alt lisanslanması
+   KESİNLİKLE YASAKTIR. Değiştirme ve türev geliştirme haklarının tamamı
+   münhasıran telif hakkı sahibine aittir (TÜM HAKLARI SAKLIDIR).
+
+3. ATIF VE TELİF BİLDİRİMİ:
+   Yazılımın değiştirilmemiş kopyalarında veya yazılıma yapılan akademik/teknik
+   atıflarda bu lisans metni ve telif hakkı bildirimi aynen korunmalıdır.
+
+4. GARANTİ VE SORUMLULUK REDDİ:
+   Bu yazılım hiçbir açık veya zımni garanti verilmeksizin "OLDUĞU GİBİ" ("AS IS")
+   sunulmaktadır. Telif hakkı sahibi, yazılımın kullanımından doğabilecek doğrudan
+   veya dolaylı hiçbir zarardan sorumlu tutulamaz.
+
+--------------------------------------------------------------------------------
+[ENGLISH TERMS]
+--------------------------------------------------------------------------------
+
+1. PERMITTED USES (READ, COMPILE & RUN ONLY):
+   Permission is hereby granted, free of charge, to view, inspect, download,
+   compile, and execute this software ("Citadel-Math", "citadel_math_core",
+   "kmath-mcp") in its UNMODIFIED form for evaluation, testing, research, and
+   local MCP agent integration.
+
+2. RESERVED RIGHTS (NO MODIFICATION OR DERIVATIVE WORKS):
+   Without prior written permission from the copyright holder, you may NOT:
+   (a) Modify, alter, adapt, refactor, or translate the source code, proof kernel,
+       or canonical equation databases;
+   (b) Create derivative works based on the software; or
+   (c) Publish, distribute, sublicense, or commercially exploit modified versions.
+   All modification and derivative development rights are exclusively reserved by
+   the copyright holder (ALL MODIFICATION RIGHTS RESERVED).
+
+3. ATTRIBUTION:
+   All copyright notices and this license file must be retained intact in any
+   unmodified copy or reference to the software.
+
+4. DISCLAIMER OF WARRANTY & LIMITATION OF LIABILITY:
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM,
+   DAMAGES, OR OTHER LIABILITY ARISING FROM THE USE OF THE SOFTWARE.

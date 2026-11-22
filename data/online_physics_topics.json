@@ -1,0 +1,38 @@
+{
+  "Tsiolkovsky_rocket_equation": {
+    "title": "Tsiolkovsky rocket equation",
+    "extract": "The classical rocket equation, Tsiolkovsky rocket equation, or ideal rocket equation is a mathematical equation that describes the motion of vehicles that follow the basic principle of a rocket: a device that can apply acceleration to itself using thrust by expelling part of its mass with high velocity and can thereby move due to the conservation of momentum.\nThe equation is named after—and usually credited to—Konstantin Tsiolkovsky, who derived and published the formula in 1903, though William Moore had outlined it as early as 1810 and elaborated further in a book published in 1813. Robert Goddard and Hermann Oberth also obtained the same result in 1912 and 1920, respectively. All four of them reasoned and derived the same model independently.",
+    "description": "Mathematical equation describing the motion of a rocket",
+    "page_url": "https://en.wikipedia.org/wiki/Tsiolkovsky_rocket_equation"
+  },
+  "Beamed_energy_propulsion": {
+    "title": "Beam-powered propulsion",
+    "extract": "Beam-powered propulsion, also known as directed energy propulsion, is a class of aircraft or spacecraft propulsion that uses energy beamed to the spacecraft from a remote power plant to provide energy. The beam is typically either a microwave or a laser beam, and it is either pulsed or continuous. A continuous beam lends itself to thermal rockets, photonic thrusters, and light sails. In contrast, a pulsed beam lends itself to ablative thrusters and pulse detonation engines.",
+    "description": "Mechanism where confined high-speed particles confer energy to a vehicle",
+    "page_url": "https://en.wikipedia.org/wiki/Beam-powered_propulsion"
+  },
+  "Mass_driver": {
+    "title": "Mass driver",
+    "extract": "A mass driver or electromagnetic catapult is a proposed method of non-rocket spacelaunch which would use a linear motor to accelerate and catapult payloads up to high speeds. Existing and proposed mass drivers use coils of wire energized by electricity to make electromagnets, though a rotary mass driver has also been proposed. Sequential firing of a row of electromagnets accelerates the payload along a path.",
+    "description": "Proposed spacelaunch method",
+    "page_url": "https://en.wikipedia.org/wiki/Mass_driver"
+  },
+  "Skyhook_(structure)": {
+    "title": "Skyhook (structure)",
+    "extract": "A skyhook is a proposed momentum exchange tether that aims to reduce the cost of placing payloads into low Earth orbit. A heavy orbiting station is connected to a cable which extends down towards the upper atmosphere. Payloads, which are much lighter than the station, are hooked to the end of the cable as it passes, and are then flung into orbit by rotation of the cable around the center of mass. The station can then be reboosted to its original altitude by electromagnetic propulsion, rocket propulsion, or by deorbiting another object with the same kinetic energy as transferred to the payload.",
+    "description": "Proposed momentum exchange tether",
+    "page_url": "https://en.wikipedia.org/wiki/Skyhook_(structure)"
+  },
+  "Specific_impulse": {
+    "title": "Specific impulse",
+    "extract": "Specific impulse is a physical quantity defined as the ratio of change in momentum (impulse) to the mass used, usually fuel. It typically uses units of metres per second or feet per second. It is equivalent to thrust per mass flow rate.",
+    "description": "Change in velocity per amount of fuel",
+    "page_url": "https://en.wikipedia.org/wiki/Specific_impulse"
+  },
+  "Oberth_effect": {
+    "title": "Oberth effect",
+    "extract": "In astronautics, a powered flyby, or Oberth maneuver, is a maneuver in which a spacecraft falls into a gravity well and then uses its engines to further accelerate, thereby achieving additional change in speed. The resulting maneuver is a more efficient way to gain or lose kinetic energy than applying the same impulse outside of a gravity well. The gain in efficiency is explained by the Oberth effect, wherein the use of a reaction engine at higher speeds generates a greater change in mechanical energy than its use at lower speeds. In practical terms, this means that the most energy-efficient method for a spacecraft to burn its fuel is at the lowest possible orbital periapsis, when its orbital velocity is greatest. In some cases, it is even worth spending fuel on slowing the spacecraft into a gravity well to take advantage of the efficiencies of the Oberth effect. The maneuver and effect are named after Hermann Oberth, an Austro-Hungarian-born German physicist and a founder of modern rocketry, who first described them in 1927.",
+    "description": "Type of spacecraft maneuver",
+    "page_url": "https://en.wikipedia.org/wiki/Oberth_effect"
+  }
+}
