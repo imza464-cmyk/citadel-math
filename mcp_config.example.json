@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "kmath": {
+      "command": "python",
+      "args": ["./kmath_mcp.py"],
+      "env": {
+        "OPENBLAS_NUM_THREADS": "1",
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}
