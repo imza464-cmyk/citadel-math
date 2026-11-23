@@ -1,0 +1,23 @@
+services:
+  kmath-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: citadel-math:0.1.0
+    stdin_open: true
+    tty: false
+    read_only: true
+    tmpfs:
+      - /tmp:size=64M,noexec,nosuid
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 128
+    mem_limit: 512m
+    cpus: "2.0"
+    environment:
+      OPENBLAS_NUM_THREADS: "1"
+      PYTHONUNBUFFERED: "1"
+      KMATH_RUST_BIN: "/usr/local/bin/citadel_math_core"
+    network_mode: none

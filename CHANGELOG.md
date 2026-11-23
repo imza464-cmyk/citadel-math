@@ -4,6 +4,18 @@ All notable changes to **Citadel-Math (`citadel_math_core` + `kmath-mcp`)** are 
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Changed
+- **Dual-License Model (GNU AGPL-3.0-only + Commercial):** Replaced the restrictive read-only source-available license with verbatim [GNU AGPL-3.0-only](./LICENSE) paired with an optional [Commercial License](./COMMERCIAL_LICENSE.md), enabling open-source community Pull Requests while protecting against closed-source commercial SaaS appropriation.
+- **Smart Rust Binary & Wheel-Safe SSOT Discovery (`kmath_mcp.py`, `kmath.py`):** Added deterministic `resolve_rust_bin()` lookup (`KMATH_RUST_BIN` -> `target/release` -> `target/debug` -> `bin/` -> `PATH` including GitHub Releases asset names) with clear troubleshooting errors (`rc=127`), plus `_resolve_data_file()` fallback to packaged wheel SSOT assets (`engine/_ssot_data/`).
+
+### Added
+- **Zero-Friction Packaging (`pyproject.toml`):** Added PEP 621 / Hatchling package metadata exposing `kmath-mcp` and `kmath` console scripts for `uvx` and `pip` installation, bundling `database/`, `data/`, and `AGENTS.md` inside the wheel.
+- **Hardened Container Distribution (`Dockerfile`, `.dockerignore`, `docker-compose.yml`):** Multi-stage Rust + Python build running as non-root UID `10001`, exec-form `ENTRYPOINT`, Python-native `HEALTHCHECK`, `read_only: true`, `cap_drop: [ALL]`, `no-new-privileges:true`, and `network_mode: none`.
+- **Community & DX Documentation (`CONTRIBUTING.md`, `README.md`):** Added PR/contribution guidelines and upgraded `README.md` with 3 install paths (`uvx` + pre-built GitHub Releases binaries, Docker, from source), a 5-step end-to-end chained AI agent engineering scenario, measured Python-to-Rust subprocess latency & RSS memory benchmarks, and a Troubleshooting section.
+- **CI & Security Tests:** Added wheel-packaging verification in `.github/workflows/ci.yml` and `TestPackagingAndBinaryResolution` unit tests in `tests/test_mcp_security.py`.
+
 ## [0.1.0] - 2026-11-23
 
 ### Added

@@ -1,4 +1,4 @@
-// Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.
+// Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
 // Matematik Çekirdeği — Gerçek 4-Aşamalı Runge-Kutta (RK4), Kepler Enberi (Perigee) ve Canlı Sutton-Graves Entegratörü
 
 use crate::constants::PhysicalConstants;

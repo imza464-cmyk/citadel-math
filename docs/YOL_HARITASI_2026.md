@@ -1,4 +1,4 @@
-# Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.
+# Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
 # MATEMATİK ÇEKİRDEĞİ (`citadel_math_core`) — STRATEJİK MÜHENDİSLİK YOL HARİTASI
 
 > **Durum Notu (Tarihsel Arşiv):** Bu belge projenin ilk Faz 0 (20 yasa) aşamasında hazırlanmış tasarım yol haritasıdır. Aşağıda planlanan Faz 1–5 ve Faz 6 (214 kanonik yasa, 353 SSOT sembolü, 30 malzeme, 15 araçlı `kmath_mcp.py` ve saf-Rust `citadel_math_core`) mevcut `main` dalında uygulanmıştır; güncel mimari için bkz. [`README.md`](../README.md).

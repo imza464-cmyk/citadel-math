@@ -1,4 +1,4 @@
-// Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.
+// Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
 // Matematik Çekirdeği — Çok Amaçlı Kesin Pareto Cephesi (Exact Skyline), NSGA-II Baskılanmamış Sıralama,
 // Kalabalık Mesafesi (Crowding Distance), Hiperhacim ve Ütopya Diz-Noktası (Knee) Sentezleyicisi
 

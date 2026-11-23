@@ -2,9 +2,14 @@
 name = "citadel_math_core"
 version = "0.1.0"
 edition = "2021"
-authors = ["Mekserina"]
-license-file = "../LICENSE"
-description = "High-Performance Pure-Rust Mathematical Invention Core & Physical Simulation Engine"
+authors = ["Mekserina Karaosmanoğlu"]
+license = "AGPL-3.0-only"
+repository = "https://github.com/imza464-cmyk/citadel-math"
+homepage = "https://github.com/imza464-cmyk/citadel-math"
+readme = "../README.md"
+keywords = ["dimensional-analysis", "interval-arithmetic", "physics", "verification", "mcp"]
+categories = ["science", "mathematics", "aerospace"]
+description = "Pure-Rust (#![forbid(unsafe_code)]) Z^7 dimensional shield, checked-i64 algebraic proof kernel, IEEE 1788-2015 Interval64, and physics verification core"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }

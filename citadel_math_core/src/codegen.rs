@@ -1,4 +1,4 @@
-// Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.
+// Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
 // Matematik Çekirdeği — Faz 4 & Faz 5: Doğrulanmış Sıfır-Panik Rust Kodu Üreticisi (Verified Codegen)
 // ve Denetlenebilir Mühendislik Tasarım Föyü (Engineering Dossier) Jeneratörü
 
@@ -185,7 +185,7 @@ impl VerifiedCodegen {
     /// Faz 5: Tersine tasarım ve Pareto optimizasyon sonuçlarını denetlenebilir Markdown teknik föyüne dönüştürür.
     pub fn generate_markdown_dossier(report: &InverseDesignReport) -> String {
         let mut md = String::new();
-        md.push_str("# Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.\n");
+        md.push_str("# Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).\n");
         md.push_str("# CITADEL-MATH DOĞRULANMIŞ MÜHENDİSLİK TASARIM VE KANIT FÖYÜ\n\n");
         md.push_str(&format!(
             "- **Görev Kısıtları:** Faydalı Yük = `{:.0} kg` | Hedef LEO Yörünge >= `{:.0} km` | Azami İvme <= `{:.1} G` | Minimum Yapısal Emniyet >= `{:.2}x`\n",

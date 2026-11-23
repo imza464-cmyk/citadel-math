@@ -1,4 +1,4 @@
-# Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.
+# Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
 # Matematik Çekirdeği — Mühendislik Kokpiti ve Anında Kural Denetimi (kmath)
 
 """
@@ -18,7 +18,12 @@ import sys
 import os
 import json
 import shlex
+import shutil
 import subprocess
+from typing import List, Optional, Tuple
+
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+
 import sympy as sp
 
 try:
@@ -29,8 +34,11 @@ try:
 except (AttributeError, OSError, ValueError):
     pass
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
+import engine
 from engine.dimensions import (
     Dimension,
     DIMENSIONS,
@@ -45,30 +53,91 @@ from engine.simulator import AtmosphereModel, RocketVehicle, RK4TrajectorySimula
 from engine.materials import Material, MaterialsDatabase, StructuralStressChecker
 from engine.discovery import BuckinghamPiDiscovery, MultiObjectivePareto
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "database", "canonical_laws.json")
-ONT_PATH = os.path.join(os.path.dirname(__file__), "database", "ONTOLOGY.json")
-MAT_PATH = os.path.join(os.path.dirname(__file__), "database", "materials.json")
-NIST_PATH = os.path.join(os.path.dirname(__file__), "data", "nist_constants.json")
-ARCHIVE_MD = os.path.join(os.path.dirname(__file__), "formuller_ve_denklemler.md")
+
+def _resolve_data_file(*parts: str) -> str:
+    """Kaynak ağaçtaki (repo) veya paketlenmiş wheel (engine/_ssot_data) içindeki SSOT dosyasını çözer."""
+    repo_candidate = os.path.join(ROOT_DIR, *parts)
+    if os.path.exists(repo_candidate):
+        return repo_candidate
+    pkg_candidate = os.path.join(
+        os.path.dirname(os.path.abspath(engine.__file__)),
+        "_ssot_data",
+        *parts,
+    )
+    if os.path.exists(pkg_candidate):
+        return pkg_candidate
+    return repo_candidate
+
+
+def resolve_rust_bin() -> Tuple[Optional[str], List[str]]:
+    """Derlenmiş citadel_math_core ikilisini KMATH_RUST_BIN -> release -> debug -> bin -> PATH sırasıyla arar."""
+    searched: List[str] = []
+    env_override = os.environ.get("KMATH_RUST_BIN", "").strip()
+    if env_override:
+        expanded = os.path.abspath(os.path.expanduser(env_override))
+        if os.path.isfile(expanded):
+            return expanded, [expanded]
+        return None, [f"KMATH_RUST_BIN={expanded} (bulunamadı / not found)"]
+
+    bin_name = "citadel_math_core.exe" if os.name == "nt" else "citadel_math_core"
+    for candidate in (
+        os.path.join(ROOT_DIR, "citadel_math_core", "target", "release", bin_name),
+        os.path.join(ROOT_DIR, "citadel_math_core", "target", "debug", bin_name),
+        os.path.join(ROOT_DIR, "bin", bin_name),
+    ):
+        searched.append(candidate)
+        if os.path.isfile(candidate):
+            return candidate, searched
+
+    path_names = [
+        "citadel_math_core",
+        "citadel_math_core-windows-x86_64.exe"
+        if os.name == "nt"
+        else "citadel_math_core-linux-x86_64",
+    ]
+    for pname in path_names:
+        found = shutil.which(pname)
+        searched.append(f"PATH:{pname}")
+        if found and os.path.isfile(found):
+            return found, searched
+
+    return None, searched
+
+
+DB_PATH = _resolve_data_file("database", "canonical_laws.json")
+ONT_PATH = _resolve_data_file("database", "ONTOLOGY.json")
+MAT_PATH = _resolve_data_file("database", "materials.json")
+NIST_PATH = _resolve_data_file("data", "nist_constants.json")
+ARCHIVE_MD = os.path.join(ROOT_DIR, "formuller_ve_denklemler.md")
+
 
 def cmd_rust(subcmd: str = "audit"):
-    bin_name = "citadel_math_core.exe" if os.name == "nt" else "citadel_math_core"
-    rust_bin = os.path.join(os.path.dirname(__file__), "citadel_math_core", "target", "release", bin_name)
-    if not os.path.exists(rust_bin):
-        print("[-] Rust ikilisi bulunamadı! Derleniyor: cargo build --release...")
-        cargo_toml = os.path.join(os.path.dirname(__file__), "citadel_math_core", "Cargo.toml")
-        subprocess.run(["cargo", "build", "--release", "--manifest-path", cargo_toml], check=True)
+    rust_bin, searched = resolve_rust_bin()
+    if not rust_bin:
+        cargo_toml = os.path.join(ROOT_DIR, "citadel_math_core", "Cargo.toml")
+        if os.path.isfile(cargo_toml) and shutil.which("cargo") and not os.environ.get("KMATH_RUST_BIN", "").strip():
+            print("[-] Rust ikilisi bulunamadı! Derleniyor: cargo build --release...")
+            subprocess.run(["cargo", "build", "--release", "--manifest-path", cargo_toml], check=True)
+            rust_bin, searched = resolve_rust_bin()
 
-    if os.path.exists(rust_bin):
+    if rust_bin and os.path.isfile(rust_bin):
         res = subprocess.run([rust_bin, *shlex.split(subcmd)], check=False)
         if res.returncode != 0:
             sys.exit(res.returncode)
     else:
-        print("[-] Rust ikilisi çalıştırılamadı!")
-        sys.exit(1)
+        print(
+            "[-] citadel_math_core Rust ikilisi bulunamadı / Rust binary not found!\n"
+            f"    Aranan yollar / Searched: {', '.join(searched)}\n"
+            "    Çözüm / Fix:\n"
+            "      1) Kaynaktan derleyin: cargo build --release --manifest-path citadel_math_core/Cargo.toml\n"
+            "      2) Veya GitHub Releases hazır ikilisini indirip KMATH_RUST_BIN (veya PATH) ayarlayın:\n"
+            "         https://github.com/imza464-cmyk/citadel-math/releases"
+        )
+        sys.exit(127)
+
 
 def cmd_rules():
-    agents_path = os.path.join(os.path.dirname(__file__), "AGENTS.md")
+    agents_path = _resolve_data_file("AGENTS.md")
     if os.path.exists(agents_path):
         with open(agents_path, "r", encoding="utf-8") as f:
             print(f.read())
@@ -563,7 +632,8 @@ def cmd_audit() -> bool:
         print("=" * 70)
         return False
 
-if __name__ == "__main__":
+def main() -> None:
+    """Console script entry point for `kmath` and `uvx --from kmath-mcp kmath`."""
     if len(sys.argv) > 1 and sys.argv[1] == "rules":
         cmd_rules()
     elif len(sys.argv) > 1 and sys.argv[1] == "stats":
@@ -592,3 +662,7 @@ if __name__ == "__main__":
     else:
         success = cmd_audit()
         sys.exit(0 if success else 1)
+
+
+if __name__ == "__main__":
+    main()

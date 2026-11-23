@@ -45,6 +45,12 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Verify Python wheel packaging & CLI entry points (pyproject.toml)
+        run: |
+          pip install --no-deps .
+          kmath stats
+          python -c "import kmath_mcp, kmath; assert callable(kmath_mcp.main) and callable(kmath.main)"
+
       - name: Run 16-gate native Rust verification suite
         run: python kmath.py rust audit
 

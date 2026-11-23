@@ -1,10 +1,11 @@
-# Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.
-"""End-to-end security & functional tests for kmath_mcp.py and zero-eval AST parsing."""
+# Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
+"""End-to-end security, packaging & functional tests for kmath_mcp.py and zero-eval AST parsing."""
 
 import json
 import os
 import sys
 import unittest
+from unittest import mock
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT_DIR not in sys.path:
@@ -101,6 +102,46 @@ class TestMcpEndToEndTools(unittest.TestCase):
             )
         )
         self.assertEqual(pareto["status"], "ok")
+
+
+class TestPackagingAndBinaryResolution(unittest.TestCase):
+    """Verify deterministic Rust binary discovery (KMATH_RUST_BIN/PATH) and wheel-safe SSOT resolution."""
+
+    def test_resolve_data_file_finds_canonical_ssot_assets(self):
+        laws_path = kmath_mcp._resolve_data_file("database", "canonical_laws.json")
+        nist_path = kmath_mcp._resolve_data_file("data", "nist_constants.json")
+        self.assertTrue(os.path.isfile(laws_path), f"Missing canonical laws: {laws_path}")
+        self.assertTrue(os.path.isfile(nist_path), f"Missing NIST constants: {nist_path}")
+
+    def test_resolve_rust_bin_default_finds_compiled_binary(self):
+        resolved, searched = kmath_mcp.resolve_rust_bin()
+        self.assertIsNotNone(resolved, f"Compiled Rust binary not found in {searched}")
+        self.assertTrue(os.path.isfile(resolved))
+
+    def test_resolve_rust_bin_honors_explicit_env_override(self):
+        default_bin, _ = kmath_mcp.resolve_rust_bin()
+        self.assertIsNotNone(default_bin)
+        with mock.patch.dict(os.environ, {"KMATH_RUST_BIN": default_bin}):
+            resolved, searched = kmath_mcp.resolve_rust_bin()
+            self.assertEqual(resolved, os.path.abspath(default_bin))
+            self.assertEqual(searched, [os.path.abspath(default_bin)])
+
+    def test_missing_env_override_returns_clear_troubleshooting_error(self):
+        missing_path = os.path.join(ROOT_DIR, "nonexistent_citadel_math_core_bin")
+        with mock.patch.dict(os.environ, {"KMATH_RUST_BIN": missing_path}):
+            resolved, searched = kmath_mcp.resolve_rust_bin()
+            self.assertIsNone(resolved)
+            self.assertIn("KMATH_RUST_BIN", searched[0])
+
+            rc, out, err = kmath_mcp._run_rust_cli(["audit"])
+            self.assertEqual(rc, 127)
+            self.assertEqual(out, "")
+            self.assertIn("KMATH_RUST_BIN", err)
+            self.assertIn("releases", err)
+
+            tool_res = json.loads(kmath_mcp.kmath_prove_identity("x + 1", "1 + x"))
+            self.assertEqual(tool_res["status"], "error")
+            self.assertIn("KMATH_RUST_BIN", tool_res["message"])
 
 
 if __name__ == "__main__":

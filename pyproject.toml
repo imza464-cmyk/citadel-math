@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "kmath-mcp"
+version = "0.1.0"
+description = "Citadel-Math: Deterministic Z^7 dimensional shield, checked-i64 algebraic proof kernel, IEEE 1788-2015 Interval64, and 15-tool offline MCP server"
+readme = "README.md"
+license = "AGPL-3.0-only"
+license-files = ["LICENSE", "COMMERCIAL_LICENSE.md"]
+requires-python = ">=3.10"
+authors = [
+  { name = "Mekserina Karaosmanoğlu" }
+]
+keywords = [
+  "mcp",
+  "model-context-protocol",
+  "dimensional-analysis",
+  "interval-arithmetic",
+  "physics",
+  "sympy",
+  "rust",
+  "verification",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: GNU Affero General Public License v3",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Topic :: Scientific/Engineering :: Physics",
+]
+dependencies = [
+  "sympy>=1.12,<2.0",
+  "mcp>=1.0.0,<2.0.0",
+  "networkx>=3.0,<4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/imza464-cmyk/citadel-math"
+Repository = "https://github.com/imza464-cmyk/citadel-math"
+Releases = "https://github.com/imza464-cmyk/citadel-math/releases"
+Issues = "https://github.com/imza464-cmyk/citadel-math/issues"
+Changelog = "https://github.com/imza464-cmyk/citadel-math/blob/main/CHANGELOG.md"
+
+[project.scripts]
+kmath-mcp = "kmath_mcp:main"
+kmath = "kmath:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["engine"]
+only-include = [
+  "engine",
+  "kmath.py",
+  "kmath_mcp.py",
+]
+
+[tool.hatch.build.targets.wheel.force-include]
+"database" = "engine/_ssot_data/database"
+"data" = "engine/_ssot_data/data"
+"AGENTS.md" = "engine/_ssot_data/AGENTS.md"

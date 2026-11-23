@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/imza464-cmyk/citadel-math/actions/workflows/ci.yml/badge.svg)](https://github.com/imza464-cmyk/citadel-math/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/imza464-cmyk/citadel-math?color=0ea5e9)](https://github.com/imza464-cmyk/citadel-math/releases)
-[![License](https://img.shields.io/badge/License-Source_Available_%28No_Modification%29-blue.svg)](./LICENSE)
+[![License: AGPL-3.0 | Commercial](https://img.shields.io/badge/License-AGPL--3.0_%7C_Commercial-blue.svg)](./LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-forbid%28unsafe__code%29-orange.svg)](./citadel_math_core/src/lib.rs)
 [![MCP Server](https://img.shields.io/badge/MCP-15_Deterministic_Tools-10b981.svg)](./kmath_mcp.py)
 
@@ -29,45 +29,140 @@ flowchart LR
 
 ---
 
-## Live Examples / Canlı Örnekler
+## Quick Start / Hızlı Kurulum (3 Yol)
 
-### 1. Catching a 1000× SI Unit Scaling Error (`kmath_dimension_check`)
-`kmath_dimension_check("kN", "kg * m / s^2")` recognizes that both sides share dimension $\text{M L T}^{-2}$ yet flags the `1000.0×` scale mismatch:
+Choose the workflow that fits your environment — **Rust is NOT required** if you use pre-built release binaries or Docker.
+
+### Option A — One-Command `uvx` + Pre-Built Binary (No Rust Compiler Required)
+1. **Download the self-contained Rust core binary** (`1.45 MB` on Windows, embedded SSOT JSONs) from [GitHub Releases](https://github.com/imza464-cmyk/citadel-math/releases) and verify its SHA-256 checksum against `SHA256SUMS.txt`:
+   - Linux x86_64: `citadel_math_core-linux-x86_64` (`chmod +x` and place on `PATH` or point `KMATH_RUST_BIN` to it)
+   - Windows x86_64: `citadel_math_core-windows-x86_64.exe`
+2. **Run CLI or MCP directly via [`uvx`](https://docs.astral.sh/uv/):**
+   ```bash
+   # Inspect ontology & canonical law metrics with zero manual cloning
+   uvx --from git+https://github.com/imza464-cmyk/citadel-math.git kmath stats
+
+   # Start the 15-tool stdio MCP server
+   KMATH_RUST_BIN=/path/to/citadel_math_core uvx --from git+https://github.com/imza464-cmyk/citadel-math.git kmath-mcp
+   ```
+3. **MCP Client Configuration (`uvx`):**
+   ```json
+   {
+     "mcpServers": {
+       "kmath": {
+         "command": "uvx",
+         "args": ["--from", "git+https://github.com/imza464-cmyk/citadel-math.git", "kmath-mcp"],
+         "env": {
+           "KMATH_RUST_BIN": "/ABSOLUTE/PATH/TO/citadel_math_core",
+           "OPENBLAS_NUM_THREADS": "1",
+           "PYTHONUNBUFFERED": "1"
+         }
+       }
+     }
+   }
+   ```
+
+### Option B — Hardened Docker Container (Zero Host Rust/Python Dependencies)
+The multi-stage [`Dockerfile`](./Dockerfile) compiles `citadel_math_core`, strips it, and runs the Python MCP server as **non-root UID `10001`** with a Python-native `HEALTHCHECK` and exec-form `ENTRYPOINT`.
+```bash
+# Build once (or use docker compose build)
+docker build -t citadel-math:0.1.0 .
+
+# Run hardened stdio MCP server (read-only rootfs, zero capabilities, zero network)
+docker run -i --rm \
+  --read-only \
+  --tmpfs /tmp:size=64M,noexec,nosuid \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges:true \
+  --pids-limit=128 \
+  --memory=512m \
+  --network=none \
+  citadel-math:0.1.0
+```
+See [`docker-compose.yml`](./docker-compose.yml) for the declarative hardened service definition. To attach Docker directly in Claude Desktop / Cursor:
 ```json
 {
-  "lhs": "kN",
-  "rhs": "kg * m / s^2",
-  "dim_lhs": "M L T^-2",
-  "dim_rhs": "M L T^-2",
-  "homogeneous": true,
-  "si_scale_ratio_lhs_over_rhs": 1000.0,
-  "verdict": "DIMENSIONALLY_HOMOGENEOUS_BUT_UNIT_SCALE_MISMATCH"
+  "mcpServers": {
+    "kmath": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--read-only",
+        "--tmpfs", "/tmp:size=64M,noexec,nosuid",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges:true",
+        "--network=none",
+        "citadel-math:0.1.0"
+      ]
+    }
+  }
 }
 ```
 
-### 2. Blocking a Domain-Guard-Dropping Simplification (`kmath_prove_identity`)
-`kmath_prove_identity("(x^2 - 1) / (x - 1)", "x + 1")` rejects naive cancellation because `x = 1` is singular on the LHS:
-```json
-{
-  "lhs_domain_guards": ["(x - 1) != 0"],
-  "rhs_domain_guards": [],
-  "proven_identical": false,
-  "reason": "Tanım kümesi (yan koşul) eşitsizliği! Yan koşul yutan sadeleştirme reddedildi.",
-  "status": "ok"
-}
+### Option C — Build From Source (Developers & Contributors)
+```bash
+git clone https://github.com/imza464-cmyk/citadel-math.git
+cd citadel-math
+
+# 1. Test & build release Rust core
+cargo test --manifest-path citadel_math_core/Cargo.toml
+cargo build --release --manifest-path citadel_math_core/Cargo.toml
+
+# 2. Install editable Python package & console scripts (`kmath`, `kmath-mcp`)
+pip install -e .
+
+# 3. Verify all 26 audit gates + MCP security tests
+kmath audit
+kmath rust audit
+python -m unittest discover -s tests -v
+```
+Copy [`mcp_config.example.json`](./mcp_config.example.json) into your MCP client config and set `/ABSOLUTE/PATH/TO/citadel-math/kmath_mcp.py` (the Rust binary in `citadel_math_core/target/release/` is discovered automatically).
+
+---
+
+## End-to-End Chained Agent Scenario / Uçtan Uca 5 Adımlı Ajan Senaryosu
+
+**Prompt to AI Agent:** *"Design and audit a Phase-A cryogenic LOX tank (`45 t` gross mass, `4.5 G`, `q_max = 35 kPa`, `r = 1.8 m`, `L = 14 m`, `t = 5.0 mm`, `P = 4.0 bar`, peak ascent speed `2400 m/s`). Verify alloy selection, unit hygiene, structural buckling + thermal protection, manufacturing-tolerance hoop stress bounds, and propulsion physics."*
+
+Below is the actual deterministic 5-tool chain executed live against `kmath_mcp.py` + `citadel_math_core`:
+
+```mermaid
+flowchart LR
+    S1["1. kmath_materials<br/>Rank alloys -> Al-Li 2195"] --> S2["2. kmath_dimension_check<br/>Catch 1000x scale & symbol clash"]
+    S2 --> S3["3. kmath_stress_check<br/>SP-8007 SF=2.49x + 26.3 mm PICA-X"]
+    S3 --> S4["4. kmath_interval_eval<br/>[137.26, 151.03] MPa + dσ/dt"]
+    S4 --> S5["5. kmath_physical_bounds_check<br/>Carnot 0.68 < 0.906, v << c -> PASS"]
 ```
 
-### 3. Outward-Rounded Interval Bounds + Exact Derivative (`kmath_interval_eval`)
-`kmath_interval_eval("(x + 1) / y", '{"x": [1.0, 2.0], "y": [2.0, 4.0]}', "x")`:
-```json
-{
-  "expression": "((x + 1) / y)",
-  "outward_interval": [0.5, 1.5],
-  "midpoint_value_and_gradient": [0.8333333333333333, {"x": 0.3333333333333333, "y": -0.2777777777777778}],
-  "symbolic_derivative": "(1 / y)",
-  "status": "ok"
-}
-```
+| Step | MCP Tool Call | Verified Live Output / Caught Failure Mode |
+| :---: | :--- | :--- |
+| **1** | `kmath_materials(sort_by="yield_strength", category="metal_alloy")` | Compares `mat_maraging_300` (`2000 MPa`, `8000 kg/m³`, `L_b = 25.5 km`), `mat_ss_17_4ph_h900` (`1170 MPa`), `mat_ss_304l_cryo` (`960 MPa`, `806.9 °C`) and selects lightweight cryogenic **`mat_alli_2195`** (`550 MPa` yield, `146.85 °C` max wall limit). |
+| **2** | `kmath_dimension_check("kN", "kg * m / s^2")` & `kmath_dimension_check("P * r / t", "Pa")` | **Catches two classic LLM bugs before computing:** (a) flags `1000.0×` scale error (`DIMENSIONALLY_HOMOGENEOUS_BUT_UNIT_SCALE_MISMATCH`), and (b) flags implicit symbol collision where SSOT `P` = Power and `t` = Time (`[M L^3 T^-4] != [M L^-1 T^-2]`), forcing explicit `var_dimensions_json` disambiguation. |
+| **3** | `kmath_stress_check("mat_alli_2195", mass_kg=45000, g_load=4.5, max_q_pa=35000, radius_m=1.8, length_m=14.0, wall_thickness_mm=5.0, speed_ms=2400, tank_pressure_bar=4.0)` | **Structural PASS + Auto-TPS Sizing:** Rust Von Mises `130.5 MPa` (`yield_safety_factor = 4.215×`), NASA SP-8007 buckling critical `97.32 MPa` (`buckling_safety_factor = 2.486×`). Bare wall hits `1951.5 °C` (> `146.85 °C` limit) → automatically sizes **`26.32 mm` PICA-X TPS (`173.60 kg`)**, lowering bondline to **`106.85 °C`** (`overall_pass: true`). |
+| **4** | `kmath_interval_eval("(P * r) / t", '{"P":[390000,410000],"r":[1.795,1.805],"t":[0.0049,0.0051]}', "t")` | **Guaranteed Tolerance Bounds:** IEEE 1788-2015 outward-rounded hoop stress **`[137.26 MPa, 151.03 MPa]`** (midpoint `144.00 MPa`, width `13.77 MPa`), exact symbolic derivative `-(P * r) / t^2`, sensitivity **`∂σ/∂t = -2.88 × 10¹⁰ Pa/m`** (`-2.88 MPa` per `+0.1 mm` wall thickness). |
+| **5** | `kmath_physical_bounds_check(mass_kg=45000, velocity_ms=2400, exhaust_velocity_ms=3400, mass_flow_kg_s=280, thrust_n=952000, temp_hot_k=3200, temp_cold_k=300, efficiency=0.68)` | **Thermodynamic & Causality Seal:** `carnot_max_efficiency = 0.90625` (`0.68 < 0.90625`), `lorentz_gamma = 1.000000000032` (`v ≪ c`), momentum `F = ṁ·v_e = 952 kN` exact → **`physically_realizable: true`**. |
+
+### Additional Standalone Checks / Tekil Canlı Örnekler
+- **Domain-Guard Preservation (`kmath_prove_identity`):** `kmath_prove_identity("(x^2 - 1) / (x - 1)", "x + 1")` returns `"proven_identical": false` with `"lhs_domain_guards": ["(x - 1) != 0"]`, rejecting singular cancellation at `x = 1`.
+- **Exact Dimensionless Groups (`kmath_buckingham_pi`):** `kmath_buckingham_pi("r,E,rho,t", "r")` derives Taylor-Sedov blast scaling $r \propto (E t^2 / \rho)^{1/5}$ over exact `i128` rational $\mathbb{Z}^7$ nullspace.
+
+---
+
+## Performance & Memory Benchmarks / Performans ve Bellek Kıyaslamaları
+
+Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, release `citadel_math_core.exe` = **`1.45 MB`**):
+
+| Operation / MCP Tool | Execution Path | `p50` Latency | `p95` Latency | Notes |
+| :--- | :--- | :---: | :---: | :--- |
+| Server cold start (`import kmath_mcp`) | Python (SymPy + NetworkX + MCP) | `876.3 ms` | — | One-time startup; `109.95 MB` working set (`97.18 MB` private) |
+| `kmath_constant("c")` | In-process Python JSON | `0.28 ms` | `0.33 ms` | CODATA 2022 lookup |
+| `kmath_dimension_check("kN", "kg * m / s^2")` | In-process Zero-Eval AST | `3.60 ms` | `4.81 ms` | Symbolic AST + $\mathbb{Z}^7$ scale check |
+| `kmath_prove_identity` | Python → Rust subprocess (`shell=False`) | `5.30 ms` | `5.68 ms` | Includes full OS process spawn + JSON IPC |
+| `kmath_interval_eval` | Python → Rust subprocess (`shell=False`) | `5.45 ms` | `5.72 ms` | IEEE 1788-2015 `Interval64` + `Dual64` |
+| `kmath_stress_check` | Python + Rust subprocess | `5.56 ms` | `5.84 ms` | Von Mises + NASA SP-8007 + PICA-X TPS |
+| `kmath_audit` (26 gates total) | 10 Python + 16 Rust gates | `45.65 ms` | `47.73 ms` | Native Rust 16-gate audit alone: `~13–17 ms` |
+
+- **Steady-State Memory Footprint:** After running all tools and a full 26-gate audit, the MCP server stabilizes at **`113.16 MB` working set** (`113.21 MB` peak, `100.88 MB` private — only **`+3.2 MB`** delta above initial import).
+- **Why Ephemeral Subprocess Isolation?** Each Rust tool call adds `~5.3–5.6 ms` of OS spawn/pipe overhead on Windows (`~1–2 ms` on Linux) in exchange for `shell=False` command-injection immunity, zero persistent FFI memory leaks, and clean timeout isolation (`20 s` hard cap).
 
 ---
 
@@ -78,17 +173,22 @@ flowchart LR
 ├── .github/
 │   ├── ISSUE_TEMPLATE/             # Bug report & mathematical/physical soundness issue templates
 │   └── workflows/
-│       ├── ci.yml                  # Cross-platform CI (Linux/Windows): clippy, tests, audits & MCP security
+│       ├── ci.yml                  # Cross-platform CI (Linux/Windows): clippy, tests, wheel build & MCP security
 │       └── release.yml             # Automated Linux/Windows release binary & SHA256SUMS publishing
 ├── AGENTS.md                       # Engineering invariants (dimensional homogeneity & SSOT rules)
 ├── CHANGELOG.md                    # Versioned release history (Keep a Changelog)
-├── HATA_KAYIT_DEFTERI.md           # Engineering bug & regression logbook
+├── COMMERCIAL_LICENSE.md           # Commercial dual-license terms for proprietary / closed-SaaS use
+├── CONTRIBUTING.md                 # Pull Request workflow, verification gates & coding standards
+├── Dockerfile                      # Hardened multi-stage Rust + Python container (UID 10001, exec ENTRYPOINT)
+├── docker-compose.yml              # Read-only, cap_drop: ALL, network_mode: none MCP service config
+├── LICENSE                         # Official verbatim GNU Affero General Public License v3.0 (AGPL-3.0-only)
+├── pyproject.toml                  # PEP 621 / Hatchling package (`kmath-mcp` + `kmath` CLI, bundled SSOT)
 ├── SECURITY.md                     # Threat model, zero-eval parser policy & vulnerability disclosure
 ├── kmath.py                        # Verification cockpit CLI (10 Python SSOT + 16 Rust audit gates)
 ├── kmath_mcp.py                    # 15-Tool Model Context Protocol (MCP) Server (zero-eval AST input parser)
-├── mcp_config.example.json         # Portable MCP client configuration example
+├── mcp_config.example.json         # Portable local MCP client configuration example
 ├── tests/
-│   └── test_mcp_security.py        # Zero-eval RCE rejection & live Python-to-Rust MCP integration tests
+│   └── test_mcp_security.py        # Zero-eval RCE rejection, binary resolution & live MCP bridge tests
 ├── citadel_math_core/              # Pure-Rust (#![forbid(unsafe_code)]) Engine & Native Binary
 │   └── src/
 │       ├── proof_kernel.rs         # Z[x] & MultiPolyZ (grevlex) algebraic equivalence + GuardedPoly guards
@@ -115,45 +215,6 @@ flowchart LR
 
 ---
 
-## Quick Start / Hızlı Kurulum
-
-### 1. Run Unit Tests & Build Rust Core / Birim Testleri ve Rust Derlemesi
-```bash
-cargo test --manifest-path citadel_math_core/Cargo.toml
-cargo build --release --manifest-path citadel_math_core/Cargo.toml
-```
-
-### 2. Install Python Dependencies / Python Bağımlılıklarını Yükleyin
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Verify All 26 Audit Gates & MCP Security Suite / Denetim Kapıları ve Güvenlik Testleri
-```bash
-python kmath.py audit
-python kmath.py rust audit
-python -m unittest discover -s tests -v
-```
-
-### 4. Connect as an MCP Server / MCP Sunucusu Olarak Bağlayın
-Copy `mcp_config.example.json` into your MCP client configuration and replace `/ABSOLUTE/PATH/TO/citadel-math/kmath_mcp.py` with your absolute local path:
-```json
-{
-  "mcpServers": {
-    "kmath": {
-      "command": "python",
-      "args": ["/ABSOLUTE/PATH/TO/citadel-math/kmath_mcp.py"],
-      "env": {
-        "OPENBLAS_NUM_THREADS": "1",
-        "PYTHONUNBUFFERED": "1"
-      }
-    }
-  }
-}
-```
-
----
-
 ## 15 Deterministic MCP Tools (`kmath_mcp.py`)
 
 | Tool | Function |
@@ -176,15 +237,41 @@ Copy `mcp_config.example.json` into your MCP client configuration and replace `/
 
 ---
 
+## Troubleshooting / Sorun Giderme
+
+### 1. How `kmath_mcp.py` & `kmath.py` Locate the Rust Binary (`resolve_rust_bin()`)
+Every Rust-backed MCP tool resolves `citadel_math_core` dynamically in this exact priority order:
+1. **`KMATH_RUST_BIN` environment variable** — Authoritative override. If set to an invalid path, the tool fails immediately with `rc=127` (never silently falls back to a stale build).
+2. **`<repo>/citadel_math_core/target/release/citadel_math_core(.exe)`** — Default local release build.
+3. **`<repo>/citadel_math_core/target/debug/citadel_math_core(.exe)`** — Local debug build fallback.
+4. **`<repo>/bin/citadel_math_core(.exe)`** — Portable drop-in folder.
+5. **System `PATH`** — Searches `citadel_math_core` as well as GitHub Release asset names (`citadel_math_core-linux-x86_64` / `citadel_math_core-windows-x86_64.exe`).
+
+### 2. Missing Rust Binary Error (`rc=127`)
+If you connect `kmath-mcp` without building Rust or configuring a pre-built release binary, pure-Python tools (`kmath_dimension_check`, `kmath_constant`, `kmath_materials`, `kmath_simulate_trajectory`, `kmath_solve_for`) continue working, while Rust-backed tools return a structured JSON error:
+```json
+{
+  "status": "error",
+  "message": "citadel_math_core Rust ikilisi bulunamadı / Rust binary not found. Aranan yollar / Searched: [...]. Çözüm / Fix: (1) Kaynaktan derleyin: `cargo build --release --manifest-path citadel_math_core/Cargo.toml`, veya (2) Hazır ikiliyi indirin: https://github.com/imza464-cmyk/citadel-math/releases ve `KMATH_RUST_BIN` ortam değişkenini (veya PATH'i) ayarlayın."
+}
+```
+**Fix:** Either run `cargo build --release --manifest-path citadel_math_core/Cargo.toml`, or download the pre-built binary from [Releases](https://github.com/imza464-cmyk/citadel-math/releases) and set `KMATH_RUST_BIN`.
+
+### 3. Packaged Wheel / `uvx` Data Resolution & Windows Memory Safety
+- **Bundled SSOT Assets:** When installed via `uvx` or `pip install`, `_resolve_data_file()` automatically falls back to `engine/_ssot_data/` bundled inside the wheel (`database/`, `data/`, `AGENTS.md`).
+- **Windows Virtual Memory (`OPENBLAS_NUM_THREADS=1`):** Both `kmath_mcp.py` and `kmath.py` enforce `OPENBLAS_NUM_THREADS=1` before importing numeric libraries to prevent ~640 MB OpenBLAS thread-pool commit-charge bloat on Windows.
+
+---
+
 ## CLI Usage / Komut Satırı Kullanımı
 
 ```bash
-python kmath.py audit                 # Run 10-gate Python + SSOT engineering audit
-python kmath.py rust audit            # Run 16-gate pure-Rust proof & simulation audit
-python kmath.py simulate compare      # Compare Chemical vs. Beamed Laser vs. Kinetic launch trajectories
-python kmath.py materials             # Rank aerospace/TPS materials by breaking length & strength
-python kmath.py stress                # Check cylindrical shell stress & heat flux limits
-python kmath.py stats                 # Show ontology & canonical law metrics
+kmath audit                   # Run 10-gate Python + SSOT engineering audit (or: python kmath.py audit)
+kmath rust audit              # Run 16-gate pure-Rust proof & simulation audit
+kmath simulate compare        # Compare Chemical vs. Beamed Laser vs. Kinetic launch trajectories
+kmath materials               # Rank aerospace/TPS materials by breaking length & strength
+kmath stress                  # Check cylindrical shell stress & heat flux limits
+kmath stats                   # Show ontology & canonical law metrics
 ```
 
 ---
@@ -212,17 +299,19 @@ python kmath.py stats                 # Show ontology & canonical law metrics
 
 ---
 
-## Verification Summary / Doğrulama Özeti
+## Contributing / Katkıda Bulunma
 
-- **Rust Lint & Unit Tests (`cargo clippy` + `cargo test`):** `0` clippy warnings (`-D warnings`) and `33 passed; 0 failed` (`24` in `proof_kernel`, `4` in `cad`, `5` cross-module tests in `lib.rs`).
-- **MCP Security & Integration Tests (`unittest`):** Zero-`eval` AST parser rejects `__import__`, attribute traversal, and `lambda` injection payloads (`0` calls to `sympy.sympify()`), and verifies live Python-to-Rust MCP tool bridges.
-- **Python Audit (`python kmath.py audit`):** `10/10 PASS` (`214` canonical laws, `353` ontology symbols, `18` physical regimes, `30` materials).
-- **Rust Audit (`python kmath.py rust audit`):** `16/16 PASS` (`#![forbid(unsafe_code)]`, `214` SSOT AST laws + `544` inverse laws, IEEE 1788-2015 outward-rounded intervals, Buckingham-$\Pi$, NSGA-II Skyline, 2D CAD R12 DXF/SVG).
+Community Pull Requests, new physically verified laws, bug reports, and security audits are welcome!  
+Please read **[CONTRIBUTING.md](./CONTRIBUTING.md)** for the full engineering verification checklist (`cargo clippy -D warnings`, `cargo test`, `kmath audit`, `kmath rust audit`, `unittest`) and architectural invariants (`AGENTS.md`).
 
 ---
 
-## License / Lisans
+## License / Çift Lisans (Dual License)
 
-**Citadel-Math Source-Available License (Read & Run Permitted — All Modification & Derivative Rights Reserved).**  
-*İnceleme, derleme ve olduğu gibi çalıştırma serbesttir; kaynak kodunu değiştirme, türev eser üretme ve değiştirilmiş sürüm dağıtma haklarının tamamı saklıdır (Tüm Değiştirme Hakları Saklıdır).* — see [LICENSE](./LICENSE) for details.  
-Copyright © 2026 Mekserina Karaosmanoğlu. All Modification Rights Reserved.
+Citadel-Math is **dual-licensed**:
+
+1. **Open Source — GNU Affero General Public License v3.0 (`AGPL-3.0-only`):** Free to use, study, modify, contribute Pull Requests, and redistribute under the terms of [`LICENSE`](./LICENSE). Network/SaaS deployments exposing modified or unmodified Citadel-Math services must disclose corresponding source code under AGPL-3.0 Section 13.
+2. **Commercial License:** Organizations wishing to embed Citadel-Math in proprietary closed-source software or commercial SaaS without AGPL-3.0 copyleft obligations may obtain a commercial license — see **[COMMERCIAL_LICENSE.md](./COMMERCIAL_LICENSE.md)**.
+
+*Citadel-Math çift lisanslıdır: Açık kaynak kullanım ve topluluk katkıları için [GNU AGPL-3.0-only](./LICENSE); kapalı kaynak ticari ürün veya SaaS entegrasyonları için [Ticari Lisans](./COMMERCIAL_LICENSE.md) geçerlidir.*  
+Copyright © 2026 Mekserina Karaosmanoğlu.

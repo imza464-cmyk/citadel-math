@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.
+# Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
 # Matematik Çekirdeği — Egemen Model Context Protocol (MCP) Sunucusu (kmath_mcp)
 
 """
@@ -14,9 +14,12 @@ Anayasal Kurallar (AGENTS.md):
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 from typing import Any, Dict, List, Optional, Tuple
+
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 
 import sympy as sp
 try:
@@ -28,6 +31,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
+import engine
 from engine.constants import PhysicalConstants
 from engine.dimensions import (
     DIMENSIONS,
@@ -41,17 +45,78 @@ from engine.knowledge_graph import KnowledgeGraph
 from engine.materials import MaterialsDatabase, StructuralStressChecker
 from engine.simulator import RK4TrajectorySimulator, RocketVehicle
 
-DB_PATH = os.path.join(ROOT_DIR, "database", "canonical_laws.json")
-ONT_PATH = os.path.join(ROOT_DIR, "database", "ONTOLOGY.json")
-MAT_PATH = os.path.join(ROOT_DIR, "database", "materials.json")
-NIST_PATH = os.path.join(ROOT_DIR, "data", "nist_constants.json")
-RUST_BIN = os.path.join(
+
+def _resolve_data_file(*parts: str) -> str:
+    """Kaynak ağaçtaki (repo) veya paketlenmiş wheel (engine/_ssot_data) içindeki SSOT veri dosyasını çözer."""
+    repo_candidate = os.path.join(ROOT_DIR, *parts)
+    if os.path.exists(repo_candidate):
+        return repo_candidate
+    pkg_candidate = os.path.join(
+        os.path.dirname(os.path.abspath(engine.__file__)),
+        "_ssot_data",
+        *parts,
+    )
+    if os.path.exists(pkg_candidate):
+        return pkg_candidate
+    return repo_candidate
+
+
+def resolve_rust_bin() -> Tuple[Optional[str], List[str]]:
+    """Derlenmiş citadel_math_core ikilisini deterministik öncelik sırasıyla arar.
+
+    Arama sırası:
+      1. KMATH_RUST_BIN ortam değişkeni (tanımlıysa tek yetkili geçersiz kılmadır)
+      2. <repo>/citadel_math_core/target/release/citadel_math_core(.exe)
+      3. <repo>/citadel_math_core/target/debug/citadel_math_core(.exe)
+      4. <repo>/bin/citadel_math_core(.exe)
+      5. Sistem PATH'inde citadel_math_core ve GitHub Releases platform ikilileri
+    """
+    searched: List[str] = []
+    env_override = os.environ.get("KMATH_RUST_BIN", "").strip()
+    if env_override:
+        expanded = os.path.abspath(os.path.expanduser(env_override))
+        if os.path.isfile(expanded):
+            return expanded, [expanded]
+        return None, [f"KMATH_RUST_BIN={expanded} (bulunamadı / not found)"]
+
+    bin_name = "citadel_math_core.exe" if os.name == "nt" else "citadel_math_core"
+    local_candidates = [
+        os.path.join(ROOT_DIR, "citadel_math_core", "target", "release", bin_name),
+        os.path.join(ROOT_DIR, "citadel_math_core", "target", "debug", bin_name),
+        os.path.join(ROOT_DIR, "bin", bin_name),
+    ]
+    for candidate in local_candidates:
+        searched.append(candidate)
+        if os.path.isfile(candidate):
+            return candidate, searched
+
+    path_names = [
+        "citadel_math_core",
+        "citadel_math_core-windows-x86_64.exe"
+        if os.name == "nt"
+        else "citadel_math_core-linux-x86_64",
+    ]
+    for pname in path_names:
+        found = shutil.which(pname)
+        searched.append(f"PATH:{pname}")
+        if found and os.path.isfile(found):
+            return found, searched
+
+    return None, searched
+
+
+DB_PATH = _resolve_data_file("database", "canonical_laws.json")
+ONT_PATH = _resolve_data_file("database", "ONTOLOGY.json")
+MAT_PATH = _resolve_data_file("database", "materials.json")
+NIST_PATH = _resolve_data_file("data", "nist_constants.json")
+_DEFAULT_RUST_BIN = os.path.join(
     ROOT_DIR,
     "citadel_math_core",
     "target",
     "release",
     "citadel_math_core.exe" if os.name == "nt" else "citadel_math_core",
 )
+RUST_BIN = resolve_rust_bin()[0] or _DEFAULT_RUST_BIN
 
 mcp = FastMCP(
     "kmath",
@@ -175,15 +240,23 @@ NIST_SYMBOL_ALIASES: Dict[str, str] = {
 
 def _run_rust_cli(args: List[str], timeout_s: float = 20.0) -> Tuple[int, str, str]:
     """Derlenmiş saf-Rust citadel_math_core ikilisini kabuk enjeksiyonsuz çalıştırır."""
-    if not os.path.exists(RUST_BIN):
+    rust_bin, searched = resolve_rust_bin()
+    if not rust_bin:
+        searched_str = ", ".join(searched)
         return (
             127,
             "",
-            f"Rust ikilisi bulunamadı: {RUST_BIN}. Önce 'cargo build --release' çalıştırın.",
+            (
+                f"citadel_math_core Rust ikilisi bulunamadı / Rust binary not found. "
+                f"Aranan yollar / Searched: [{searched_str}]. "
+                f"Çözüm / Fix: (1) Kaynaktan derleyin: `cargo build --release --manifest-path citadel_math_core/Cargo.toml`, "
+                f"veya (2) Hazır ikiliyi indirin: https://github.com/imza464-cmyk/citadel-math/releases "
+                f"ve `KMATH_RUST_BIN` ortam değişkenini (veya PATH'i) ayarlayın."
+            ),
         )
     proc = subprocess.run(
-        [RUST_BIN, *args],
-        cwd=ROOT_DIR,
+        [rust_bin, *args],
+        cwd=ROOT_DIR if os.path.isdir(ROOT_DIR) else None,
         capture_output=True,
         text=True,
         encoding="utf-8",
@@ -931,5 +1004,10 @@ def kmath_pareto_front(objectives_json: str, candidates_json: str) -> str:
     return out
 
 
-if __name__ == "__main__":
+def main() -> None:
+    """Console script entry point for `kmath-mcp` and `uvx kmath-mcp`."""
     mcp.run()
+
+
+if __name__ == "__main__":
+    main()
