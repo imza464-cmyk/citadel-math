@@ -201,6 +201,7 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 ├── CHANGELOG.md                    # Versioned release history (Keep a Changelog)
 ├── COMMERCIAL_LICENSE.md           # Commercial dual-license terms for proprietary / closed-SaaS use
 ├── CONTRIBUTING.md                 # Pull Request workflow, verification gates & coding standards
+├── DISCLAIMER.md                   # Voluntary use, AI/MCP output disclaimer & limitation of liability (EN/TR)
 ├── Dockerfile                      # Hardened multi-stage Rust + Python container (UID 10001, exec ENTRYPOINT)
 ├── docker-compose.yml              # Read-only, cap_drop: ALL, network_mode: none MCP service config
 ├── LICENSE                         # Official verbatim GNU Affero General Public License v3.0 (AGPL-3.0-only)
@@ -325,6 +326,15 @@ kmath stats                   # Show ontology & canonical law metrics
 
 Community Pull Requests, new physically verified laws, bug reports, and security audits are welcome!  
 Please read **[CONTRIBUTING.md](./CONTRIBUTING.md)** for the full engineering verification checklist (`cargo clippy -D warnings`, `cargo test`, `kmath audit`, `kmath rust audit`, `unittest`) and architectural invariants (`AGENTS.md`).
+
+---
+
+## Legal Disclaimer & Limitation of Liability / Yasal Sorumluluk Reddi Beyanı
+
+> **⚠️ Voluntary Use & No Legal Liability / Gönüllü Kullanım ve Yasal Sorumluluk Reddi:**  
+> Use of **Citadel-Math (`citadel_math_core`, `kmath-mcp` MCP server, Docker/GHCR images, and web tools)** is **strictly voluntary** and entirely at the sole discretion, risk, and responsibility of the individual user, group, or organization. The software is provided **"AS IS"** without warranty of any kind (consistent with GNU AGPL-3.0 Sections 15–16). It is **not** a substitute for certified engineering sign-off, 3D FEA/CFD qualification, or safety-critical flight/medical/industrial approval. The author and contributors disclaim all legal and financial liability for any direct, indirect, incidental, or consequential damages arising from using, integrating, or acting upon MCP or AI-agent outputs.  
+> *`kmath-mcp` sunucusu ve Citadel-Math'in tüm bileşenlerinin kullanımı tamamen kişi, ekip veya kurumların kendi özgür tercih ve sorumluluğundadır. Yazılım "OLDUĞU GİBİ" (AS IS) sunulur; geliştirici ve katkıcılar MCP veya yapay zekâ ajan çıktılarının kullanımından doğabilecek hiçbir doğrudan veya dolaylı yasal/mali sorumluluğu kabul etmez.*  
+> **Full Text / Tam Metin:** See **[DISCLAIMER.md](./DISCLAIMER.md)**.
 
 ---
 

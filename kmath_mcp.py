@@ -130,7 +130,11 @@ mcp = FastMCP(
         "ve yan-koşul (GuardedPoly) ispat çekirdeği, IEEE-754 dışa yuvarlamalı Interval64 + Dual64 "
         "otomatik türev, 355 NIST CODATA sabiti, AND-OR hipergraf formül sentezi, RK4/RK45 yörünge "
         "simülasyonu, NASA SP-8007 burkulma + PICA-X TPS dayanım analizi ve 6.912 adaylı Pareto "
-        "tersine mühendislik tasarım motorunu deterministik olarak sunar."
+        "tersine mühendislik tasarım motorunu deterministik olarak sunar. "
+        "SORUMLULUK REDDİ (DISCLAIMER): Bu MCP sunucusunun kullanımı tamamen ilgili kişi, grup veya "
+        "kurumların kendi tercih ve sorumluluğundadır; 'OLDUĞU GİBİ' (AS IS) sunulur, sertifikalı "
+        "mühendislik onayı yerine geçmez ve çıktılarının kullanımından doğabilecek hiçbir yasal veya "
+        "mali sorumluluk geliştiriciye yüklenemez (bkz. DISCLAIMER.md ve LICENSE §§ 15-16)."
     ),
 )
 

@@ -1098,6 +1098,29 @@
     font-size: 0.83rem;
   }
 
+  .disclaimer-box {
+    margin-top: 16px;
+    padding: 15px 18px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--warn-border);
+    border-left: 3px solid var(--warn);
+    background: color-mix(in oklch, var(--warn-bg) 55%, var(--bg-elevated));
+    font-size: 0.83rem;
+    line-height: 1.56;
+    color: var(--text-muted);
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .disclaimer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
   @container (max-width: 900px) {
     .audience-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
