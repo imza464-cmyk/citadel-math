@@ -23,9 +23,10 @@ Büyük Dil Modelleri (LLM) formül türetirken sıklıkla birim hatası yapar, 
 
 ```text
 .
-├── .github/workflows/ci.yml        # Cross-platform CI (Linux/Windows): Rust tests, audits & MCP security tests
+├── .github/workflows/ci.yml        # Cross-platform CI (Linux/Windows): clippy, Rust tests, audits & MCP security tests
 ├── AGENTS.md                       # Engineering invariants (dimensional homogeneity & SSOT rules)
 ├── HATA_KAYIT_DEFTERI.md           # Engineering bug & regression logbook
+├── SECURITY.md                     # Threat model, zero-eval parser policy & vulnerability disclosure
 ├── kmath.py                        # Verification cockpit CLI (10 Python SSOT + 16 Rust audit gates)
 ├── kmath_mcp.py                    # 15-Tool Model Context Protocol (MCP) Server (zero-eval AST input parser)
 ├── mcp_config.example.json         # Portable MCP client configuration example
@@ -142,7 +143,7 @@ python kmath.py stats                 # Show ontology & canonical law metrics
 
 ## Verification Summary / Doğrulama Özeti
 
-- **Rust Unit Tests (`cargo test`):** `33 passed; 0 failed` (`24` in `proof_kernel`, `4` in `cad`, `5` cross-module tests in `lib.rs`).
+- **Rust Lint & Unit Tests (`cargo clippy` + `cargo test`):** `0` clippy warnings (`-D warnings`) and `33 passed; 0 failed` (`24` in `proof_kernel`, `4` in `cad`, `5` cross-module tests in `lib.rs`).
 - **MCP Security & Integration Tests (`unittest`):** Zero-`eval` AST parser rejects `__import__`, attribute traversal, and `lambda` injection payloads (`0` calls to `sympy.sympify()`), and verifies live Python-to-Rust MCP tool bridges.
 - **Python Audit (`python kmath.py audit`):** `10/10 PASS` (`214` canonical laws, `353` ontology symbols, `18` physical regimes, `30` materials).
 - **Rust Audit (`python kmath.py rust audit`):** `16/16 PASS` (`#![forbid(unsafe_code)]`, `214` SSOT AST laws + `544` inverse laws, IEEE 1788-2015 outward-rounded intervals, Buckingham-$\Pi$, NSGA-II Skyline, 2D CAD R12 DXF/SVG).

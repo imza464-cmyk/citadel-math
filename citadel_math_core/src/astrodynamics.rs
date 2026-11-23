@@ -151,7 +151,7 @@ impl J2OrbitalModel {
         eccentricity: f64,
         inclination_rad: f64,
     ) -> Result<f64, String> {
-        if eccentricity < 0.0 || eccentricity >= 1.0 {
+        if !(0.0..1.0).contains(&eccentricity) {
             return Err(format!("Kapalı yörünge dışmerkezliği 0 <= e < 1 olmalıdır: e={}", eccentricity));
         }
         let p = semi_major_axis_m * (1.0 - eccentricity * eccentricity);
@@ -171,7 +171,7 @@ impl J2OrbitalModel {
         eccentricity: f64,
         inclination_rad: f64,
     ) -> Result<f64, String> {
-        if eccentricity < 0.0 || eccentricity >= 1.0 {
+        if !(0.0..1.0).contains(&eccentricity) {
             return Err(format!("Kapalı yörünge dışmerkezliği 0 <= e < 1 olmalıdır: e={}", eccentricity));
         }
         let p = semi_major_axis_m * (1.0 - eccentricity * eccentricity);
@@ -191,7 +191,7 @@ impl J2OrbitalModel {
         semi_major_axis_m: f64,
         eccentricity: f64,
     ) -> Result<f64, String> {
-        if eccentricity < 0.0 || eccentricity >= 1.0 {
+        if !(0.0..1.0).contains(&eccentricity) {
             return Err("Dışmerkezlik 0 <= e < 1 olmalıdır!".to_string());
         }
         let p = semi_major_axis_m * (1.0 - eccentricity * eccentricity);
@@ -199,7 +199,7 @@ impl J2OrbitalModel {
         let p_over_r = p / Self::WGS84_R_EARTH;
 
         let cos_i = - (2.0 / 3.0) * (Self::SSO_RAAN_RATE_RAD_S / (Self::WGS84_J2 * n)) * (p_over_r * p_over_r);
-        if cos_i < -1.0 || cos_i > 1.0 {
+        if !(-1.0..=1.0).contains(&cos_i) {
             return Err(format!(
                 "Bu irtifada ({:.1} km) Güneş-Eşzamanlı yörünge fiziksel olarak imkânsız: cos(i) = {:.4}",
                 (semi_major_axis_m - Self::WGS84_R_EARTH) / 1000.0,
