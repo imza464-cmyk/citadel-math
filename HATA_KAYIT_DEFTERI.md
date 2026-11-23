@@ -39,3 +39,13 @@ Bu belge, **Matematik Çekirdeği (`kmath` / `Citadel-Math`)** projesinde tespit
 - **Kök Neden (Adli Kanıt):** Windows üzerinde `shutil.which()` geçerli çalışma dizinini (`.`) önceleyip göreli yol döndürür. `_run_rust_cli()` alt süreci `cwd=ROOT_DIR` (`site-packages`) ile başlattığından veya süreç sonradan `os.chdir()` yaptığında göreli yol taşınabilirliğini yitirir.
 - **Çözüm:** Hem `kmath_mcp.py` hem de `kmath.py` içindeki `resolve_rust_bin()` fonksiyonunda `shutil.which()` çıktısı `os.path.abspath(found)` ile kesin mutlak yola dönüştürüldü; `tests/test_mcp_security.py` içine `test_resolve_rust_bin_path_normalizes_relative_which_result` regresyon testi eklendi.
 - **Ampirik Doğrulama:** `python -m unittest discover -s tests -v` (`10/10 PASS`) ve canlı `v0.2.0` indirme/kurulum testinde 26/26 kapı PASS doğrulandı.
+
+
+---
+
+## 📱 2026-11-23 — Mobil (`390px`) Yatay Taşma (CSS Grid `min-width: 0` Eksikliği & Kırılmayan Monospace Dize)
+
+- **Belirti:** 2026 yeniden tasarımında masaüstü (`1440px`) kusursuz görünürken gerçek telefon ekranında (`390px`) tüm sayfa sağ kenardan taşıp kesiliyordu ve üst çubuk 3 satıra yığılarak ekranın üstünü kaplıyordu.
+- **Kök Neden (Adli Kanıt):** `.hero-split > *` ve kart kapsayıcılarında `min-width: 0` yoktu; `.console-inputs` (`1fr auto 1fr`) içindeki `<input>` elemanlarının tarayıcı doğal genişliği ve `DIMENSIONALLY_HOMOGENEOUS_BUT_UNIT_SCALE_MISMATCH` (49 karakter kırılmayan dize) `overflow-wrap: anywhere` olmadan `<main>` sütununu `390px` dışına genişletiyordu.
+- **Çözüm:** Tüm grid/kart çocuklarına `min-width: 0; max-width: 100%`, uzun karar/kod dizelerine `overflow-wrap: anywhere` eklendi; `<= 640px` kırılımında üst çubuk kompakt 2 satıra indirildi (arama ikonu + ortalanan yatay kaydırmalı sekme şeridi `scrollIntoView({ inline: "center" })`), konsol girdileri dikey yığıldı ve gecikme çubuğu 2 sütunlu mobil düzene geçirildi.
+- **Ampirik Doğrulama:** `390×844` gerçek iframe telemetrisinde **8/8 bölümde `overflow: false` (`scrollWidth <= innerWidth`)** ve 3 telefon ekranlı görsel piksel denetimi PASS.

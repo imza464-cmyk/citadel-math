@@ -1216,6 +1216,11 @@ ${esc(cur.json)}</pre>
     $$(".nav-pill").forEach((b) => b.classList.toggle("active", b.dataset.sec === secName));
     $$(".section").forEach((s) => s.classList.toggle("active", s.id === `sec-${secName}`));
 
+    const activeNav = document.querySelector(`.nav-pill[data-sec="${secName}"]`);
+    if (activeNav && activeNav.scrollIntoView) {
+      activeNav.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
+    }
+
     if (secName === "laws") renderLaws();
     if (secName === "sandbox") runSandbox();
     if (secName === "materials") renderMaterials();
@@ -1447,7 +1452,7 @@ ${esc(cur.json)}</pre>
   bindEvents();
 
   const initialHash = (window.location && window.location.hash || "").replace(/^#/, "");
-  if (VALID_SECTIONS.has(initialHash) && initialHash !== "overview") switchSection(initialHash, false);
+  if (VALID_SECTIONS.has(initialHash) && initialHash !== "overview") applySectionSwap(initialHash, false);
 
   window.addEventListener("load", () => {
     $$("#lawsList .katex-slot").forEach((slot) => renderLatexNode(slot, slot.dataset.tex, slot.dataset.eq));
