@@ -7,7 +7,7 @@
   <title>Citadel-Math v0.2.1 — Deterministik Fizik &amp; Boyut Doğrulama Motoru</title>
   <meta name="description" content="Citadel-Math v0.2.1 (citadel_math_core + kmath-mcp): Saf Rust (#![forbid(unsafe_code)]) Z^7 boyutsal kalkan, checked_i64 cebirsel ispat çekirdeği, IEEE 1788-2015 Interval64 ve 15 araçlı çevrimdışı MCP sunucusu.">
   <meta property="og:title" content="Citadel-Math v0.2.1 — Deterministik Matematik &amp; Fizik Doğrulama Motoru">
-  <meta property="og:description" content="LLM halüsinasyonuna karşı Saf Rust + Python/SymPy 15 araçlı MCP sunucusu · 217 Kanonik Yasa · 356 Z^7 Sembolü · AGPL-3.0 / Ticari.">
+  <meta property="og:description" content="LLM halüsinasyonuna karşı Saf Rust + Python/SymPy 15 araçlı MCP sunucusu · 307 Kanonik Yasa · 488 Z^7 Sembolü · 60 Malzeme · AGPL-3.0 / Ticari.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://imza464-cmyk.github.io/citadel-math/">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23161b26'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-weight='700' font-size='14' fill='%2360a5fa'%3EZ7%3C/text%3E%3C/svg%3E">
@@ -31,10 +31,10 @@
       <nav class="topnav" aria-label="Ana gezinme">
         <button class="nav-pill active" data-sec="overview">Genel Bakış</button>
         <button class="nav-pill" data-sec="sandbox">Z⁷ Motoru <span class="nav-count">CANLI</span></button>
-        <button class="nav-pill" data-sec="laws">Yasalar <span class="nav-count" id="tocLawCount">217</span></button>
-        <button class="nav-pill" data-sec="ontology">Ontoloji <span class="nav-count" id="tocOntCount">356</span></button>
+        <button class="nav-pill" data-sec="laws">Yasalar <span class="nav-count" id="tocLawCount">307</span></button>
+        <button class="nav-pill" data-sec="ontology">Ontoloji <span class="nav-count" id="tocOntCount">488</span></button>
         <button class="nav-pill" data-sec="codata">CODATA <span class="nav-count" id="tocNistCount">355</span></button>
-        <button class="nav-pill" data-sec="materials">Malzemeler <span class="nav-count" id="tocMatCount">30</span></button>
+        <button class="nav-pill" data-sec="materials">Malzemeler <span class="nav-count" id="tocMatCount">60</span></button>
         <button class="nav-pill" data-sec="mcp">MCP <span class="nav-count">15</span></button>
         <button class="nav-pill" data-sec="benchmarks">Hız &amp; İndir</button>
       </nav>
@@ -90,7 +90,7 @@
             <div class="cta-row">
               <button class="btn primary" data-nav="sandbox">Z⁷ Motorunu Aç</button>
               <a class="btn" href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.1" target="_blank" rel="noopener">v0.2.1 İndir</a>
-              <button class="btn" id="heroCmdBtn">973 Kayıtta Ara <kbd class="hide-mobile">Ctrl K</kbd></button>
+              <button class="btn" id="heroCmdBtn">1.225 Kayıtta Ara <kbd class="hide-mobile">Ctrl K</kbd></button>
             </div>
           </div>
 
@@ -137,9 +137,9 @@
             <div class="metric-sub">release · cargo clippy 0 uyarı</div>
           </div>
           <div class="metric-cell">
-            <div class="metric-val" id="kpiLawsSym">217 / 356</div>
+            <div class="metric-val" id="kpiLawsSym">307 / 488</div>
             <div class="metric-label">Kanonik Yasa &amp; Z⁷ Sembolü</div>
-            <div class="metric-sub">27 disiplin · 18 rejim · 355 CODATA</div>
+            <div class="metric-sub">34 disiplin · 60 malzeme · 355 CODATA</div>
           </div>
           <div class="metric-cell">
             <div class="metric-val">0 / 0</div>
@@ -376,7 +376,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
     <!-- 3. KANONİK YASALAR -->
     <section id="sec-laws" class="section">
       <h1>Kanonik Yasalar Kataloğu (<code>canonical_laws.json</code>)</h1>
-      <p>27 fizik, havacılık, gerçek zamanlı sistemler ve biyomekanik disiplinini kapsayan 217 SSOT denklemi. Her kayıt <code>dim(LHS) == dim(RHS)</code> testinden geçmiştir.</p>
+      <p>34 fizik, malzeme bilimi, akışkanlar, termodinamik, optik, akustik, elektrokimya, yarı iletken, astrofizik, havacılık ve biyomekanik disiplinini kapsayan 307 SSOT denklemi. Her kayıt <code>dim(LHS) == dim(RHS)</code> testinden geçmiştir.</p>
 
       <div class="controls-row">
         <input id="lawSearch" class="input grow" type="search" placeholder="Yasa adı, ID, denklem veya sembol ara (kısayol: / veya Ctrl+K)...">
@@ -393,7 +393,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
     <!-- 4. Z7 SEMBOL ONTOLOJİSİ -->
     <section id="sec-ontology" class="section">
       <h1>Z⁷ Sembol Ontolojisi (<code>ONTOLOGY.json</code>)</h1>
-      <p>Kanonik yasalarda kullanılan 356 tekil sembolün SI boyut vektörü <code>[M, L, T, I, Θ, N, J]</code> ve yasa grafı bağlantıları.</p>
+      <p>Kanonik yasalarda kullanılan 488 tekil sembolün SI boyut vektörü <code>[M, L, T, I, Θ, N, J]</code> ve yasa grafı bağlantıları.</p>
 
       <div class="controls-row">
         <input id="ontSearch" class="input grow" type="search" placeholder="Sembol, boyut adı veya yasa ID ara...">
@@ -449,12 +449,12 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
     <!-- 6. MALZEMELER + INTERACTIVE ASHBY SCATTER PLOT -->
     <section id="sec-materials" class="section">
       <h1>Yapısal &amp; Termal Koruma Malzemeleri (<code>materials.json</code>)</h1>
-      <p>30 havacılık, kriyojenik, UHTC ve ablatif TPS malzemesi. Grafikte herhangi bir noktanın üzerine gelin veya tabloda vurgulamak için tıklayın.</p>
+      <p>60 havacılık, metal alaşım, süperalaşım, refrakter, teknik seramik, yarı iletken/optik, polimer, UHTC ve ablatif TPS malzemesi. Grafikte herhangi bir noktanın üzerine gelin veya tabloda vurgulamak için tıklayın.</p>
 
       <div class="chart-card">
         <div class="chart-head">
           <div>
-            <strong style="font-size:0.9rem;">Etkileşimli Ashby Performans Haritası (30 SSOT Malzemesi)</strong>
+            <strong style="font-size:0.9rem;">Etkileşimli Ashby Performans Haritası (60 SSOT Malzemesi)</strong>
             <div class="mono" style="font-size:0.72rem;color:var(--text-dim);">X: Yoğunluk ρ (kg/m³, log) · Y: Seçili eksen (noktaya tıkla → tabloda vurgula)</div>
           </div>
           <div class="mini-tabs" role="tablist" aria-label="Ashby Y ekseni">
@@ -463,7 +463,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
           </div>
         </div>
         <div class="ashby-wrap">
-          <svg id="ashbySvg" class="ashby-svg" viewBox="0 0 680 310" role="img" aria-label="30 malzeme Ashby yoğunluk ve dayanım dağılım grafiği"></svg>
+          <svg id="ashbySvg" class="ashby-svg" viewBox="0 0 680 310" role="img" aria-label="60 malzeme Ashby yoğunluk ve dayanım dağılım grafiği"></svg>
           <div id="ashbyHud" class="ashby-hud"></div>
         </div>
       </div>
@@ -682,13 +682,13 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
   <dialog id="cmdPalette" class="cmd-dialog" aria-label="SSOT Küresel Arama Paleti">
     <div class="cmd-input-row">
       <span class="mono" style="color:var(--accent);font-weight:700;">⌘</span>
-      <input id="cmdInput" class="cmd-input" type="search" placeholder="217 yasa, 356 sembol, 355 CODATA, 30 malzeme veya 15 MCP aracında ara…" autocomplete="off" spellcheck="false">
+      <input id="cmdInput" class="cmd-input" type="search" placeholder="307 yasa, 488 sembol, 355 CODATA, 60 malzeme veya 15 MCP aracında ara…" autocomplete="off" spellcheck="false">
       <kbd>ESC</kbd>
     </div>
     <div id="cmdResults" class="cmd-results" role="listbox"></div>
     <div class="cmd-foot">
       <span><kbd>↑</kbd> <kbd>↓</kbd> gezin · <kbd>Enter</kbd> git</span>
-      <span id="cmdCount">973 SSOT kaydı indekslendi</span>
+      <span id="cmdCount">1.225 SSOT kaydı indekslendi</span>
     </div>
   </dialog>
 

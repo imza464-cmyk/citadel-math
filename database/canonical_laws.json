@@ -6508,5 +6508,3155 @@
     },
     "domain_bounds": {},
     "description": "Sabit bir kuvvetin hareket doğrultusunda yaptığı mekanik iş."
+  },
+  {
+    "id": "law_bulk_modulus_isotropic",
+    "name": "İzotropik Hacim Modülü (Bulk Modulus)",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "K_{bulk} = \\frac{E_{mod}}{3(1 - 2\\nu_{pois})}",
+    "equation": "K_bulk = E_mod / (3 * (1 - 2 * nu_pois))",
+    "target": "K_bulk",
+    "inputs": [
+      "E_mod",
+      "nu_pois"
+    ],
+    "dimensions": {
+      "K_bulk": "stress",
+      "E_mod": "stress",
+      "nu_pois": "dimensionless"
+    },
+    "domain_bounds": {
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false,
+        "note": "Pozitif Young modülü"
+      },
+      "nu_pois": {
+        "min": -0.99,
+        "max": 0.4999,
+        "note": "İzotropik kararlılık -1 < nu < 0.5"
+      }
+    },
+    "description": "Homojen izotropik lineer elastik katının hidrostatik sıkıştırılamazlık modülü.",
+    "sources": [
+      "Callister & Rethwisch, Materials Science and Engineering (10th Ed.)",
+      "Landau & Lifshitz, Theory of Elasticity (Vol. 7, §5)",
+      "CRC Handbook of Chemistry and Physics — Elastic Constants"
+    ]
+  },
+  {
+    "id": "law_lame_first_parameter",
+    "name": "Lamé Birinci Elastik Sabiti",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "\\lambda_{lame} = \\frac{E_{mod} \\nu_{pois}}{(1 + \\nu_{pois})(1 - 2\\nu_{pois})}",
+    "equation": "lambda_lame = (E_mod * nu_pois) / ((1 + nu_pois) * (1 - 2 * nu_pois))",
+    "target": "lambda_lame",
+    "inputs": [
+      "E_mod",
+      "nu_pois"
+    ],
+    "dimensions": {
+      "lambda_lame": "stress",
+      "E_mod": "stress",
+      "nu_pois": "dimensionless"
+    },
+    "domain_bounds": {
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false
+      },
+      "nu_pois": {
+        "min": -0.99,
+        "max": 0.4999
+      }
+    },
+    "description": "3B Hooke tensör denklemindeki birinci Lamé elastik parametresi.",
+    "sources": [
+      "Landau & Lifshitz, Theory of Elasticity (Vol. 7, §5)",
+      "Timoshenko & Goodier, Theory of Elasticity (3rd Ed.)",
+      "NIST / CRC Engineering Mechanics Reference"
+    ]
+  },
+  {
+    "id": "law_elastic_p_wave_velocity",
+    "name": "Katıda Boyuna Elastik Dalga (P-Dalgası) Hızı",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "v_P = \\sqrt{\\frac{E_{mod}(1 - \\nu_{pois})}{\\rho (1 + \\nu_{pois})(1 - 2\\nu_{pois})}}",
+    "equation": "v_P = sqrt((E_mod * (1 - nu_pois)) / (rho * (1 + nu_pois) * (1 - 2 * nu_pois)))",
+    "target": "v_P",
+    "inputs": [
+      "E_mod",
+      "nu_pois",
+      "rho"
+    ],
+    "dimensions": {
+      "v_P": "velocity",
+      "E_mod": "stress",
+      "nu_pois": "dimensionless",
+      "rho": "density"
+    },
+    "domain_bounds": {
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false
+      },
+      "rho": {
+        "min": 0.001,
+        "min_inclusive": false
+      },
+      "nu_pois": {
+        "min": -0.99,
+        "max": 0.4999
+      }
+    },
+    "description": "Sonsuz izotropik katı ortamda veya yer kabuğunda boyuna sıkışma (P) dalgasının yayılım hızı.",
+    "sources": [
+      "Landau & Lifshitz, Theory of Elasticity (Vol. 7, §22)",
+      "Aki & Richards, Quantitative Seismology (2nd Ed.)",
+      "CRC Handbook of Chemistry and Physics — Acoustic Velocities in Solids"
+    ]
+  },
+  {
+    "id": "law_elastic_s_wave_velocity",
+    "name": "Katıda Enine Kayma Dalgası (S-Dalgası) Hızı",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "v_S = \\sqrt{\\frac{G_{shear}}{\\rho}}",
+    "equation": "v_S = sqrt(G_shear / rho)",
+    "target": "v_S",
+    "inputs": [
+      "G_shear",
+      "rho"
+    ],
+    "dimensions": {
+      "v_S": "velocity",
+      "G_shear": "stress",
+      "rho": "density"
+    },
+    "domain_bounds": {
+      "G_shear": {
+        "min": 1000.0,
+        "min_inclusive": false
+      },
+      "rho": {
+        "min": 0.001,
+        "min_inclusive": false
+      }
+    },
+    "description": "İzotropik elastik katılarda enine kesme (S) dalgasının yayılım hızı.",
+    "sources": [
+      "Landau & Lifshitz, Theory of Elasticity (Vol. 7, §22)",
+      "Aki & Richards, Quantitative Seismology (2nd Ed.)",
+      "Callister, Materials Science and Engineering"
+    ]
+  },
+  {
+    "id": "law_elastic_rod_sound_speed",
+    "name": "İnce Katı Çubukta Boyuna Ses Hızı",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "c_{rod} = \\sqrt{\\frac{E_{mod}}{\\rho}}",
+    "equation": "c_rod = sqrt(E_mod / rho)",
+    "target": "c_rod",
+    "inputs": [
+      "E_mod",
+      "rho"
+    ],
+    "dimensions": {
+      "c_rod": "velocity",
+      "E_mod": "stress",
+      "rho": "density"
+    },
+    "domain_bounds": {
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false
+      },
+      "rho": {
+        "min": 0.001,
+        "min_inclusive": false
+      }
+    },
+    "description": "1B ince elastik çubukta darbe veya akustik dalganın yayılım hızı (Hopkinson bar temeli).",
+    "sources": [
+      "Graff, Wave Motion in Elastic Solids (Dover)",
+      "Halliday, Resnick & Walker, Fundamentals of Physics",
+      "Ashby, Materials Selection in Mechanical Design (5th Ed.)"
+    ]
+  },
+  {
+    "id": "law_hasselman_thermal_shock_r",
+    "name": "Hasselman Birinci Isıl Şok Direnci Parametresi (R)",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "\\Delta T_{shock} = \\frac{\\sigma_{yield}(1 - \\nu_{pois})}{E_{mod} \\alpha_{cte}}",
+    "equation": "delta_T_shock = (sigma_yield * (1 - nu_pois)) / (E_mod * alpha_cte)",
+    "target": "delta_T_shock",
+    "inputs": [
+      "sigma_yield",
+      "nu_pois",
+      "E_mod",
+      "alpha_cte"
+    ],
+    "dimensions": {
+      "delta_T_shock": "temperature",
+      "sigma_yield": "stress",
+      "nu_pois": "dimensionless",
+      "E_mod": "stress",
+      "alpha_cte": "thermal_expansion_coeff"
+    },
+    "domain_bounds": {
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false
+      },
+      "alpha_cte": {
+        "min": 1e-10,
+        "min_inclusive": false
+      },
+      "nu_pois": {
+        "min": 0.0,
+        "max": 0.499
+      }
+    },
+    "description": "Seramik ve kırılgan malzemelerin ani yüzey soğumasında çatlamadan dayanabileceği maksimum sıcaklık sıçraması.",
+    "sources": [
+      "D.P.H. Hasselman (1969), J. Am. Ceram. Soc. 52(11):600-604",
+      "Ashby, Materials Selection in Mechanical Design (Thermal Shock Index)",
+      "ASM Engineered Materials Handbook Vol. 4: Ceramics and Glasses"
+    ]
+  },
+  {
+    "id": "law_linear_thermal_expansion",
+    "name": "Doğrusal Isıl Genleşme Uzaması",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "\\Delta L_{th} = L \\cdot \\alpha_{cte} \\cdot \\Delta T",
+    "equation": "delta_L_th = L * alpha_cte * delta_T",
+    "target": "delta_L_th",
+    "inputs": [
+      "L",
+      "alpha_cte",
+      "delta_T"
+    ],
+    "dimensions": {
+      "delta_L_th": "length",
+      "L": "length",
+      "alpha_cte": "thermal_expansion_coeff",
+      "delta_T": "temperature"
+    },
+    "domain_bounds": {
+      "L": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Serbest katı çubuğun sıcaklık değişimi altında doğrusal boy değişimi.",
+    "sources": [
+      "Callister & Rethwisch, Materials Science and Engineering",
+      "Halliday, Resnick & Walker, Fundamentals of Physics",
+      "NIST / CRC Thermal Expansion of Solids Reference"
+    ]
+  },
+  {
+    "id": "law_elastic_strain_energy_density",
+    "name": "Tek Eksenli Elastik Şekil Değiştirme Enerji Yoğunluğu (Modulus of Resilience)",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "u_{el} = \\frac{\\sigma_{ax}^2}{2 E_{mod}}",
+    "equation": "u_el = (sigma_ax ** 2) / (2 * E_mod)",
+    "target": "u_el",
+    "inputs": [
+      "sigma_ax",
+      "E_mod"
+    ],
+    "dimensions": {
+      "u_el": "pressure",
+      "sigma_ax": "stress",
+      "E_mod": "stress"
+    },
+    "domain_bounds": {
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Birim hacimde depolanan geri dönüşümlü elastik gerilme enerjisi (J/m^3 = Pa).",
+    "sources": [
+      "Beer, Johnston, DeWolf & Mazurek, Mechanics of Materials (8th Ed.)",
+      "Hibbeler, Mechanics of Materials (10th Ed.)",
+      "Ashby, Materials Selection in Mechanical Design (Spring Index)"
+    ]
+  },
+  {
+    "id": "law_cantilever_tip_deflection",
+    "name": "Ankastre (Konsol) Kiriş Uç Sehimi",
+    "domain": "structural_mechanics",
+    "regime": "linear_elastic",
+    "latex": "\\delta_{tip} = \\frac{F L^3}{3 E_{mod} I_{area}}",
+    "equation": "delta_tip = (F * (L ** 3)) / (3 * E_mod * I_area)",
+    "target": "delta_tip",
+    "inputs": [
+      "F",
+      "L",
+      "E_mod",
+      "I_area"
+    ],
+    "dimensions": {
+      "delta_tip": "length",
+      "F": "force",
+      "L": "length",
+      "E_mod": "stress",
+      "I_area": "area_moment_of_inertia"
+    },
+    "domain_bounds": {
+      "L": {
+        "min": 1e-06,
+        "min_inclusive": false
+      },
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false
+      },
+      "I_area": {
+        "min": 1e-18,
+        "min_inclusive": false
+      }
+    },
+    "description": "Serbest ucundan tekil F kuvvetiyle yüklenen Euler-Bernoulli konsol kirişinin elastik uç çökmesi.",
+    "sources": [
+      "Roark's Formulas for Stress and Strain (8th Ed., Table 8.1)",
+      "Beer & Johnston, Mechanics of Materials",
+      "Hibbeler, Structural Analysis & Mechanics of Materials"
+    ]
+  },
+  {
+    "id": "law_simply_supported_midspan_deflection",
+    "name": "Basit Mesnetli Kiriş Orta Nokta Sehimi",
+    "domain": "structural_mechanics",
+    "regime": "linear_elastic",
+    "latex": "\\delta_{mid} = \\frac{F L^3}{48 E_{mod} I_{area}}",
+    "equation": "delta_mid = (F * (L ** 3)) / (48 * E_mod * I_area)",
+    "target": "delta_mid",
+    "inputs": [
+      "F",
+      "L",
+      "E_mod",
+      "I_area"
+    ],
+    "dimensions": {
+      "delta_mid": "length",
+      "F": "force",
+      "L": "length",
+      "E_mod": "stress",
+      "I_area": "area_moment_of_inertia"
+    },
+    "domain_bounds": {
+      "L": {
+        "min": 1e-06,
+        "min_inclusive": false
+      },
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false
+      },
+      "I_area": {
+        "min": 1e-18,
+        "min_inclusive": false
+      }
+    },
+    "description": "Orta açıklığından tekil F yükü alan basit mesnetli kirişin maksimum elastik sehimi.",
+    "sources": [
+      "Roark's Formulas for Stress and Strain (8th Ed., Table 8.1)",
+      "Beer & Johnston, Mechanics of Materials",
+      "Timoshenko, Strength of Materials (Part I)"
+    ]
+  },
+  {
+    "id": "law_euler_critical_buckling_load",
+    "name": "Euler Kritik Kolon Burkulma Yükü",
+    "domain": "structural_mechanics",
+    "regime": "linear_elastic",
+    "latex": "F_{cr} = \\frac{\\pi^2 E_{mod} I_{area}}{L_{eff}^2}",
+    "equation": "F_cr = ((3.141592653589793 ** 2) * E_mod * I_area) / (L_eff ** 2)",
+    "target": "F_cr",
+    "inputs": [
+      "E_mod",
+      "I_area",
+      "L_eff"
+    ],
+    "dimensions": {
+      "F_cr": "force",
+      "E_mod": "stress",
+      "I_area": "area_moment_of_inertia",
+      "L_eff": "length"
+    },
+    "domain_bounds": {
+      "E_mod": {
+        "min": 1000.0,
+        "min_inclusive": false
+      },
+      "I_area": {
+        "min": 1e-18,
+        "min_inclusive": false
+      },
+      "L_eff": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "Narin bir kolonun elastik burkulmaya uğradığı Euler kritik eksenel basma kuvveti.",
+    "sources": [
+      "Timoshenko & Gere, Theory of Elastic Stability (2nd Ed.)",
+      "Roark's Formulas for Stress and Strain (Column Buckling)",
+      "AISC / Eurocode 3 Structural Steel Design Standard"
+    ]
+  },
+  {
+    "id": "law_poisson_lateral_strain",
+    "name": "Poisson Enine Birim Şekil Değiştirme Bağıntısı",
+    "domain": "materials",
+    "regime": "linear_elastic",
+    "latex": "\\varepsilon_{lat} = \\nu_{pois} \\cdot \\varepsilon_{str}",
+    "equation": "eps_lat = nu_pois * eps_str",
+    "target": "eps_lat",
+    "inputs": [
+      "nu_pois",
+      "eps_str"
+    ],
+    "dimensions": {
+      "eps_lat": "dimensionless",
+      "nu_pois": "dimensionless",
+      "eps_str": "dimensionless"
+    },
+    "domain_bounds": {
+      "nu_pois": {
+        "min": -0.99,
+        "max": 0.5
+      }
+    },
+    "description": "Tek eksenli gerilme altındaki izotropik çubukta enine daralma birim uzamasının eksenel uzamaya oranı.",
+    "sources": [
+      "Beer & Johnston, Mechanics of Materials (Ch. 2)",
+      "Callister, Materials Science and Engineering",
+      "ASTM E132 Standard Test Method for Poisson's Ratio"
+    ]
+  },
+  {
+    "id": "law_solid_shaft_polar_inertia",
+    "name": "Dolu Dairesel Kesit Polar Atalet Momenti",
+    "domain": "structural_mechanics",
+    "regime": "universal",
+    "latex": "J_{polar} = \\frac{\\pi r^4}{2}",
+    "equation": "J_polar = (3.141592653589793 * (r ** 4)) / 2",
+    "target": "J_polar",
+    "inputs": [
+      "r"
+    ],
+    "dimensions": {
+      "J_polar": "area_moment_of_inertia",
+      "r": "length"
+    },
+    "domain_bounds": {
+      "r": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "r yarıçaplı dolu dairesel mil kesitinin burulma direncini belirleyen polar alan atalet momenti.",
+    "sources": [
+      "Roark's Formulas for Stress and Strain (Appendix A)",
+      "Beer & Johnston, Mechanics of Materials (Torsion)",
+      "Hibbeler, Mechanics of Materials"
+    ]
+  },
+  {
+    "id": "law_rectangular_beam_area_inertia",
+    "name": "Dikdörtgen Kesit Alan Atalet Momenti",
+    "domain": "structural_mechanics",
+    "regime": "universal",
+    "latex": "I_{area} = \\frac{b_{beam} h_{beam}^3}{12}",
+    "equation": "I_area = (b_beam * (h_beam ** 3)) / 12",
+    "target": "I_area",
+    "inputs": [
+      "b_beam",
+      "h_beam"
+    ],
+    "dimensions": {
+      "I_area": "area_moment_of_inertia",
+      "b_beam": "length",
+      "h_beam": "length"
+    },
+    "domain_bounds": {
+      "b_beam": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "h_beam": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Genişliği b, yüksekliği h olan dikdörtgen kiriş kesitinin tarafsız eksene göre ikinci alan momenti.",
+    "sources": [
+      "Roark's Formulas for Stress and Strain (Appendix A)",
+      "Beer & Johnston, Vector Mechanics for Engineers: Statics",
+      "Hibbeler, Engineering Mechanics: Statics"
+    ]
+  },
+  {
+    "id": "law_wiedemann_franz_thermal_cond",
+    "name": "Wiedemann-Franz Metalik Isıl-Elektriksel İletkenlik Yasası",
+    "domain": "materials",
+    "regime": "universal",
+    "latex": "k_{th} = L_{lorenz} \\sigma_{elec} T",
+    "equation": "k_th = L_lorenz * sigma_elec * T",
+    "target": "k_th",
+    "inputs": [
+      "L_lorenz",
+      "sigma_elec",
+      "T"
+    ],
+    "dimensions": {
+      "k_th": "thermal_conductivity",
+      "L_lorenz": "lorenz_number",
+      "sigma_elec": "electrical_conductivity",
+      "T": "temperature"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 1.0,
+        "min_inclusive": false
+      },
+      "sigma_elec": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Metallerde elektronik ısıl iletkenliğin elektriksel iletkenlik ve mutlak sıcaklıkla doğrusal oranı.",
+    "sources": [
+      "Kittel, Introduction to Solid State Physics (8th Ed., Ch. 6)",
+      "Ashcroft & Mermin, Solid State Physics (Ch. 1 & 13)",
+      "CRC Handbook of Chemistry and Physics — Transport Properties of Metals"
+    ]
+  },
+  {
+    "id": "law_lorenz_sommerfeld_number",
+    "name": "Sommerfeld Teorik Lorenz Sayısı",
+    "domain": "materials",
+    "regime": "universal",
+    "latex": "L_{lorenz} = \\frac{\\pi^2}{3}\\left(\\frac{k_B}{q_e}\\right)^2",
+    "equation": "L_lorenz = ((3.141592653589793 ** 2) / 3) * ((k_B / q_e) ** 2)",
+    "target": "L_lorenz",
+    "inputs": [
+      "k_B",
+      "q_e"
+    ],
+    "dimensions": {
+      "L_lorenz": "lorenz_number",
+      "k_B": "boltzmann_const",
+      "q_e": "electric_charge"
+    },
+    "domain_bounds": {},
+    "description": "Serbest Fermi elektron gazı için evrensel Lorenz sabiti (~2.443e-8 W*Ohm/K^2).",
+    "sources": [
+      "Kittel, Introduction to Solid State Physics (8th Ed.)",
+      "Ashcroft & Mermin, Solid State Physics",
+      "NIST CODATA 2022 Fundamental Physical Constants"
+    ]
+  },
+  {
+    "id": "law_stokes_viscous_drag",
+    "name": "Stokes Sürünme Akışı Küresel Sürükleme Yasası",
+    "domain": "fluid_mechanics",
+    "regime": "laminar_continuum",
+    "latex": "F_{stokes} = 6\\pi \\mu_{visc} r v",
+    "equation": "F_stokes = 6 * 3.141592653589793 * mu_visc * r * v",
+    "target": "F_stokes",
+    "inputs": [
+      "mu_visc",
+      "r",
+      "v"
+    ],
+    "dimensions": {
+      "F_stokes": "force",
+      "mu_visc": "dynamic_viscosity",
+      "r": "length",
+      "v": "velocity"
+    },
+    "domain_bounds": {
+      "mu_visc": {
+        "min": 1e-12,
+        "min_inclusive": false
+      },
+      "r": {
+        "min": 1e-12,
+        "min_inclusive": false
+      },
+      "v": {
+        "min": 0.0
+      }
+    },
+    "description": "Çok düşük Reynolds sayılarında (Re << 1) viskoz akışkan içindeki küreye etkiyen sürükleme kuvveti.",
+    "sources": [
+      "White, Fluid Mechanics (8th Ed., Ch. 7)",
+      "Landau & Lifshitz, Fluid Mechanics (Vol. 6, §20)",
+      "Batchelor, An Introduction to Fluid Dynamics"
+    ]
+  },
+  {
+    "id": "law_stokes_terminal_velocity",
+    "name": "Stokes Küresel Parçacık Çökelme (Limit) Hızı",
+    "domain": "fluid_mechanics",
+    "regime": "laminar_continuum",
+    "latex": "v_{term} = \\frac{2(\\rho_{part} - \\rho) g_0 r^2}{9 \\mu_{visc}}",
+    "equation": "v_term = (2 * (rho_part - rho) * g_0 * (r ** 2)) / (9 * mu_visc)",
+    "target": "v_term",
+    "inputs": [
+      "rho_part",
+      "rho",
+      "g_0",
+      "r",
+      "mu_visc"
+    ],
+    "dimensions": {
+      "v_term": "velocity",
+      "rho_part": "density",
+      "rho": "density",
+      "g_0": "acceleration",
+      "r": "length",
+      "mu_visc": "dynamic_viscosity"
+    },
+    "domain_bounds": {
+      "mu_visc": {
+        "min": 1e-12,
+        "min_inclusive": false
+      },
+      "r": {
+        "min": 1e-12,
+        "min_inclusive": false
+      },
+      "g_0": {
+        "min": 0.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Viskoz ortamda yerçekimi altında çöken küçük küresel parçacığın (aerosol/tortu) kararlı limit hızı.",
+    "sources": [
+      "White, Fluid Mechanics (8th Ed.)",
+      "Bird, Stewart & Lightfoot, Transport Phenomena (2nd Ed.)",
+      "Seinfeld & Pandis, Atmospheric Chemistry and Physics"
+    ]
+  },
+  {
+    "id": "law_darcy_weisbach_pressure_drop",
+    "name": "Darcy-Weisbach Boru Sürtünme Basınç Kaybı",
+    "domain": "fluid_mechanics",
+    "regime": "incompressible_subsonic",
+    "latex": "\\Delta P_{dw} = f_{darcy} \\frac{L}{D_{pipe}} \\frac{\\rho v^2}{2}",
+    "equation": "delta_P_dw = f_darcy * (L / D_pipe) * 0.5 * rho * (v ** 2)",
+    "target": "delta_P_dw",
+    "inputs": [
+      "f_darcy",
+      "L",
+      "D_pipe",
+      "rho",
+      "v"
+    ],
+    "dimensions": {
+      "delta_P_dw": "pressure",
+      "f_darcy": "dimensionless",
+      "L": "length",
+      "D_pipe": "length",
+      "rho": "density",
+      "v": "velocity"
+    },
+    "domain_bounds": {
+      "f_darcy": {
+        "min": 0.0
+      },
+      "L": {
+        "min": 0.0
+      },
+      "D_pipe": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "rho": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "Laminer veya türbülanslı boru akışında sürtünmeden kaynaklanan basınç düşüşü.",
+    "sources": [
+      "White, Fluid Mechanics (8th Ed., Ch. 6)",
+      "Munson, Okiishi, Huebsch & Rothmayer, Fundamentals of Fluid Mechanics",
+      "Crane Technical Paper No. 410: Flow of Fluids Through Valves, Fittings, and Pipe"
+    ]
+  },
+  {
+    "id": "law_darcy_weisbach_head_loss",
+    "name": "Darcy-Weisbach Hidrolik Yük Kaybı",
+    "domain": "fluid_mechanics",
+    "regime": "incompressible_subsonic",
+    "latex": "h_{loss} = f_{darcy} \\frac{L}{D_{pipe}} \\frac{v^2}{2 g_0}",
+    "equation": "h_loss = f_darcy * (L / D_pipe) * ((v ** 2) / (2 * g_0))",
+    "target": "h_loss",
+    "inputs": [
+      "f_darcy",
+      "L",
+      "D_pipe",
+      "v",
+      "g_0"
+    ],
+    "dimensions": {
+      "h_loss": "length",
+      "f_darcy": "dimensionless",
+      "L": "length",
+      "D_pipe": "length",
+      "v": "velocity",
+      "g_0": "acceleration"
+    },
+    "domain_bounds": {
+      "D_pipe": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "g_0": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "Boru içi sürtünme kaybının eşdeğer akışkan sütunu yüksekliği (metre) cinsinden ifadesi.",
+    "sources": [
+      "White, Fluid Mechanics (8th Ed., Ch. 6)",
+      "Çengel & Cimbala, Fluid Mechanics: Fundamentals and Applications",
+      "ISO 4064 / Hydraulic Institute Pipe Friction Standards"
+    ]
+  },
+  {
+    "id": "law_torricelli_efflux_velocity",
+    "name": "Torricelli Akışkan Boşalma Hızı Yasası",
+    "domain": "fluid_mechanics",
+    "regime": "incompressible_subsonic",
+    "latex": "v_{efflux} = \\sqrt{2 g_0 h_{col}}",
+    "equation": "v_efflux = sqrt(2 * g_0 * h_col)",
+    "target": "v_efflux",
+    "inputs": [
+      "g_0",
+      "h_col"
+    ],
+    "dimensions": {
+      "v_efflux": "velocity",
+      "g_0": "acceleration",
+      "h_col": "length"
+    },
+    "domain_bounds": {
+      "g_0": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "h_col": {
+        "min": 0.0
+      }
+    },
+    "description": "Sürtünmesiz açık tankın tabanındaki küçük delikten hidrostatik yükseklikle fışkıran akışkan hızı.",
+    "sources": [
+      "White, Fluid Mechanics (Bernoulli Applications)",
+      "Halliday, Resnick & Walker, Fundamentals of Physics",
+      "Landau & Lifshitz, Fluid Mechanics (Vol. 6)"
+    ]
+  },
+  {
+    "id": "law_archimedes_buoyancy_force",
+    "name": "Arşimet Kaldırma Kuvveti Yasası",
+    "domain": "fluid_mechanics",
+    "regime": "universal",
+    "latex": "F_{buoy} = \\rho g_0 V_{disp}",
+    "equation": "F_buoy = rho * g_0 * V_disp",
+    "target": "F_buoy",
+    "inputs": [
+      "rho",
+      "g_0",
+      "V_disp"
+    ],
+    "dimensions": {
+      "F_buoy": "force",
+      "rho": "density",
+      "g_0": "acceleration",
+      "V_disp": "volume"
+    },
+    "domain_bounds": {
+      "rho": {
+        "min": 0.0
+      },
+      "V_disp": {
+        "min": 0.0
+      }
+    },
+    "description": "Akışkan içine batan cismin yerini değiştirdiği akışkanın ağırlığına eşit yukarı yönlü kaldırma kuvveti.",
+    "sources": [
+      "White, Fluid Mechanics (Ch. 2: Hydrostatics)",
+      "Halliday, Resnick & Walker, Fundamentals of Physics",
+      "Çengel & Cimbala, Fluid Mechanics"
+    ]
+  },
+  {
+    "id": "law_jurin_capillary_rise",
+    "name": "Jurin Kılcal Boru Yükselme Yasası (Tam Islatma)",
+    "domain": "fluid_mechanics",
+    "regime": "universal",
+    "latex": "h_{cap} = \\frac{2 \\gamma_{surf}}{\\rho g_0 r}",
+    "equation": "h_cap = (2 * gamma_surf) / (rho * g_0 * r)",
+    "target": "h_cap",
+    "inputs": [
+      "gamma_surf",
+      "rho",
+      "g_0",
+      "r"
+    ],
+    "dimensions": {
+      "h_cap": "length",
+      "gamma_surf": "surface_tension",
+      "rho": "density",
+      "g_0": "acceleration",
+      "r": "length"
+    },
+    "domain_bounds": {
+      "rho": {
+        "min": 1e-06,
+        "min_inclusive": false
+      },
+      "g_0": {
+        "min": 1e-06,
+        "min_inclusive": false
+      },
+      "r": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Tam ıslatan (temas açısı 0) sıvının r yarıçaplı kılcal borudaki denge yükselme yüksekliği.",
+    "sources": [
+      "de Gennes, Brochard-Wyart & Quéré, Capillarity and Wetting Phenomena",
+      "Landau & Lifshitz, Fluid Mechanics (Vol. 6, §61)",
+      "CRC Handbook of Chemistry and Physics — Surface Tension"
+    ]
+  },
+  {
+    "id": "law_froude_number",
+    "name": "Froude Sayısı (Atalet / Yerçekimi Oranı)",
+    "domain": "fluid_mechanics",
+    "regime": "universal",
+    "latex": "Fr = \\frac{v}{\\sqrt{g_0 L_{char}}}",
+    "equation": "Fr = v / sqrt(g_0 * L_char)",
+    "target": "Fr",
+    "inputs": [
+      "v",
+      "g_0",
+      "L_char"
+    ],
+    "dimensions": {
+      "Fr": "dimensionless",
+      "v": "velocity",
+      "g_0": "acceleration",
+      "L_char": "length"
+    },
+    "domain_bounds": {
+      "g_0": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "L_char": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Açık kanal akışları, gemi hidrodinamiği ve serbest yüzey dalgalarında atalet/yerçekimi benzerlik sayısı.",
+    "sources": [
+      "White, Fluid Mechanics (Ch. 5: Dimensional Analysis)",
+      "Munson et al., Fundamentals of Fluid Mechanics",
+      "ITTC Recommended Procedures — Ship Hydrodynamics Similarity"
+    ]
+  },
+  {
+    "id": "law_weber_number",
+    "name": "Weber Sayısı (Atalet / Yüzey Gerilimi Oranı)",
+    "domain": "fluid_mechanics",
+    "regime": "universal",
+    "latex": "We = \\frac{\\rho v^2 L_{char}}{\\gamma_{surf}}",
+    "equation": "We = (rho * (v ** 2) * L_char) / gamma_surf",
+    "target": "We",
+    "inputs": [
+      "rho",
+      "v",
+      "L_char",
+      "gamma_surf"
+    ],
+    "dimensions": {
+      "We": "dimensionless",
+      "rho": "density",
+      "v": "velocity",
+      "L_char": "length",
+      "gamma_surf": "surface_tension"
+    },
+    "domain_bounds": {
+      "gamma_surf": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Yakıt enjektörü atomizasyonu, damlacık parçalanması ve çok fazlı akışlarda atalet/yüzey gerilimi sayısı.",
+    "sources": [
+      "White, Fluid Mechanics (Ch. 5)",
+      "Lefebvre & McDonell, Atomization and Sprays (2nd Ed.)",
+      "NASA SP-8089 Liquid Rocket Engine Injectors"
+    ]
+  },
+  {
+    "id": "law_capillary_number",
+    "name": "Kapiler Sayı (Viskozite / Yüzey Gerilimi Oranı)",
+    "domain": "fluid_mechanics",
+    "regime": "universal",
+    "latex": "Ca = \\frac{\\mu_{visc} v}{\\gamma_{surf}}",
+    "equation": "Ca = (mu_visc * v) / gamma_surf",
+    "target": "Ca",
+    "inputs": [
+      "mu_visc",
+      "v",
+      "gamma_surf"
+    ],
+    "dimensions": {
+      "Ca": "dimensionless",
+      "mu_visc": "dynamic_viscosity",
+      "v": "velocity",
+      "gamma_surf": "surface_tension"
+    },
+    "domain_bounds": {
+      "gamma_surf": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Mikroakışkanlar ve gözenekli ortamlarda viskoz sürükleme ile arayüzey gerilimi kuvvetlerinin oranı.",
+    "sources": [
+      "Bruus, Theoretical Microfluidics (Oxford University Press)",
+      "de Gennes et al., Capillarity and Wetting Phenomena",
+      "White, Fluid Mechanics"
+    ]
+  },
+  {
+    "id": "law_strouhal_number",
+    "name": "Strouhal Girdap Dökülme Sayısı",
+    "domain": "fluid_mechanics",
+    "regime": "universal",
+    "latex": "St = \\frac{f_{vort} L_{char}}{v}",
+    "equation": "St = (f_vort * L_char) / v",
+    "target": "St",
+    "inputs": [
+      "f_vort",
+      "L_char",
+      "v"
+    ],
+    "dimensions": {
+      "St": "dimensionless",
+      "f_vort": "frequency",
+      "L_char": "length",
+      "v": "velocity"
+    },
+    "domain_bounds": {
+      "v": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Von Kármán girdap caddesi ve aeroelastik salınımların boyutsuz frekans sayısı.",
+    "sources": [
+      "White, Fluid Mechanics (Ch. 5 & 7)",
+      "Blevins, Flow-Induced Vibration (2nd Ed.)",
+      "Anderson, Fundamentals of Aerodynamics"
+    ]
+  },
+  {
+    "id": "law_kinematic_viscosity_def",
+    "name": "Kinematik Viskozite Tanımı",
+    "domain": "fluid_mechanics",
+    "regime": "universal",
+    "latex": "\\nu_{kin} = \\frac{\\mu_{visc}}{\\rho}",
+    "equation": "nu_kin = mu_visc / rho",
+    "target": "nu_kin",
+    "inputs": [
+      "mu_visc",
+      "rho"
+    ],
+    "dimensions": {
+      "nu_kin": "kinematic_viscosity",
+      "mu_visc": "dynamic_viscosity",
+      "rho": "density"
+    },
+    "domain_bounds": {
+      "rho": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Momentum yayınım katsayısı (dinamik viskozitenin yoğunluğa oranı, m^2/s).",
+    "sources": [
+      "White, Fluid Mechanics (Ch. 1)",
+      "Bird, Stewart & Lightfoot, Transport Phenomena",
+      "IUPAC Gold Book — Kinematic Viscosity"
+    ]
+  },
+  {
+    "id": "law_blasius_laminar_boundary_thickness",
+    "name": "Blasius Düz Levha Laminer Sınır Tabaka Kalınlığı",
+    "domain": "fluid_mechanics",
+    "regime": "laminar_continuum",
+    "latex": "\\delta_{bl} = \\frac{5 L_{char}}{\\sqrt{Re}}",
+    "equation": "delta_bl = (5 * L_char) / sqrt(Re)",
+    "target": "delta_bl",
+    "inputs": [
+      "L_char",
+      "Re"
+    ],
+    "dimensions": {
+      "delta_bl": "length",
+      "L_char": "length",
+      "Re": "dimensionless"
+    },
+    "domain_bounds": {
+      "L_char": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "Re": {
+        "min": 1.0,
+        "max": 500000.0,
+        "note": "Laminer düz levha bölgesi (Re_x <= 5e5)"
+      }
+    },
+    "description": "Sıfır basınç gradyanlı düz levhada serbest akış hızının %99'una ulaşılan Blasius sınır tabaka kalınlığı.",
+    "sources": [
+      "Schlichting & Gersten, Boundary-Layer Theory (9th Ed.)",
+      "White, Viscous Fluid Flow (3rd Ed.)",
+      "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer"
+    ]
+  },
+  {
+    "id": "law_poiseuille_volumetric_flow",
+    "name": "Hagen-Poiseuille Laminer Boru Hacimsel Debisi",
+    "domain": "fluid_mechanics",
+    "regime": "laminar_continuum",
+    "latex": "Q_{poiseuille} = \\frac{\\pi r^4 \\Delta P_{pipe}}{8 \\mu_{visc} L_{char}}",
+    "equation": "Q_poiseuille = (3.141592653589793 * (r ** 4) * delta_P_pipe) / (8 * mu_visc * L_char)",
+    "target": "Q_poiseuille",
+    "inputs": [
+      "r",
+      "delta_P_pipe",
+      "mu_visc",
+      "L_char"
+    ],
+    "dimensions": {
+      "Q_poiseuille": "volumetric_flow_rate",
+      "r": "length",
+      "delta_P_pipe": "pressure",
+      "mu_visc": "dynamic_viscosity",
+      "L_char": "length"
+    },
+    "domain_bounds": {
+      "r": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "mu_visc": {
+        "min": 1e-12,
+        "min_inclusive": false
+      },
+      "L_char": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Dairesel kesitli boruda tam gelişmiş laminer akışın r^4 ile ölçeklenen hacimsel debisi.",
+    "sources": [
+      "White, Fluid Mechanics (Ch. 6)",
+      "Landau & Lifshitz, Fluid Mechanics (Vol. 6, §17)",
+      "Sutera & Skalak (1993), Annu. Rev. Fluid Mech. 25:1-19"
+    ]
+  },
+  {
+    "id": "law_shallow_water_wave_speed",
+    "name": "Sığ Su (Tsunami) Yerçekimi Dalgası Faz Hızı",
+    "domain": "fluid_mechanics",
+    "regime": "incompressible_subsonic",
+    "latex": "v_{sw} = \\sqrt{g_0 h_{col}}",
+    "equation": "v_sw = sqrt(g_0 * h_col)",
+    "target": "v_sw",
+    "inputs": [
+      "g_0",
+      "h_col"
+    ],
+    "dimensions": {
+      "v_sw": "velocity",
+      "g_0": "acceleration",
+      "h_col": "length"
+    },
+    "domain_bounds": {
+      "g_0": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "h_col": {
+        "min": 0.0
+      }
+    },
+    "description": "Dalga boyu su derinliğinden çok büyük olduğunda (lambda >> h) yüzey dalgasının dispersiyonsuz yayılım hızı.",
+    "sources": [
+      "Landau & Lifshitz, Fluid Mechanics (Vol. 6, §12)",
+      "Vallis, Atmospheric and Oceanic Fluid Dynamics (2nd Ed.)",
+      "NOAA Tsunami Physics Reference"
+    ]
+  },
+  {
+    "id": "law_gibbs_free_energy",
+    "name": "Gibbs Serbest Enerjisi Temel Bağıntısı",
+    "domain": "thermodynamics",
+    "regime": "universal",
+    "latex": "G_{gibbs} = H_{enth} - T S_{ent}",
+    "equation": "G_gibbs = H_enth - T * S_ent",
+    "target": "G_gibbs",
+    "inputs": [
+      "H_enth",
+      "T",
+      "S_ent"
+    ],
+    "dimensions": {
+      "G_gibbs": "energy",
+      "H_enth": "energy",
+      "T": "temperature",
+      "S_ent": "entropy"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Sabit basınç ve sıcaklıkta kendiliğindenlik ve azami elektriksel/kimyasal iş potansiyelini belirleyen Gibbs fonksiyonu.",
+    "sources": [
+      "Callen, Thermodynamics and an Introduction to Thermostatistics (2nd Ed.)",
+      "Atkins & de Paula, Physical Chemistry (11th Ed.)",
+      "IUPAC Gold Book — Gibbs Energy"
+    ]
+  },
+  {
+    "id": "law_helmholtz_free_energy",
+    "name": "Helmholtz Serbest Enerjisi Temel Bağıntısı",
+    "domain": "thermodynamics",
+    "regime": "universal",
+    "latex": "F_{helm} = U_{int} - T S_{ent}",
+    "equation": "F_helm = U_int - T * S_ent",
+    "target": "F_helm",
+    "inputs": [
+      "U_int",
+      "T",
+      "S_ent"
+    ],
+    "dimensions": {
+      "F_helm": "energy",
+      "U_int": "energy",
+      "T": "temperature",
+      "S_ent": "entropy"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Sabit hacim ve sıcaklıkta kapalı bir sistemden elde edilebilecek maksimum yararlı iş (Helmholtz enerjisi).",
+    "sources": [
+      "Callen, Thermodynamics and an Introduction to Thermostatistics",
+      "Landau & Lifshitz, Statistical Physics Part 1 (Vol. 5, §15)",
+      "IUPAC Gold Book — Helmholtz Energy"
+    ]
+  },
+  {
+    "id": "law_maxwell_boltzmann_rms_speed",
+    "name": "Maxwell-Boltzmann Karekök Ortalama (RMS) Gaz Molekül Hızı",
+    "domain": "thermodynamics",
+    "regime": "continuum_ideal_gas",
+    "latex": "v_{rms} = \\sqrt{\\frac{3 R_{univ} T}{M_{mol}}}",
+    "equation": "v_rms = sqrt((3 * R_univ * T) / M_mol)",
+    "target": "v_rms",
+    "inputs": [
+      "R_univ",
+      "T",
+      "M_mol"
+    ],
+    "dimensions": {
+      "v_rms": "velocity",
+      "R_univ": "molar_gas_constant",
+      "T": "temperature",
+      "M_mol": "molar_mass"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "M_mol": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "İdeal gazın kinetik teorisinde moleküllerin karekök ortalama termal hızı.",
+    "sources": [
+      "Atkins & de Paula, Physical Chemistry (Ch. 1B: Kinetic Model of Gases)",
+      "Halliday, Resnick & Walker, Fundamentals of Physics",
+      "NIST / CRC Handbook — Kinetic Theory of Gases"
+    ]
+  },
+  {
+    "id": "law_maxwell_boltzmann_most_probable_speed",
+    "name": "Maxwell-Boltzmann En Olası Molekül Hızı",
+    "domain": "thermodynamics",
+    "regime": "continuum_ideal_gas",
+    "latex": "v_{mp} = \\sqrt{\\frac{2 R_{univ} T}{M_{mol}}}",
+    "equation": "v_mp = sqrt((2 * R_univ * T) / M_mol)",
+    "target": "v_mp",
+    "inputs": [
+      "R_univ",
+      "T",
+      "M_mol"
+    ],
+    "dimensions": {
+      "v_mp": "velocity",
+      "R_univ": "molar_gas_constant",
+      "T": "temperature",
+      "M_mol": "molar_mass"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "M_mol": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "Maxwell-Boltzmann hız dağılımının tepe noktasına karşılık gelen en olası moleküler hız.",
+    "sources": [
+      "Atkins & de Paula, Physical Chemistry",
+      "Landau & Lifshitz, Statistical Physics Part 1",
+      "Reif, Fundamentals of Statistical and Thermal Physics"
+    ]
+  },
+  {
+    "id": "law_ideal_gas_density",
+    "name": "İdeal Gaz Hal Denklemi (Kütle Yoğunluğu Formu)",
+    "domain": "thermodynamics",
+    "regime": "continuum_ideal_gas",
+    "latex": "\\rho_{gas} = \\frac{P_a M_{mol}}{R_{univ} T}",
+    "equation": "rho_gas = (P_a * M_mol) / (R_univ * T)",
+    "target": "rho_gas",
+    "inputs": [
+      "P_a",
+      "M_mol",
+      "R_univ",
+      "T"
+    ],
+    "dimensions": {
+      "rho_gas": "density",
+      "P_a": "pressure",
+      "M_mol": "molar_mass",
+      "R_univ": "molar_gas_constant",
+      "T": "temperature"
+    },
+    "domain_bounds": {
+      "P_a": {
+        "min": 0.0
+      },
+      "T": {
+        "min": 0.001,
+        "min_inclusive": false
+      },
+      "M_mol": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "Molar kütlesi M_mol olan ideal gazın basınç ve sıcaklığa bağlı kütle yoğunluğu.",
+    "sources": [
+      "Çengel & Boles, Thermodynamics: An Engineering Approach (9th Ed.)",
+      "Atkins & de Paula, Physical Chemistry",
+      "NIST Chemistry WebBook — Ideal Gas Relations"
+    ]
+  },
+  {
+    "id": "law_otto_cycle_efficiency",
+    "name": "İdeal Otto Çevrimi Termik Verimi",
+    "domain": "thermodynamics",
+    "regime": "continuum_ideal_gas",
+    "latex": "\\eta_{otto} = 1 - \\frac{1}{r_{comp}^{\\gamma_{gas} - 1}}",
+    "equation": "eta_otto = 1 - (1 / (r_comp ** (gamma_gas - 1)))",
+    "target": "eta_otto",
+    "inputs": [
+      "r_comp",
+      "gamma_gas"
+    ],
+    "dimensions": {
+      "eta_otto": "dimensionless",
+      "r_comp": "dimensionless",
+      "gamma_gas": "dimensionless"
+    },
+    "domain_bounds": {
+      "r_comp": {
+        "min": 1.001,
+        "note": "Sıkıştırma oranı r > 1"
+      },
+      "gamma_gas": {
+        "min": 1.05,
+        "max": 1.67,
+        "note": "İdeal gaz ısı sığaları oranı"
+      }
+    },
+    "description": "Buji ateşlemeli içten yanmalı motorların ideal sabit-hacimli Otto çevrimi üst termal verim sınırı.",
+    "sources": [
+      "Çengel & Boles, Thermodynamics: An Engineering Approach (Ch. 9)",
+      "Moran, Shapiro, Boettner & Bailey, Fundamentals of Engineering Thermodynamics",
+      "Heywood, Internal Combustion Engine Fundamentals (2nd Ed.)"
+    ]
+  },
+  {
+    "id": "law_carnot_refrigerator_cop",
+    "name": "Carnot İdeal Soğutucu Performans Katsayısı (COP_R)",
+    "domain": "thermodynamics",
+    "regime": "universal",
+    "latex": "COP_{ref} = \\frac{T_c}{T_h - T_c}",
+    "equation": "COP_ref = T_c / (T_h - T_c)",
+    "target": "COP_ref",
+    "inputs": [
+      "T_c",
+      "T_h"
+    ],
+    "dimensions": {
+      "COP_ref": "dimensionless",
+      "T_c": "temperature",
+      "T_h": "temperature"
+    },
+    "domain_bounds": {
+      "T_c": {
+        "min": 1e-06,
+        "min_inclusive": false
+      },
+      "T_h": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "T_c ve T_h rezervuarları arasında çalışan tersinir soğutma/kriyosoğutucu çevriminin teorik üst sınırı.",
+    "sources": [
+      "Çengel & Boles, Thermodynamics: An Engineering Approach (Ch. 6)",
+      "Callen, Thermodynamics and an Introduction to Thermostatistics",
+      "ASHRAE Handbook — Fundamentals (Thermodynamics & Refrigeration)"
+    ]
+  },
+  {
+    "id": "law_carnot_heat_pump_cop",
+    "name": "Carnot İdeal Isı Pompası Performans Katsayısı (COP_HP)",
+    "domain": "thermodynamics",
+    "regime": "universal",
+    "latex": "COP_{hp} = \\frac{T_h}{T_h - T_c}",
+    "equation": "COP_hp = T_h / (T_h - T_c)",
+    "target": "COP_hp",
+    "inputs": [
+      "T_h",
+      "T_c"
+    ],
+    "dimensions": {
+      "COP_hp": "dimensionless",
+      "T_h": "temperature",
+      "T_c": "temperature"
+    },
+    "domain_bounds": {
+      "T_c": {
+        "min": 1e-06,
+        "min_inclusive": false
+      },
+      "T_h": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "Tersinir bir ısı pompasının birim elektrik işi başına sıcak ortama aktarabileceği maksimum ısı oranı.",
+    "sources": [
+      "Çengel & Boles, Thermodynamics: An Engineering Approach (Ch. 6)",
+      "Moran & Shapiro, Fundamentals of Engineering Thermodynamics",
+      "ASHRAE Handbook — Fundamentals"
+    ]
+  },
+  {
+    "id": "law_boltzmann_statistical_entropy",
+    "name": "Boltzmann İstatistiksel Entropi Yasası",
+    "domain": "thermodynamics",
+    "regime": "universal",
+    "latex": "S_{ent} = k_B \\ln(\\Omega_{micro})",
+    "equation": "S_ent = k_B * log(Omega_micro)",
+    "target": "S_ent",
+    "inputs": [
+      "k_B",
+      "Omega_micro"
+    ],
+    "dimensions": {
+      "S_ent": "entropy",
+      "k_B": "boltzmann_const",
+      "Omega_micro": "dimensionless"
+    },
+    "domain_bounds": {
+      "Omega_micro": {
+        "min": 1.0,
+        "note": "Erişilebilir mikro-durum sayısı >= 1"
+      }
+    },
+    "description": "İzole sistemin termodinamik entropisini mikro-durum çokluğuna bağlayan istatistiksel mekanik yasası.",
+    "sources": [
+      "Landau & Lifshitz, Statistical Physics Part 1 (Vol. 5, §7)",
+      "Pathria & Beale, Statistical Mechanics (4th Ed.)",
+      "NIST / BIPM SI Brochure — Boltzmann Constant Definition"
+    ]
+  },
+  {
+    "id": "law_wien_displacement_wavelength",
+    "name": "Wien Karacisim Yer Değiştirme Yasası",
+    "domain": "heat_transfer",
+    "regime": "universal",
+    "latex": "\\lambda_{peak} = \\frac{b_{wien}}{T}",
+    "equation": "lambda_peak = b_wien / T",
+    "target": "lambda_peak",
+    "inputs": [
+      "b_wien",
+      "T"
+    ],
+    "dimensions": {
+      "lambda_peak": "length",
+      "b_wien": "wien_constant",
+      "T": "temperature"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "T mutlak sıcaklığındaki karacisim ışımasının spektral pik dalga boyu (b_wien = 2.897771955e-3 m*K).",
+    "sources": [
+      "NIST CODATA 2022: Wien Wavelength Displacement Law Constant",
+      "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer (Ch. 12)",
+      "Rybicki & Lightman, Radiative Processes in Astrophysics"
+    ]
+  },
+  {
+    "id": "law_blackbody_radiation_pressure",
+    "name": "İzotropik Karacisim Foton Gazı Işınım Basıncı",
+    "domain": "thermodynamics",
+    "regime": "universal",
+    "latex": "P_{bb} = \\frac{4 \\sigma_{SB} T^4}{3 c}",
+    "equation": "P_bb = (4 * sigma_SB * (T ** 4)) / (3 * c)",
+    "target": "P_bb",
+    "inputs": [
+      "sigma_SB",
+      "T",
+      "c"
+    ],
+    "dimensions": {
+      "P_bb": "pressure",
+      "sigma_SB": "stefan_boltzmann_const",
+      "T": "temperature",
+      "c": "velocity"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.0
+      }
+    },
+    "description": "Termal dengedeki boşluk (hohlraum) veya yıldız içindeki izotropik foton gazının basınç yasası (u/3).",
+    "sources": [
+      "Landau & Lifshitz, Statistical Physics Part 1 (Vol. 5, §63)",
+      "Rybicki & Lightman, Radiative Processes in Astrophysics",
+      "Carroll & Ostlie, An Introduction to Modern Astrophysics"
+    ]
+  },
+  {
+    "id": "law_conduction_thermal_resistance",
+    "name": "Düzlemsel Duvar İletim Isıl Direnci",
+    "domain": "heat_transfer",
+    "regime": "universal",
+    "latex": "R_{th} = \\frac{L}{k_{th} A}",
+    "equation": "R_th = L / (k_th * A)",
+    "target": "R_th",
+    "inputs": [
+      "L",
+      "k_th",
+      "A"
+    ],
+    "dimensions": {
+      "R_th": "thermal_resistance",
+      "L": "length",
+      "k_th": "thermal_conductivity",
+      "A": "area"
+    },
+    "domain_bounds": {
+      "k_th": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "A": {
+        "min": 1e-12,
+        "min_inclusive": false
+      }
+    },
+    "description": "1B kararlı Fourier ısı iletiminde termal devre analizi için iletim direnci (K/W).",
+    "sources": [
+      "Incropera, DeWitt, Bergman & Lavine, Fundamentals of Heat and Mass Transfer (Ch. 3)",
+      "Çengel & Ghajar, Heat and Mass Transfer (6th Ed.)",
+      "NASA Thermal Control Handbook"
+    ]
+  },
+  {
+    "id": "law_convection_thermal_resistance",
+    "name": "Yüzey Taşınım (Konveksiyon) Isıl Direnci",
+    "domain": "heat_transfer",
+    "regime": "universal",
+    "latex": "R_{th,conv} = \\frac{1}{h_{conv} A}",
+    "equation": "R_th_conv = 1 / (h_conv * A)",
+    "target": "R_th_conv",
+    "inputs": [
+      "h_conv",
+      "A"
+    ],
+    "dimensions": {
+      "R_th_conv": "thermal_resistance",
+      "h_conv": "heat_transfer_coeff",
+      "A": "area"
+    },
+    "domain_bounds": {
+      "h_conv": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "A": {
+        "min": 1e-12,
+        "min_inclusive": false
+      }
+    },
+    "description": "Katı yüzey ile akışkan arasındaki taşınım ısı geçiş direnci (K/W).",
+    "sources": [
+      "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer (Ch. 3)",
+      "Çengel & Ghajar, Heat and Mass Transfer",
+      "ASHRAE Handbook — Fundamentals"
+    ]
+  },
+  {
+    "id": "law_peclet_number_thermal",
+    "name": "Termal Péclet Sayısı (Taşınım / İletim Oranı)",
+    "domain": "heat_transfer",
+    "regime": "universal",
+    "latex": "Pe_{th} = \\frac{v L_{char}}{\\alpha_{th}}",
+    "equation": "Pe_th = (v * L_char) / alpha_th",
+    "target": "Pe_th",
+    "inputs": [
+      "v",
+      "L_char",
+      "alpha_th"
+    ],
+    "dimensions": {
+      "Pe_th": "dimensionless",
+      "v": "velocity",
+      "L_char": "length",
+      "alpha_th": "thermal_diffusivity"
+    },
+    "domain_bounds": {
+      "alpha_th": {
+        "min": 1e-12,
+        "min_inclusive": false
+      }
+    },
+    "description": "Akışkan içi advektif ısı taşınım hızının iletimle termal yayınım hızına boyutsuz oranı (Pe = Re * Pr).",
+    "sources": [
+      "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer",
+      "Bird, Stewart & Lightfoot, Transport Phenomena",
+      "Bejan, Convection Heat Transfer (4th Ed.)"
+    ]
+  },
+  {
+    "id": "law_grashof_number",
+    "name": "Grashof Doğal Konveksiyon Sayısı",
+    "domain": "heat_transfer",
+    "regime": "laminar_continuum",
+    "latex": "Gr = \\frac{g_0 \\alpha_{cte} \\Delta T L_{char}^3}{\\nu_{kin}^2}",
+    "equation": "Gr = (g_0 * alpha_cte * delta_T * (L_char ** 3)) / (nu_kin ** 2)",
+    "target": "Gr",
+    "inputs": [
+      "g_0",
+      "alpha_cte",
+      "delta_T",
+      "L_char",
+      "nu_kin"
+    ],
+    "dimensions": {
+      "Gr": "dimensionless",
+      "g_0": "acceleration",
+      "alpha_cte": "thermal_expansion_coeff",
+      "delta_T": "temperature",
+      "L_char": "length",
+      "nu_kin": "kinematic_viscosity"
+    },
+    "domain_bounds": {
+      "nu_kin": {
+        "min": 1e-12,
+        "min_inclusive": false
+      }
+    },
+    "description": "Doğal taşınım akışlarında termal kaldırma kuvvetinin viskoz kuvvetlere boyutsuz oranı.",
+    "sources": [
+      "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer (Ch. 9)",
+      "Bejan, Convection Heat Transfer (4th Ed.)",
+      "Çengel & Ghajar, Heat and Mass Transfer"
+    ]
+  },
+  {
+    "id": "law_rayleigh_number",
+    "name": "Rayleigh Serbest Konveksiyon Kararsızlık Sayısı",
+    "domain": "heat_transfer",
+    "regime": "universal",
+    "latex": "Ra = Gr \\cdot Pr",
+    "equation": "Ra = Gr * Pr",
+    "target": "Ra",
+    "inputs": [
+      "Gr",
+      "Pr"
+    ],
+    "dimensions": {
+      "Ra": "dimensionless",
+      "Gr": "dimensionless",
+      "Pr": "dimensionless"
+    },
+    "domain_bounds": {
+      "Pr": {
+        "min": 0.0
+      }
+    },
+    "description": "Doğal taşınımda iletimden konveksiyona ve laminerden türbülansa geçişi yöneten Rayleigh sayısı.",
+    "sources": [
+      "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer (Ch. 9)",
+      "Chandrasekhar, Hydrodynamic and Hydromagnetic Stability",
+      "Bejan, Convection Heat Transfer"
+    ]
+  },
+  {
+    "id": "law_fourier_number_transient",
+    "name": "Fourier Geçici Isı İletimi Boyutsuz Zaman Sayısı",
+    "domain": "heat_transfer",
+    "regime": "universal",
+    "latex": "Fo = \\frac{\\alpha_{th} t}{L_{char}^2}",
+    "equation": "Fo = (alpha_th * t) / (L_char ** 2)",
+    "target": "Fo",
+    "inputs": [
+      "alpha_th",
+      "t",
+      "L_char"
+    ],
+    "dimensions": {
+      "Fo": "dimensionless",
+      "alpha_th": "thermal_diffusivity",
+      "t": "time",
+      "L_char": "length"
+    },
+    "domain_bounds": {
+      "t": {
+        "min": 0.0
+      },
+      "L_char": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Geçici (transient) ısınma/soğuma problemlerinde difüzyon zamanının karakteristik ısı yayılma zamanına oranı.",
+    "sources": [
+      "Incropera & DeWitt, Fundamentals of Heat and Mass Transfer (Ch. 5)",
+      "Carslaw & Jaeger, Conduction of Heat in Solids",
+      "Çengel & Ghajar, Heat and Mass Transfer"
+    ]
+  },
+  {
+    "id": "law_arrhenius_reaction_rate",
+    "name": "Arrhenius Kimyasal Tepkime Hız Sabiti Yasası",
+    "domain": "physical_chemistry",
+    "regime": "universal",
+    "latex": "k_{rxn} = A_{pre} \\exp\\left(-\\frac{E_a}{R_{univ} T}\\right)",
+    "equation": "k_rxn = A_pre * exp(-(E_a / (R_univ * T)))",
+    "target": "k_rxn",
+    "inputs": [
+      "A_pre",
+      "E_a",
+      "R_univ",
+      "T"
+    ],
+    "dimensions": {
+      "k_rxn": "rate",
+      "A_pre": "rate",
+      "E_a": "molar_energy",
+      "R_univ": "molar_gas_constant",
+      "T": "temperature"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.001,
+        "min_inclusive": false
+      },
+      "A_pre": {
+        "min": 0.0
+      }
+    },
+    "description": "Birinci mertebe kimyasal tepkime, sürünme (creep) ve katı hal difüzyon hızının sıcaklığa üstel bağımlılığı.",
+    "sources": [
+      "Atkins & de Paula, Physical Chemistry (11th Ed., Chemical Kinetics)",
+      "IUPAC Gold Book — Arrhenius Equation",
+      "NIST Chemical Kinetics Database"
+    ]
+  },
+  {
+    "id": "law_clausius_clapeyron_vapor_pressure",
+    "name": "İntegre Clausius-Clapeyron Buhar Basıncı Yasası",
+    "domain": "physical_chemistry",
+    "regime": "continuum_ideal_gas",
+    "latex": "P_{vap} = P_{ref} \\exp\\left(-\\frac{\\Delta H_{vap}}{R_{univ}}\\left(\\frac{1}{T} - \\frac{1}{T_0}\\right)\\right)",
+    "equation": "P_vap = P_ref * exp(-(delta_H_vap / R_univ) * ((1 / T) - (1 / T_0)))",
+    "target": "P_vap",
+    "inputs": [
+      "P_ref",
+      "delta_H_vap",
+      "R_univ",
+      "T",
+      "T_0"
+    ],
+    "dimensions": {
+      "P_vap": "pressure",
+      "P_ref": "pressure",
+      "delta_H_vap": "molar_energy",
+      "R_univ": "molar_gas_constant",
+      "T": "temperature",
+      "T_0": "temperature"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.001,
+        "min_inclusive": false
+      },
+      "T_0": {
+        "min": 0.001,
+        "min_inclusive": false
+      },
+      "P_ref": {
+        "min": 0.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Sabit buharlaşma entalpisi altında sıvı-gaz faz dengesindeki buhar basıncının sıcaklıkla değişimi.",
+    "sources": [
+      "Atkins & de Paula, Physical Chemistry (Phase Equilibria)",
+      "NIST Chemistry WebBook — Phase Change Data",
+      "CRC Handbook of Chemistry and Physics — Vapor Pressure Equations"
+    ]
+  },
+  {
+    "id": "law_vant_hoff_osmotic_pressure",
+    "name": "Van 't Hoff Seyreltik Çözelti Ozmotik Basınç Yasası",
+    "domain": "physical_chemistry",
+    "regime": "universal",
+    "latex": "P_{osm} = i_{vh} c_{mol} R_{univ} T",
+    "equation": "P_osm = i_vh * c_mol * R_univ * T",
+    "target": "P_osm",
+    "inputs": [
+      "i_vh",
+      "c_mol",
+      "R_univ",
+      "T"
+    ],
+    "dimensions": {
+      "P_osm": "pressure",
+      "i_vh": "dimensionless",
+      "c_mol": "molar_concentration",
+      "R_univ": "molar_gas_constant",
+      "T": "temperature"
+    },
+    "domain_bounds": {
+      "i_vh": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "c_mol": {
+        "min": 0.0
+      },
+      "T": {
+        "min": 0.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Yarı geçirgen zar boyunca seyreltik çözeltinin oluşturduğu denge ozmotik basıncı.",
+    "sources": [
+      "Atkins & de Paula, Physical Chemistry (Colligative Properties)",
+      "IUPAC Gold Book — Osmotic Pressure",
+      "CRC Handbook of Chemistry and Physics"
+    ]
+  },
+  {
+    "id": "law_fick_first_diffusive_flux",
+    "name": "Fick Birinci Difüzyon Akısı Yasası (1B Kararlı)",
+    "domain": "physical_chemistry",
+    "regime": "universal",
+    "latex": "J_{mol} = D_{diff} \\frac{\\Delta c_{mol}}{L}",
+    "equation": "J_mol = D_diff * (delta_c_mol / L)",
+    "target": "J_mol",
+    "inputs": [
+      "D_diff",
+      "delta_c_mol",
+      "L"
+    ],
+    "dimensions": {
+      "J_mol": "molar_flux",
+      "D_diff": "mass_diffusivity",
+      "delta_c_mol": "molar_concentration",
+      "L": "length"
+    },
+    "domain_bounds": {
+      "D_diff": {
+        "min": 0.0
+      },
+      "L": {
+        "min": 1e-12,
+        "min_inclusive": false
+      }
+    },
+    "description": "Kararlı 1B derişim gradyanı boyunca birim alan ve zamanda taşınan molar madde akısı.",
+    "sources": [
+      "Bird, Stewart & Lightfoot, Transport Phenomena (Ch. 17)",
+      "Crank, The Mathematics of Diffusion (2nd Ed.)",
+      "IUPAC Gold Book — Fick's First Law"
+    ]
+  },
+  {
+    "id": "law_nernst_electrochemical_potential",
+    "name": "Nernst Elektrokimyasal Hücre Potansiyeli Denklemi",
+    "domain": "electrochemistry",
+    "regime": "universal",
+    "latex": "E_{cell} = E_{std} - \\frac{R_{univ} T}{z_{val} F_{faraday}} \\ln(Q_{rxn})",
+    "equation": "E_cell = E_std - ((R_univ * T) / (z_val * F_faraday)) * log(Q_rxn)",
+    "target": "E_cell",
+    "inputs": [
+      "E_std",
+      "R_univ",
+      "T",
+      "z_val",
+      "F_faraday",
+      "Q_rxn"
+    ],
+    "dimensions": {
+      "E_cell": "voltage",
+      "E_std": "voltage",
+      "R_univ": "molar_gas_constant",
+      "T": "temperature",
+      "z_val": "dimensionless",
+      "F_faraday": "molar_charge",
+      "Q_rxn": "dimensionless"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.001,
+        "min_inclusive": false
+      },
+      "z_val": {
+        "min": 1.0
+      },
+      "Q_rxn": {
+        "min": 1e-30,
+        "min_inclusive": false
+      }
+    },
+    "description": "Batarya, yakıt hücresi ve elektrot sistemlerinin sıcaklık ve tepkime oranına bağlı açık devre denge gerilimi.",
+    "sources": [
+      "Bard & Faulkner, Electrochemical Methods (2nd Ed., Ch. 2)",
+      "IUPAC Gold Book — Nernst Equation",
+      "Newman & Thomas-Alyea, Electrochemical Systems (3rd Ed.)"
+    ]
+  },
+  {
+    "id": "law_faraday_electrolysis_mass",
+    "name": "Faraday Elektroliz Kütle Birikim Yasası",
+    "domain": "electrochemistry",
+    "regime": "universal",
+    "latex": "m_{dep} = \\frac{I \\cdot t \\cdot M_{mol}}{z_{val} F_{faraday}}",
+    "equation": "m_dep = (I * t * M_mol) / (z_val * F_faraday)",
+    "target": "m_dep",
+    "inputs": [
+      "I",
+      "t",
+      "M_mol",
+      "z_val",
+      "F_faraday"
+    ],
+    "dimensions": {
+      "m_dep": "mass",
+      "I": "current",
+      "t": "time",
+      "M_mol": "molar_mass",
+      "z_val": "dimensionless",
+      "F_faraday": "molar_charge"
+    },
+    "domain_bounds": {
+      "t": {
+        "min": 0.0
+      },
+      "z_val": {
+        "min": 1.0
+      },
+      "F_faraday": {
+        "min": 1.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Elektrokimyasal hücreden geçen toplam elektrik yüküyle elektrotta biriken/çözünen madde kütlesi.",
+    "sources": [
+      "Bard & Faulkner, Electrochemical Methods",
+      "Atkins & de Paula, Physical Chemistry",
+      "NIST CODATA 2022 — Faraday Constant (96485.33212 C/mol)"
+    ]
+  },
+  {
+    "id": "law_beer_lambert_absorbance",
+    "name": "Beer-Lambert Optik Soğurma (Absorbans) Yasası",
+    "domain": "physical_chemistry",
+    "regime": "universal",
+    "latex": "A_{abs} = \\varepsilon_{mol} c_{mol} L",
+    "equation": "A_abs = eps_mol * c_mol * L",
+    "target": "A_abs",
+    "inputs": [
+      "eps_mol",
+      "c_mol",
+      "L"
+    ],
+    "dimensions": {
+      "A_abs": "dimensionless",
+      "eps_mol": "molar_attenuation",
+      "c_mol": "molar_concentration",
+      "L": "length"
+    },
+    "domain_bounds": {
+      "eps_mol": {
+        "min": 0.0
+      },
+      "c_mol": {
+        "min": 0.0
+      },
+      "L": {
+        "min": 0.0
+      }
+    },
+    "description": "Işığın soğurucu ortamdan geçişinde optik yol uzunluğu ve molar derişime bağlı doğrusal absorbans yasası.",
+    "sources": [
+      "IUPAC Gold Book — Beer-Lambert Law",
+      "Skoog, Holler & Crouch, Principles of Instrumental Analysis (7th Ed.)",
+      "NIST Optical Spectroscopy Reference"
+    ]
+  },
+  {
+    "id": "law_thin_lens_image_distance",
+    "name": "Gauss İnce Mercek Görüntü Uzaklığı Denklemi",
+    "domain": "optics_photonics",
+    "regime": "universal",
+    "latex": "d_{img} = \\frac{f_{lens} d_{obj}}{d_{obj} - f_{lens}}",
+    "equation": "d_img = (f_lens * d_obj) / (d_obj - f_lens)",
+    "target": "d_img",
+    "inputs": [
+      "f_lens",
+      "d_obj"
+    ],
+    "dimensions": {
+      "d_img": "length",
+      "f_lens": "length",
+      "d_obj": "length"
+    },
+    "domain_bounds": {
+      "d_obj": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Paraksiyel geometrik optikte odak uzaklığı f olan ince merceğin oluşturduğu görüntü konumu.",
+    "sources": [
+      "Hecht, Optics (5th Ed., Ch. 5)",
+      "Born & Wolf, Principles of Optics (7th Ed.)",
+      "Pedrotti, Introduction to Optics (3rd Ed.)"
+    ]
+  },
+  {
+    "id": "law_rayleigh_angular_resolution",
+    "name": "Rayleigh Kırınım Sınırlı Açısal Çözünürlük Kriteri",
+    "domain": "optics_photonics",
+    "regime": "far_field_em",
+    "latex": "\\theta_{rayleigh} = \\frac{1.22 \\lambda_{em}}{D_{ap}}",
+    "equation": "theta_rayleigh = (1.22 * lambda_em) / D_ap",
+    "target": "theta_rayleigh",
+    "inputs": [
+      "lambda_em",
+      "D_ap"
+    ],
+    "dimensions": {
+      "theta_rayleigh": "dimensionless",
+      "lambda_em": "length",
+      "D_ap": "length"
+    },
+    "domain_bounds": {
+      "lambda_em": {
+        "min": 1e-18,
+        "min_inclusive": false
+      },
+      "D_ap": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Dairesel açıklıklı teleskop, kamera veya radarın ayırt edebileceği minimum açısal ayrım (Airy diski ilk sıfırı).",
+    "sources": [
+      "Hecht, Optics (5th Ed., Ch. 10: Diffraction)",
+      "Born & Wolf, Principles of Optics (7th Ed., §8.6)",
+      "NASA / SPIE Optical Engineering Reference"
+    ]
+  },
+  {
+    "id": "law_gaussian_beam_rayleigh_range",
+    "name": "Gauss Lazer Demeti Rayleigh Mesafesi",
+    "domain": "optics_photonics",
+    "regime": "far_field_em",
+    "latex": "z_{rayleigh} = \\frac{\\pi w_0^2}{\\lambda_{em}}",
+    "equation": "z_rayleigh = (3.141592653589793 * (w_0 ** 2)) / lambda_em",
+    "target": "z_rayleigh",
+    "inputs": [
+      "w_0",
+      "lambda_em"
+    ],
+    "dimensions": {
+      "z_rayleigh": "length",
+      "w_0": "length",
+      "lambda_em": "length"
+    },
+    "domain_bounds": {
+      "w_0": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "lambda_em": {
+        "min": 1e-12,
+        "min_inclusive": false
+      }
+    },
+    "description": "Gauss lazer ışınının demet kesit alanının bel noktasına göre iki katına çıktığı odak derinliği mesafesi.",
+    "sources": [
+      "Siegman, Lasers (Ch. 17: Gaussian Beams)",
+      "Saleh & Teich, Fundamentals of Photonics (3rd Ed., Ch. 3)",
+      "ISO 11146 Laser Beam Propagation Standards"
+    ]
+  },
+  {
+    "id": "law_gaussian_beam_divergence",
+    "name": "Gauss Lazer Demeti Uzak-Alan Iraksama Açısı",
+    "domain": "optics_photonics",
+    "regime": "far_field_em",
+    "latex": "\\theta_{div} = \\frac{\\lambda_{em}}{\\pi w_0}",
+    "equation": "theta_div = lambda_em / (3.141592653589793 * w_0)",
+    "target": "theta_div",
+    "inputs": [
+      "lambda_em",
+      "w_0"
+    ],
+    "dimensions": {
+      "theta_div": "dimensionless",
+      "lambda_em": "length",
+      "w_0": "length"
+    },
+    "domain_bounds": {
+      "w_0": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "lambda_em": {
+        "min": 1e-12,
+        "min_inclusive": false
+      }
+    },
+    "description": "Kırınım sınırlı (M^2 = 1) Gauss lazer demetinin uzak alandaki yarı açılma açısı (radyan).",
+    "sources": [
+      "Siegman, Lasers (Ch. 17)",
+      "Saleh & Teich, Fundamentals of Photonics (3rd Ed.)",
+      "ISO 11146-1 Laser Beam Divergence Definition"
+    ]
+  },
+  {
+    "id": "law_fresnel_normal_reflectance",
+    "name": "Fresnel Dik Gelme Optik Yansıma Katsayısı",
+    "domain": "optics_photonics",
+    "regime": "universal",
+    "latex": "R_{fresnel} = \\left(\\frac{n_1 - n_2}{n_1 + n_2}\\right)^2",
+    "equation": "R_fresnel = ((n_1 - n_2) / (n_1 + n_2)) ** 2",
+    "target": "R_fresnel",
+    "inputs": [
+      "n_1",
+      "n_2"
+    ],
+    "dimensions": {
+      "R_fresnel": "dimensionless",
+      "n_1": "dimensionless",
+      "n_2": "dimensionless"
+    },
+    "domain_bounds": {
+      "n_1": {
+        "min": 1.0,
+        "note": "Kırılma indisi >= 1"
+      },
+      "n_2": {
+        "min": 1.0,
+        "note": "Kırılma indisi >= 1"
+      }
+    },
+    "description": "İki dielektrik ortam arayüzüne dik gelen ışığın yansıyan güç oranı.",
+    "sources": [
+      "Hecht, Optics (5th Ed., Ch. 4: Fresnel Equations)",
+      "Born & Wolf, Principles of Optics (7th Ed.)",
+      "Griffiths, Introduction to Electrodynamics (Ch. 9)"
+    ]
+  },
+  {
+    "id": "law_photon_momentum",
+    "name": "Foton Çizgisel Momentum Yasası",
+    "domain": "optics_photonics",
+    "regime": "ultrarelativistic",
+    "latex": "p_{phot} = \\frac{h}{\\lambda_{em}}",
+    "equation": "p_phot = h / lambda_em",
+    "target": "p_phot",
+    "inputs": [
+      "h",
+      "lambda_em"
+    ],
+    "dimensions": {
+      "p_phot": "momentum",
+      "h": "action",
+      "lambda_em": "length"
+    },
+    "domain_bounds": {
+      "lambda_em": {
+        "min": 1e-18,
+        "min_inclusive": false
+      }
+    },
+    "description": "Kütlesiz elektromanyetik kuantumun (fotonun) dalga boyuyla ters orantılı momentumu.",
+    "sources": [
+      "NIST CODATA 2022 — Planck Constant Relations",
+      "Griffiths, Introduction to Quantum Mechanics (3rd Ed.)",
+      "Halliday, Resnick & Walker, Fundamentals of Physics"
+    ]
+  },
+  {
+    "id": "law_specific_acoustic_impedance",
+    "name": "Karakteristik Özgül Akustik Empedans (Rayl)",
+    "domain": "acoustics_waves",
+    "regime": "universal",
+    "latex": "Z_{ac} = \\rho c_s",
+    "equation": "Z_ac = rho * c_s",
+    "target": "Z_ac",
+    "inputs": [
+      "rho",
+      "c_s"
+    ],
+    "dimensions": {
+      "Z_ac": "acoustic_impedance",
+      "rho": "density",
+      "c_s": "velocity"
+    },
+    "domain_bounds": {
+      "rho": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "c_s": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "Düzlem ses dalgasında akustik basıncın parçacık hızına oranı (ultrasonik/sonar empedans uyumu).",
+    "sources": [
+      "Kinsler, Frey, Coppens & Sanders, Fundamentals of Acoustics (4th Ed.)",
+      "Pierce, Acoustics: An Introduction to Its Physical Principles",
+      "ISO 80000-8 Quantities and Units — Acoustics"
+    ]
+  },
+  {
+    "id": "law_acoustic_plane_wave_intensity",
+    "name": "Düzlem Akustik Dalga Ses Şiddeti",
+    "domain": "acoustics_waves",
+    "regime": "universal",
+    "latex": "I_{ac} = \\frac{P_{rms}^2}{\\rho c_s}",
+    "equation": "I_ac = (P_rms ** 2) / (rho * c_s)",
+    "target": "I_ac",
+    "inputs": [
+      "P_rms",
+      "rho",
+      "c_s"
+    ],
+    "dimensions": {
+      "I_ac": "radiation_flux",
+      "P_rms": "pressure",
+      "rho": "density",
+      "c_s": "velocity"
+    },
+    "domain_bounds": {
+      "rho": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "c_s": {
+        "min": 1e-06,
+        "min_inclusive": false
+      }
+    },
+    "description": "RMS akustik basınç taşıyan ilerleyen düzlem ses dalgasının birim alandan aktardığı güç (W/m^2).",
+    "sources": [
+      "Kinsler et al., Fundamentals of Acoustics (4th Ed., Ch. 5)",
+      "Pierce, Acoustics",
+      "ISO 80000-8 Acoustics Reference"
+    ]
+  },
+  {
+    "id": "law_acoustic_normal_reflection_coeff",
+    "name": "Akustik Dik Gelme Güç Yansıma Katsayısı",
+    "domain": "acoustics_waves",
+    "regime": "universal",
+    "latex": "R_{ac} = \\left(\\frac{Z_2 - Z_1}{Z_2 + Z_1}\\right)^2",
+    "equation": "R_ac = ((Z_2 - Z_1) / (Z_2 + Z_1)) ** 2",
+    "target": "R_ac",
+    "inputs": [
+      "Z_2",
+      "Z_1"
+    ],
+    "dimensions": {
+      "R_ac": "dimensionless",
+      "Z_2": "acoustic_impedance",
+      "Z_1": "acoustic_impedance"
+    },
+    "domain_bounds": {
+      "Z_1": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "Z_2": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Farklı akustik empedanslı iki ortam sınırından (ultrasonik muayene / tıbbi görüntüleme) yansıyan ses gücü oranı.",
+    "sources": [
+      "Kinsler et al., Fundamentals of Acoustics (Ch. 6)",
+      "Bushberg et al., The Essential Physics of Medical Imaging (Ultrasound)",
+      "ASM Nondestructive Evaluation Handbook (Ultrasonic Testing)"
+    ]
+  },
+  {
+    "id": "law_doppler_observed_frequency",
+    "name": "Klasik Boyuna Akustik Doppler Frekans Kayması",
+    "domain": "acoustics_waves",
+    "regime": "incompressible_subsonic",
+    "latex": "f_{obs} = f_{src} \\frac{c_s + v_{obs}}{c_s - v_{src}}",
+    "equation": "f_obs = f_src * ((c_s + v_obs) / (c_s - v_src))",
+    "target": "f_obs",
+    "inputs": [
+      "f_src",
+      "c_s",
+      "v_obs",
+      "v_src"
+    ],
+    "dimensions": {
+      "f_obs": "frequency",
+      "f_src": "frequency",
+      "c_s": "velocity",
+      "v_obs": "velocity",
+      "v_src": "velocity"
+    },
+    "domain_bounds": {
+      "f_src": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "c_s": {
+        "min": 0.001,
+        "min_inclusive": false
+      }
+    },
+    "description": "Ortamda hareket eden kaynak ve gözlemci arasındaki klasik ses dalgası frekans kayması.",
+    "sources": [
+      "Halliday, Resnick & Walker, Fundamentals of Physics (Ch. 17)",
+      "Kinsler et al., Fundamentals of Acoustics",
+      "Feynman Lectures on Physics Vol. I (Ch. 34)"
+    ]
+  },
+  {
+    "id": "law_parallel_plate_capacitance",
+    "name": "Paralel Plakalı Dielektrik Kondansatör Kapasitesi",
+    "domain": "electromagnetism",
+    "regime": "universal",
+    "latex": "C_{pp} = \\frac{\\varepsilon_r \\varepsilon_0 A}{d}",
+    "equation": "C_pp = (eps_r * eps_0 * A) / d",
+    "target": "C_pp",
+    "inputs": [
+      "eps_r",
+      "eps_0",
+      "A",
+      "d"
+    ],
+    "dimensions": {
+      "C_pp": "capacitance",
+      "eps_r": "dimensionless",
+      "eps_0": "permittivity",
+      "A": "area",
+      "d": "length"
+    },
+    "domain_bounds": {
+      "eps_r": {
+        "min": 1.0
+      },
+      "A": {
+        "min": 1e-15,
+        "min_inclusive": false
+      },
+      "d": {
+        "min": 1e-12,
+        "min_inclusive": false
+      }
+    },
+    "description": "Kenar saçılması ihmal edildiğinde dielektrik dolgulu paralel plakalı kapasitörün sığası.",
+    "sources": [
+      "Griffiths, Introduction to Electrodynamics (4th Ed., Ch. 4)",
+      "Jackson, Classical Electrodynamics (3rd Ed.)",
+      "IEC 60050 International Electrotechnical Vocabulary"
+    ]
+  },
+  {
+    "id": "law_larmor_radiated_power",
+    "name": "Larmor İvmelenen Yüklü Parçacık Işınım Gücü",
+    "domain": "electromagnetism",
+    "regime": "classical_nonrelativistic",
+    "latex": "P_{larmor} = \\frac{q_e^2 a^2}{6\\pi \\varepsilon_0 c^3}",
+    "equation": "P_larmor = ((q_e ** 2) * (a ** 2)) / (6 * 3.141592653589793 * eps_0 * (c ** 3))",
+    "target": "P_larmor",
+    "inputs": [
+      "q_e",
+      "a",
+      "eps_0",
+      "c"
+    ],
+    "dimensions": {
+      "P_larmor": "power",
+      "q_e": "electric_charge",
+      "a": "acceleration",
+      "eps_0": "permittivity",
+      "c": "velocity"
+    },
+    "domain_bounds": {},
+    "description": "Göreli olmayan (v << c) ivmeli hareket yapan noktasal yükün uzaya yaydığı toplam elektromanyetik güç.",
+    "sources": [
+      "Griffiths, Introduction to Electrodynamics (4th Ed., §11.2.1)",
+      "Jackson, Classical Electrodynamics (3rd Ed., §14.2)",
+      "Landau & Lifshitz, Classical Theory of Fields (Vol. 2, §67)"
+    ]
+  },
+  {
+    "id": "law_johnson_nyquist_noise_voltage",
+    "name": "Johnson-Nyquist Termal Direnç Gürültü Gerilimi (RMS)",
+    "domain": "solid_state_semiconductors",
+    "regime": "universal",
+    "latex": "V_{noise} = \\sqrt{4 k_B T R_{elec} B_{bw}}",
+    "equation": "V_noise = sqrt(4 * k_B * T * R_elec * B_bw)",
+    "target": "V_noise",
+    "inputs": [
+      "k_B",
+      "T",
+      "R_elec",
+      "B_bw"
+    ],
+    "dimensions": {
+      "V_noise": "voltage",
+      "k_B": "boltzmann_const",
+      "T": "temperature",
+      "R_elec": "resistance",
+      "B_bw": "frequency"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.0
+      },
+      "R_elec": {
+        "min": 0.0
+      },
+      "B_bw": {
+        "min": 0.0
+      }
+    },
+    "description": "Termal dengedeki direncin yük taşıyıcı ajitasyonundan doğan temel taban gürültü gerilimi.",
+    "sources": [
+      "H. Nyquist (1928), Phys. Rev. 32:110-113",
+      "Horowitz & Hill, The Art of Electronics (3rd Ed., Ch. 8)",
+      "NIST / BIPM Johnson Noise Thermometry Reference"
+    ]
+  },
+  {
+    "id": "law_schottky_shot_noise_current",
+    "name": "Schottky Kuantum Atış (Shot) Gürültüsü Akımı (RMS)",
+    "domain": "solid_state_semiconductors",
+    "regime": "universal",
+    "latex": "I_{shot} = \\sqrt{2 q_e I B_{bw}}",
+    "equation": "I_shot = sqrt(2 * q_e * I * B_bw)",
+    "target": "I_shot",
+    "inputs": [
+      "q_e",
+      "I",
+      "B_bw"
+    ],
+    "dimensions": {
+      "I_shot": "current",
+      "q_e": "electric_charge",
+      "I": "current",
+      "B_bw": "frequency"
+    },
+    "domain_bounds": {
+      "I": {
+        "min": 0.0
+      },
+      "B_bw": {
+        "min": 0.0
+      }
+    },
+    "description": "Elektrik yükünün kesikli (kuantize) doğasından kaynaklanan fotodiyot ve p-n eklemi Poisson gürültüsü.",
+    "sources": [
+      "W. Schottky (1918), Annalen der Physik 362(23):541-567",
+      "Horowitz & Hill, The Art of Electronics (3rd Ed., Ch. 8)",
+      "Sze & Ng, Physics of Semiconductor Devices (3rd Ed.)"
+    ]
+  },
+  {
+    "id": "law_semiconductor_thermal_voltage",
+    "name": "Yarı İletken Termal Gerilimi (k_B T / q)",
+    "domain": "solid_state_semiconductors",
+    "regime": "universal",
+    "latex": "V_{th} = \\frac{k_B T}{q_e}",
+    "equation": "V_th = (k_B * T) / q_e",
+    "target": "V_th",
+    "inputs": [
+      "k_B",
+      "T",
+      "q_e"
+    ],
+    "dimensions": {
+      "V_th": "voltage",
+      "k_B": "boltzmann_const",
+      "T": "temperature",
+      "q_e": "electric_charge"
+    },
+    "domain_bounds": {
+      "T": {
+        "min": 0.0
+      }
+    },
+    "description": "300 K'de ~25.85 mV değerini alan diyot, BJT ve MOSFET alt-eşik fiziğinin temel gerilim ölçeği.",
+    "sources": [
+      "Sze & Ng, Physics of Semiconductor Devices (3rd Ed., Ch. 1)",
+      "Pierret, Semiconductor Device Fundamentals",
+      "NIST CODATA 2022 Fundamental Constants"
+    ]
+  },
+  {
+    "id": "law_einstein_mobility_diffusivity",
+    "name": "Einstein Yük Taşıyıcı Mobilite-Difüzyon Bağıntısı",
+    "domain": "solid_state_semiconductors",
+    "regime": "universal",
+    "latex": "D_{diff} = \\frac{\\mu_{mob} k_B T}{q_e}",
+    "equation": "D_diff = (mu_mob * k_B * T) / q_e",
+    "target": "D_diff",
+    "inputs": [
+      "mu_mob",
+      "k_B",
+      "T",
+      "q_e"
+    ],
+    "dimensions": {
+      "D_diff": "mass_diffusivity",
+      "mu_mob": "carrier_mobility",
+      "k_B": "boltzmann_const",
+      "T": "temperature",
+      "q_e": "electric_charge"
+    },
+    "domain_bounds": {
+      "mu_mob": {
+        "min": 0.0
+      },
+      "T": {
+        "min": 0.0
+      }
+    },
+    "description": "Dejenere olmayan yarı iletkenlerde yük taşıyıcı difüzyon katsayısını mobiliteye bağlayan Einstein ilişkisi.",
+    "sources": [
+      "Sze & Ng, Physics of Semiconductor Devices (3rd Ed., Ch. 1)",
+      "Ashcroft & Mermin, Solid State Physics (Ch. 29)",
+      "Neamen, Semiconductor Physics and Devices (4th Ed.)"
+    ]
+  },
+  {
+    "id": "law_hall_effect_voltage",
+    "name": "Enine Hall Etkisi Gerilimi",
+    "domain": "solid_state_semiconductors",
+    "regime": "universal",
+    "latex": "V_{hall} = \\frac{I B}{n_e q_e t_{wall}}",
+    "equation": "V_hall = (I * B) / (n_e * q_e * t_wall)",
+    "target": "V_hall",
+    "inputs": [
+      "I",
+      "B",
+      "n_e",
+      "q_e",
+      "t_wall"
+    ],
+    "dimensions": {
+      "V_hall": "voltage",
+      "I": "current",
+      "B": "magnetic_field",
+      "n_e": "number_density",
+      "q_e": "electric_charge",
+      "t_wall": "length"
+    },
+    "domain_bounds": {
+      "n_e": {
+        "min": 1.0,
+        "min_inclusive": false
+      },
+      "t_wall": {
+        "min": 1e-10,
+        "min_inclusive": false
+      }
+    },
+    "description": "Manyetik alan altındaki ince şeritte yük taşıyıcı yoğunluğu ve manyetik alan ölçümünü sağlayan Hall gerilimi.",
+    "sources": [
+      "Kittel, Introduction to Solid State Physics (8th Ed., Ch. 6)",
+      "Sze & Ng, Physics of Semiconductor Devices",
+      "NIST Hall Effect Measurements Reference"
+    ]
+  },
+  {
+    "id": "law_shockley_diode_current",
+    "name": "Shockley İdeal p-n Eklemi Diyot Akım Denklemi",
+    "domain": "solid_state_semiconductors",
+    "regime": "universal",
+    "latex": "I_{diode} = I_{sat}\\left(\\exp\\left(\\frac{q_e V_{bus}}{n_{id} k_B T}\\right) - 1\\right)",
+    "equation": "I_diode = I_sat * (exp((q_e * V_bus) / (n_id * k_B * T)) - 1)",
+    "target": "I_diode",
+    "inputs": [
+      "I_sat",
+      "q_e",
+      "V_bus",
+      "n_id",
+      "k_B",
+      "T"
+    ],
+    "dimensions": {
+      "I_diode": "current",
+      "I_sat": "current",
+      "q_e": "electric_charge",
+      "V_bus": "voltage",
+      "n_id": "dimensionless",
+      "k_B": "boltzmann_const",
+      "T": "temperature"
+    },
+    "domain_bounds": {
+      "n_id": {
+        "min": 1.0,
+        "max": 2.5,
+        "note": "İdeallik faktörü 1 <= n <= 2"
+      },
+      "T": {
+        "min": 1.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "İdeal p-n yarı iletken diyotunun ileri ve ters kutuplama akım-gerilim karakteristiği.",
+    "sources": [
+      "W. Shockley (1949), Bell System Technical Journal 28(3):435-489",
+      "Sze & Ng, Physics of Semiconductor Devices (3rd Ed., Ch. 2)",
+      "Sedra & Smith, Microelectronic Circuits (8th Ed.)"
+    ]
+  },
+  {
+    "id": "law_free_space_wave_impedance",
+    "name": "Boş Uzay Karakteristik Elektromanyetik Empedansı (Z_0)",
+    "domain": "electromagnetism",
+    "regime": "universal",
+    "latex": "Z_0 = \\sqrt{\\frac{\\mu_0}{\\varepsilon_0}}",
+    "equation": "Z_0 = sqrt(mu_0 / eps_0)",
+    "target": "Z_0",
+    "inputs": [
+      "mu_0",
+      "eps_0"
+    ],
+    "dimensions": {
+      "Z_0": "resistance",
+      "mu_0": "permeability",
+      "eps_0": "permittivity"
+    },
+    "domain_bounds": {},
+    "description": "Vakumda ilerleyen düzlem elektromanyetik dalgada E/H oranı (~376.730313668 Ohm).",
+    "sources": [
+      "NIST CODATA 2022: Characteristic Impedance of Vacuum",
+      "Griffiths, Introduction to Electrodynamics (Ch. 9)",
+      "Pozar, Microwave Engineering (4th Ed.)"
+    ]
+  },
+  {
+    "id": "law_speed_of_light_maxwell",
+    "name": "Maxwell Vakum Elektromanyetik Dalga Hızı Özdeşliği",
+    "domain": "electromagnetism",
+    "regime": "universal",
+    "latex": "c_{em} = \\frac{1}{\\sqrt{\\mu_0 \\varepsilon_0}}",
+    "equation": "c_em = 1 / sqrt(mu_0 * eps_0)",
+    "target": "c_em",
+    "inputs": [
+      "mu_0",
+      "eps_0"
+    ],
+    "dimensions": {
+      "c_em": "velocity",
+      "mu_0": "permeability",
+      "eps_0": "permittivity"
+    },
+    "domain_bounds": {},
+    "description": "Vakum manyetik geçirgenliği ve dielektrik sabitini ışık hızına bağlayan temel Maxwell özdeşliği.",
+    "sources": [
+      "J. C. Maxwell (1865), Phil. Trans. R. Soc. Lond. 155:459-512",
+      "NIST CODATA 2022 Fundamental Constants",
+      "Jackson, Classical Electrodynamics (3rd Ed.)"
+    ]
+  },
+  {
+    "id": "law_simple_pendulum_period",
+    "name": "Basit Sarkaç Küçük Açı Salınım Periyodu",
+    "domain": "vibrations_control",
+    "regime": "classical_nonrelativistic",
+    "latex": "T_{pend} = 2\\pi \\sqrt{\\frac{L}{g_0}}",
+    "equation": "T_pend = 2 * 3.141592653589793 * sqrt(L / g_0)",
+    "target": "T_pend",
+    "inputs": [
+      "L",
+      "g_0"
+    ],
+    "dimensions": {
+      "T_pend": "time",
+      "L": "length",
+      "g_0": "acceleration"
+    },
+    "domain_bounds": {
+      "L": {
+        "min": 1e-09,
+        "min_inclusive": false
+      },
+      "g_0": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Küçük genlikli (sin(theta) ~ theta) basit sarkacın kütleden bağımsız doğal salınım periyodu.",
+    "sources": [
+      "Halliday, Resnick & Walker, Fundamentals of Physics (Ch. 15)",
+      "Goldstein, Poole & Safko, Classical Mechanics (3rd Ed.)",
+      "Rao, Mechanical Vibrations (6th Ed.)"
+    ]
+  },
+  {
+    "id": "law_critical_viscous_damping",
+    "name": "Kritik Viskoz Sönüm Katsayısı",
+    "domain": "vibrations_control",
+    "regime": "linear_elastic",
+    "latex": "c_{crit} = 2 \\sqrt{k_{spr} m}",
+    "equation": "c_crit = 2 * sqrt(k_spr * m)",
+    "target": "c_crit",
+    "inputs": [
+      "k_spr",
+      "m"
+    ],
+    "dimensions": {
+      "c_crit": "damping_coeff",
+      "k_spr": "spring_stiffness",
+      "m": "mass"
+    },
+    "domain_bounds": {
+      "k_spr": {
+        "min": 0.0
+      },
+      "m": {
+        "min": 0.0
+      }
+    },
+    "description": "Tek serbestlik dereceli (SDOF) kütle-yay sisteminde salınımsız en hızlı denge dönüşünü sağlayan sınır sönüm katsayısı.",
+    "sources": [
+      "Rao, Mechanical Vibrations (6th Ed., Ch. 2)",
+      "Inman, Engineering Vibration (4th Ed.)",
+      "Ogata, Modern Control Engineering (5th Ed.)"
+    ]
+  },
+  {
+    "id": "law_damped_natural_frequency",
+    "name": "Sönümlü Doğal Açısal Frekans (Az Sönümlü Sistem)",
+    "domain": "vibrations_control",
+    "regime": "linear_elastic",
+    "latex": "\\omega_d = \\omega_n \\sqrt{1 - \\zeta_{damp}^2}",
+    "equation": "omega_d = omega_n * sqrt(1 - (zeta_damp ** 2))",
+    "target": "omega_d",
+    "inputs": [
+      "omega_n",
+      "zeta_damp"
+    ],
+    "dimensions": {
+      "omega_d": "angular_velocity",
+      "omega_n": "angular_velocity",
+      "zeta_damp": "dimensionless"
+    },
+    "domain_bounds": {
+      "omega_n": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "zeta_damp": {
+        "min": 0.0,
+        "max": 0.9999,
+        "note": "Az sönümlü rejim 0 <= zeta < 1"
+      }
+    },
+    "description": "Az sönümlü 2. dereceden mekanik veya kontrol sisteminin salınım açısal frekansı.",
+    "sources": [
+      "Rao, Mechanical Vibrations (6th Ed., Ch. 2)",
+      "Ogata, Modern Control Engineering (5th Ed., Ch. 5)",
+      "Franklin, Powell & Emami-Naeini, Feedback Control of Dynamic Systems"
+    ]
+  },
+  {
+    "id": "law_resonator_quality_factor",
+    "name": "Rezonatör Kalite Faktörü (Q-Faktörü)",
+    "domain": "vibrations_control",
+    "regime": "linear_elastic",
+    "latex": "Q_{res} = \\frac{1}{2 \\zeta_{damp}}",
+    "equation": "Q_res = 1 / (2 * zeta_damp)",
+    "target": "Q_res",
+    "inputs": [
+      "zeta_damp"
+    ],
+    "dimensions": {
+      "Q_res": "dimensionless",
+      "zeta_damp": "dimensionless"
+    },
+    "domain_bounds": {
+      "zeta_damp": {
+        "min": 1e-09,
+        "min_inclusive": false
+      }
+    },
+    "description": "Mekanik, MEMS veya RLC rezonatöründe depolanan enerjinin çevrim başına yitirilen enerjiye boyutsuz oranı.",
+    "sources": [
+      "Rao, Mechanical Vibrations (Ch. 3)",
+      "Inman, Engineering Vibration",
+      "IEEE Std 1139 — Resonator Quality Factor Definitions"
+    ]
+  },
+  {
+    "id": "law_spring_elastic_potential_energy",
+    "name": "Hooke Doğrusal Yay Potansiyel Enerjisi",
+    "domain": "classical_mechanics",
+    "regime": "linear_elastic",
+    "latex": "U_{spr} = \\frac{1}{2} k_{spr} x_{disp}^2",
+    "equation": "U_spr = 0.5 * k_spr * (x_disp ** 2)",
+    "target": "U_spr",
+    "inputs": [
+      "k_spr",
+      "x_disp"
+    ],
+    "dimensions": {
+      "U_spr": "energy",
+      "k_spr": "spring_stiffness",
+      "x_disp": "length"
+    },
+    "domain_bounds": {
+      "k_spr": {
+        "min": 0.0
+      }
+    },
+    "description": "Doğrusal yayda x yer değiştirmesiyle depolanan elastik potansiyel enerji.",
+    "sources": [
+      "Halliday, Resnick & Walker, Fundamentals of Physics (Ch. 8)",
+      "Goldstein, Classical Mechanics",
+      "Kleppner & Kolenkow, An Introduction to Mechanics"
+    ]
+  },
+  {
+    "id": "law_gravitational_potential_energy_near_surface",
+    "name": "Yüzeye Yakın Düzgün Yerçekimi Potansiyel Enerjisi",
+    "domain": "classical_mechanics",
+    "regime": "classical_nonrelativistic",
+    "latex": "U_{grav} = m g_0 h_{alt}",
+    "equation": "U_grav = m * g_0 * h_alt",
+    "target": "U_grav",
+    "inputs": [
+      "m",
+      "g_0",
+      "h_alt"
+    ],
+    "dimensions": {
+      "U_grav": "energy",
+      "m": "mass",
+      "g_0": "acceleration",
+      "h_alt": "length"
+    },
+    "domain_bounds": {
+      "m": {
+        "min": 0.0
+      }
+    },
+    "description": "Sabit yerçekimi alanı yaklaşımında (h << R_E) cismin konum potansiyel enerjisi.",
+    "sources": [
+      "Halliday, Resnick & Walker, Fundamentals of Physics (Ch. 8)",
+      "Taylor, Classical Mechanics",
+      "Feynman Lectures on Physics Vol. I"
+    ]
+  },
+  {
+    "id": "law_hawking_black_hole_temperature",
+    "name": "Hawking Kara Delik Kuantum Işınım Sıcaklığı",
+    "domain": "general_relativity",
+    "regime": "relativistic",
+    "latex": "T_{hawking} = \\frac{\\hbar c^3}{8\\pi G M_{body} k_B}",
+    "equation": "T_hawking = (hbar * (c ** 3)) / (8 * 3.141592653589793 * G * M_body * k_B)",
+    "target": "T_hawking",
+    "inputs": [
+      "hbar",
+      "c",
+      "G",
+      "M_body",
+      "k_B"
+    ],
+    "dimensions": {
+      "T_hawking": "temperature",
+      "hbar": "action",
+      "c": "velocity",
+      "G": "gravitational_constant",
+      "M_body": "mass",
+      "k_B": "boltzmann_const"
+    },
+    "domain_bounds": {
+      "M_body": {
+        "min": 1e-10,
+        "min_inclusive": false
+      }
+    },
+    "description": "Schwarzschild kara deliğinin olay ufku yakınındaki kuantum alan etkisinden doğan Hawking termal sıcaklığı.",
+    "sources": [
+      "S. W. Hawking (1975), Commun. Math. Phys. 43:199-220",
+      "Wald, General Relativity (Ch. 14)",
+      "Carroll, Spacetime and Geometry (Ch. 9)"
+    ]
+  },
+  {
+    "id": "law_bekenstein_hawking_entropy",
+    "name": "Bekenstein-Hawking Kara Delik Entropisi",
+    "domain": "general_relativity",
+    "regime": "relativistic",
+    "latex": "S_{bh} = \\frac{k_B c^3 A}{4 G \\hbar}",
+    "equation": "S_bh = (k_B * (c ** 3) * A) / (4 * G * hbar)",
+    "target": "S_bh",
+    "inputs": [
+      "k_B",
+      "c",
+      "A",
+      "G",
+      "hbar"
+    ],
+    "dimensions": {
+      "S_bh": "entropy",
+      "k_B": "boltzmann_const",
+      "c": "velocity",
+      "A": "area",
+      "G": "gravitational_constant",
+      "hbar": "action"
+    },
+    "domain_bounds": {
+      "A": {
+        "min": 0.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Kara delik olay ufkunun alanıyla orantılı holografik termodinamik entropisi (A / 4 l_P^2).",
+    "sources": [
+      "J. D. Bekenstein (1973), Phys. Rev. D 7:2333-2346",
+      "S. W. Hawking (1975), Commun. Math. Phys. 43:199-220",
+      "Wald, General Relativity (Ch. 14)"
+    ]
+  },
+  {
+    "id": "law_eddington_luminosity",
+    "name": "Eddington Işınım Basıncı Parlaklık Sınırı",
+    "domain": "astrophysics",
+    "regime": "universal",
+    "latex": "L_{edd} = \\frac{4\\pi G M_{body} m_p c}{\\sigma_T}",
+    "equation": "L_edd = (4 * 3.141592653589793 * G * M_body * m_p * c) / sigma_T",
+    "target": "L_edd",
+    "inputs": [
+      "G",
+      "M_body",
+      "m_p",
+      "c",
+      "sigma_T"
+    ],
+    "dimensions": {
+      "L_edd": "power",
+      "G": "gravitational_constant",
+      "M_body": "mass",
+      "m_p": "mass",
+      "c": "velocity",
+      "sigma_T": "area"
+    },
+    "domain_bounds": {
+      "M_body": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "sigma_T": {
+        "min": 1e-40,
+        "min_inclusive": false
+      }
+    },
+    "description": "Tam iyonize hidrojen plazmasında ışınım basıncının kütleçekimi dengelediği azami yıldız/akresyon parlaklığı.",
+    "sources": [
+      "Rybicki & Lightman, Radiative Processes in Astrophysics (Ch. 1)",
+      "Carroll & Ostlie, An Introduction to Modern Astrophysics (2nd Ed.)",
+      "Frank, King & Raine, Accretion Power in Astrophysics (3rd Ed.)"
+    ]
+  },
+  {
+    "id": "law_planetary_equilibrium_temperature",
+    "name": "Gezegen Radyatif Denge Sıcaklığı (Bond Albedo)",
+    "domain": "astrophysics",
+    "regime": "universal",
+    "latex": "T_{eq} = T_{star} (1 - A_{bond})^{1/4} \\sqrt{\\frac{R_{star}}{2 a_{orb}}}",
+    "equation": "T_eq = T_star * sqrt(sqrt(1 - A_bond)) * sqrt(R_star / (2 * a_orb))",
+    "target": "T_eq",
+    "inputs": [
+      "T_star",
+      "A_bond",
+      "R_star",
+      "a_orb"
+    ],
+    "dimensions": {
+      "T_eq": "temperature",
+      "T_star": "temperature",
+      "A_bond": "dimensionless",
+      "R_star": "length",
+      "a_orb": "length"
+    },
+    "domain_bounds": {
+      "T_star": {
+        "min": 1.0
+      },
+      "A_bond": {
+        "min": 0.0,
+        "max": 0.9999,
+        "note": "Bond albedosu [0, 1)"
+      },
+      "R_star": {
+        "min": 1.0,
+        "min_inclusive": false
+      },
+      "a_orb": {
+        "min": 1.0,
+        "min_inclusive": false
+      }
+    },
+    "description": "Sera etkisi hariç hızlı dönen bir gezegenin yıldız ışınımıyla termal dengedeki etkin karacisim sıcaklığı.",
+    "sources": [
+      "Seager, Exoplanet Atmospheres (Princeton University Press)",
+      "de Pater & Lissauer, Planetary Sciences (2nd Ed.)",
+      "NASA Exoplanet Archive Physical Model Documentation"
+    ]
+  },
+  {
+    "id": "law_jeans_gravitational_instability_length",
+    "name": "Jeans Kütleçekimsel Çökme Kritik Dalga Boyu",
+    "domain": "astrophysics",
+    "regime": "universal",
+    "latex": "\\lambda_{jeans} = c_s \\sqrt{\\frac{\\pi}{G \\rho}}",
+    "equation": "lambda_jeans = c_s * sqrt(3.141592653589793 / (G * rho))",
+    "target": "lambda_jeans",
+    "inputs": [
+      "c_s",
+      "G",
+      "rho"
+    ],
+    "dimensions": {
+      "lambda_jeans": "length",
+      "c_s": "velocity",
+      "G": "gravitational_constant",
+      "rho": "density"
+    },
+    "domain_bounds": {
+      "c_s": {
+        "min": 0.0,
+        "min_inclusive": false
+      },
+      "rho": {
+        "min": 1e-30,
+        "min_inclusive": false
+      }
+    },
+    "description": "Yıldızlararası gaz bulutunun kendi kütleçekimi altında çökmeye başladığı kritik uzunluk ölçeği.",
+    "sources": [
+      "Binney & Tremaine, Galactic Dynamics (2nd Ed., §5.1)",
+      "Carroll & Ostlie, An Introduction to Modern Astrophysics (Ch. 12)",
+      "Shu, The Physics of Astrophysics Vol. II: Gas Dynamics"
+    ]
+  },
+  {
+    "id": "law_planck_length",
+    "name": "Planck Temel Uzunluk Ölçeği",
+    "domain": "quantum_physics",
+    "regime": "universal",
+    "latex": "\\ell_P = \\sqrt{\\frac{\\hbar G}{c^3}}",
+    "equation": "l_planck = sqrt((hbar * G) / (c ** 3))",
+    "target": "l_planck",
+    "inputs": [
+      "hbar",
+      "G",
+      "c"
+    ],
+    "dimensions": {
+      "l_planck": "length",
+      "hbar": "action",
+      "G": "gravitational_constant",
+      "c": "velocity"
+    },
+    "domain_bounds": {},
+    "description": "Kuantum mekaniği ve genel göreliliğin eş zamanlı baskın olduğu evrensel Planck uzunluğu (~1.616255e-35 m).",
+    "sources": [
+      "NIST CODATA 2022 — Planck Length",
+      "Misner, Thorne & Wheeler, Gravitation (Box 43.1)",
+      "Wald, General Relativity"
+    ]
+  },
+  {
+    "id": "law_planck_mass",
+    "name": "Planck Temel Kütle Ölçeği",
+    "domain": "quantum_physics",
+    "regime": "universal",
+    "latex": "m_P = \\sqrt{\\frac{\\hbar c}{G}}",
+    "equation": "m_planck = sqrt((hbar * c) / G)",
+    "target": "m_planck",
+    "inputs": [
+      "hbar",
+      "c",
+      "G"
+    ],
+    "dimensions": {
+      "m_planck": "mass",
+      "hbar": "action",
+      "c": "velocity",
+      "G": "gravitational_constant"
+    },
+    "domain_bounds": {},
+    "description": "Compton dalga boyunun Schwarzschild yarıçapı mertebesine eşit olduğu temel Planck kütlesi (~2.176434e-8 kg).",
+    "sources": [
+      "NIST CODATA 2022 — Planck Mass",
+      "Misner, Thorne & Wheeler, Gravitation",
+      "Particle Data Group (PDG) Review of Particle Physics"
+    ]
+  },
+  {
+    "id": "law_planck_time",
+    "name": "Planck Temel Zaman Ölçeği",
+    "domain": "quantum_physics",
+    "regime": "universal",
+    "latex": "t_P = \\sqrt{\\frac{\\hbar G}{c^5}}",
+    "equation": "t_planck = sqrt((hbar * G) / (c ** 5))",
+    "target": "t_planck",
+    "inputs": [
+      "hbar",
+      "G",
+      "c"
+    ],
+    "dimensions": {
+      "t_planck": "time",
+      "hbar": "action",
+      "G": "gravitational_constant",
+      "c": "velocity"
+    },
+    "domain_bounds": {},
+    "description": "Işığın vakumda bir Planck uzunluğunu katetme süresi (~5.391247e-44 s).",
+    "sources": [
+      "NIST CODATA 2022 — Planck Time",
+      "Misner, Thorne & Wheeler, Gravitation",
+      "Particle Data Group (PDG) Physical Constants"
+    ]
+  },
+  {
+    "id": "law_gravitational_time_dilation",
+    "name": "Schwarzschild Kütleçekimsel Zaman Genişlemesi",
+    "domain": "general_relativity",
+    "regime": "relativistic",
+    "latex": "t_{proper} = t \\sqrt{1 - \\frac{2 G M_{body}}{r c^2}}",
+    "equation": "t_proper = t * sqrt(1 - ((2 * G * M_body) / (r * (c ** 2))))",
+    "target": "t_proper",
+    "inputs": [
+      "t",
+      "G",
+      "M_body",
+      "r",
+      "c"
+    ],
+    "dimensions": {
+      "t_proper": "time",
+      "t": "time",
+      "G": "gravitational_constant",
+      "M_body": "mass",
+      "r": "length",
+      "c": "velocity"
+    },
+    "domain_bounds": {
+      "t": {
+        "min": 0.0
+      },
+      "r": {
+        "min": 1e-06,
+        "min_inclusive": false,
+        "note": "Olay ufku dışı r > r_s"
+      }
+    },
+    "description": "GPS uydu saat düzeltmelerinin ve genel görelilik alanlarının temelini oluşturan kütleçekimsel zaman yavaşlaması.",
+    "sources": [
+      "Misner, Thorne & Wheeler, Gravitation (Ch. 25)",
+      "Ashby (2003), Living Reviews in Relativity: Relativity in the GPS",
+      "Carroll, Spacetime and Geometry (Ch. 5)"
+    ]
   }
 ]

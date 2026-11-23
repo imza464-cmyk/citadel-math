@@ -94,6 +94,17 @@ impl Dimension {
     pub const fn areal_density() -> Self { Self::new(1, -2, 0, 0, 0, 0, 0) }
     pub const fn linear_density() -> Self { Self::new(1, -1, 0, 0, 0, 0, 0) }
     pub const fn compressibility() -> Self { Self::new(-1, 1, 2, 0, 0, 0, 0) }
+    pub const fn molar_energy() -> Self { Self::new(1, 2, -2, 0, 0, -1, 0) }
+    pub const fn molar_concentration() -> Self { Self::new(0, -3, 0, 0, 0, 1, 0) }
+    pub const fn molar_charge() -> Self { Self::new(0, 0, 1, 1, 0, -1, 0) }
+    pub const fn carrier_mobility() -> Self { Self::new(-1, 0, 2, 1, 0, 0, 0) }
+    pub const fn acoustic_impedance() -> Self { Self::new(1, -2, -1, 0, 0, 0, 0) }
+    pub const fn damping_coeff() -> Self { Self::new(1, 0, -1, 0, 0, 0, 0) }
+    pub const fn lorenz_number() -> Self { Self::new(2, 4, -6, -2, -2, 0, 0) }
+    pub const fn wien_constant() -> Self { Self::new(0, 1, 0, 0, 1, 0, 0) }
+    pub const fn molar_flux() -> Self { Self::new(0, -2, -1, 0, 0, 1, 0) }
+    pub const fn thermal_resistance() -> Self { Self::new(-1, -2, 3, 0, 1, 0, 0) }
+    pub const fn molar_attenuation() -> Self { Self::new(0, 2, 0, 0, 0, -1, 0) }
 
     pub const fn is_dimensionless(&self) -> bool {
         self.m == 0 && self.l == 0 && self.t == 0 && self.i == 0 &&
@@ -275,6 +286,17 @@ impl Dimension {
             "areal_density" => Some(Self::areal_density()),
             "linear_density" => Some(Self::linear_density()),
             "compressibility" => Some(Self::compressibility()),
+            "molar_energy" => Some(Self::molar_energy()),
+            "molar_concentration" => Some(Self::molar_concentration()),
+            "molar_charge" => Some(Self::molar_charge()),
+            "carrier_mobility" => Some(Self::carrier_mobility()),
+            "acoustic_impedance" => Some(Self::acoustic_impedance()),
+            "damping_coeff" => Some(Self::damping_coeff()),
+            "lorenz_number" => Some(Self::lorenz_number()),
+            "wien_constant" => Some(Self::wien_constant()),
+            "molar_flux" => Some(Self::molar_flux()),
+            "thermal_resistance" => Some(Self::thermal_resistance()),
+            "molar_attenuation" => Some(Self::molar_attenuation()),
             _ => None,
         }
     }

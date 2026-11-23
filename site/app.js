@@ -859,6 +859,10 @@ ${esc(cur.json)}</pre>
       }
       const eqParts = (law.equation || "").split("=");
       const rhsExpr = eqParts.length > 1 ? eqParts.slice(1).join("=").trim() : "";
+      const sourcesList = Array.isArray(law.sources) ? law.sources : [];
+      const sourcesHtml = sourcesList.length
+        ? `<details class="law-bounds"><summary>Doğrulama kaynakları (${sourcesList.length} bağımsız referans)</summary><ul>${sourcesList.map((s) => `<li>${esc(s)}</li>`).join("")}</ul></details>`
+        : "";
       const isHi = lawState.highlightId && law.id === lawState.highlightId;
       return `
         <article class="law-entry${isHi ? " highlight" : ""}" data-law-id="${esc(law.id)}">
@@ -868,6 +872,7 @@ ${esc(cur.json)}</pre>
               <code>${esc(law.id)}</code>
               <span class="tag accent">${esc(law.domain)}</span>
               <span class="tag">${esc(law.regime || "universal")}</span>
+              ${sourcesList.length >= 3 ? `<span class="tag ok">${sourcesList.length} Kaynak</span>` : ""}
             </div>
           </div>
           <div class="formula-line">
@@ -880,6 +885,7 @@ ${esc(cur.json)}</pre>
           ${law.description ? `<p style="font-size:0.85rem;margin:6px 0;">${esc(law.description)}</p>` : ""}
           <div class="law-vars">Semboller: ${varsText}</div>
           ${boundsHtml}
+          ${sourcesHtml}
         </article>
       `;
     }).join("");
@@ -977,6 +983,9 @@ ${esc(cur.json)}</pre>
     refractory_metal: "oklch(0.76 0.11 265)",
     uhtc_ceramic: "oklch(0.81 0.16 82)",
     ceramic_composite: "oklch(0.78 0.15 115)",
+    technical_ceramic: "oklch(0.79 0.14 96)",
+    semiconductor_optical: "oklch(0.76 0.15 215)",
+    polymer: "oklch(0.74 0.14 330)",
     ablative_tps: "oklch(0.69 0.19 25)",
     insulator: "oklch(0.73 0.13 345)",
   };
@@ -997,6 +1006,10 @@ ${esc(cur.json)}</pre>
     if (!hud || !mat) return;
     const tempC = Math.round(mat.max_temperature_k - 273.15);
     const col = CAT_COLORS[mat.category] || "var(--accent)";
+    const srcArr = Array.isArray(mat.sources) ? mat.sources : [];
+    const srcHtml = srcArr.length
+      ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-subtle);font-size:0.7rem;color:var(--text-dim);line-height:1.4;"><strong style="color:var(--ok);">✓ ${srcArr.length} Kaynak:</strong> ${srcArr.map((s) => esc(s)).join(" · ")}</div>`
+      : "";
     hud.innerHTML = `
       <div>
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
@@ -1006,6 +1019,7 @@ ${esc(cur.json)}</pre>
         <div style="font-weight:650;font-size:0.9rem;color:var(--text);line-height:1.3;">${esc(mat.name)}</div>
         <div class="mono" style="font-size:0.7rem;color:var(--text-dim);margin-top:3px;">${esc(mat.id)}</div>
         <p style="font-size:0.78rem;margin:8px 0 0;line-height:1.45;">${esc(mat.description || "")}</p>
+        ${srcHtml}
       </div>
       <div class="mono" style="font-size:0.75rem;display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:10px;border-top:1px solid var(--border-subtle);">
         <div><span style="color:var(--text-dim);display:block;font-size:0.66rem;">Yoğunluk</span><strong>${mat.density_kg_m3} kg/m³</strong></div>

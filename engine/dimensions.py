@@ -317,6 +317,17 @@ DIMENSIONS: Dict[str, Dimension] = {
     "areal_density": Dimension(m=1, l=-2),                         # kg/m^2 (Yüzeysel kütle / balistik katsayı)
     "linear_density": Dimension(m=1, l=-1),                        # kg/m (Birim boy kütlesi)
     "compressibility": Dimension(m=-1, l=1, t=2),                  # 1/Pa
+    "molar_energy": Dimension(m=1, l=2, t=-2, n=-1),               # J/mol (Aktivasyon enerjisi, molar entalpi)
+    "molar_concentration": Dimension(l=-3, n=1),                   # mol/m^3 (Molar derişim)
+    "molar_charge": Dimension(t=1, i=1, n=-1),                     # C/mol (Faraday sabiti)
+    "carrier_mobility": Dimension(m=-1, t=2, i=1),                 # m^2/(V*s) (Yük taşıyıcı mobilitesi)
+    "acoustic_impedance": Dimension(m=1, l=-2, t=-1),              # Pa*s/m = Rayl (Özgül akustik empedans)
+    "damping_coeff": Dimension(m=1, t=-1),                         # N*s/m = kg/s (Viskoz sönüm katsayısı)
+    "lorenz_number": Dimension(m=2, l=4, t=-6, i=-2, theta=-2),    # V^2/K^2 (Wiedemann-Franz Lorenz sayısı)
+    "wien_constant": Dimension(l=1, theta=1),                      # m*K (Wien yer değiştirme sabiti)
+    "molar_flux": Dimension(l=-2, t=-1, n=1),                      # mol/(m^2*s) (Fick difüzyon akısı)
+    "thermal_resistance": Dimension(m=-1, l=-2, t=3, theta=1),     # K/W (Isıl direnç)
+    "molar_attenuation": Dimension(l=2, n=-1),                     # m^2/mol (Beer-Lambert molar soğurma)
 }
 
 

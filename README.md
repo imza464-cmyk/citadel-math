@@ -23,7 +23,7 @@ Büyük Dil Modelleri (LLM) formül türetirken sıklıkla birim hatası yapar, 
 flowchart LR
     LLM["LLM / MCP Client (Claude, Cursor, Windsurf)"] -->|"JSON-RPC (stdio)"| MCP["kmath_mcp.py (Python + Zero-Eval AST Guard)"]
     MCP -->|"Subprocess (shell=False)"| RUST["citadel_math_core (Pure Rust, forbid unsafe)"]
-    MCP -->|"Read-only SSOT"| DB["database/ & data/ (217 Laws, 356 Symbols, CODATA 2022)"]
+    MCP -->|"Read-only SSOT"| DB["database/ & data/ (307 Laws, 488 Symbols, 60 Materials, CODATA 2022)"]
     RUST -->|"Verified Bounds & Proofs"| VERDICT["Deterministic JSON Verdict"]
     MCP --> VERDICT
 ```
@@ -219,19 +219,19 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 │       ├── dimensions.rs           # Z^7 SI Dimensional Shield & ScaledUnit converter
 │       ├── buckingham.rs           # Exact rational/integer Z^7 nullspace Buckingham-Pi discovery
 │       ├── pareto.rs               # Exact Skyline & NSGA-II multi-objective Pareto optimizer
-│       ├── graph.rs                # SSOT canonical hypergraph (217 laws, 550 inverse laws, 18 regimes)
+│       ├── graph.rs                # SSOT canonical hypergraph (307 laws, 34 domains, 18 regimes)
 │       ├── simulator.rs            # RK4 & adaptive Dormand-Prince RK4(5) integrator + USSA-1976 model
 │       ├── astrodynamics.rs        # WGS84 J2 orbital precession & universal-variable Lambert solver
-│       ├── materials.rs            # 30 aerospace/UHTC/TPS materials, NASA SP-8007 buckling & TPS checks
+│       ├── materials.rs            # 60 aerospace/ceramic/polymer/optical/TPS materials, NASA SP-8007 & TPS
 │       ├── cad.rs                  # 2D parametric CAD, Steiner/moment of inertia, Euler buckling & DXF/SVG
 │       ├── designer.rs             # Closed-loop parametric preliminary sizing engine
 │       ├── codegen.rs              # Verified zero-panic Result<f64, &'static str> Rust function generator
 │       └── physical_bounds.rs      # Thermodynamics 1st/2nd law (Carnot), v < c causality & momentum pruning
 ├── engine/                         # Python symbolic AST, SymPy parity, harvester, RK4 & knowledge graph
 ├── database/
-│   ├── canonical_laws.json         # 217 verified laws across 25+ domains (physics, aerospace, real-time, biomechanics)
-│   ├── ONTOLOGY.json               # 356 unique SI symbol-dimension definitions (SSOT)
-│   └── materials.json              # 30 certified structural & thermal protection materials
+│   ├── canonical_laws.json         # 307 verified laws across 34 domains (physics, materials, fluids, optics, astro, etc.)
+│   ├── ONTOLOGY.json               # 488 unique SI symbol-dimension definitions (SSOT)
+│   └── materials.json              # 60 certified engineering, ceramic, polymer, optical & TPS materials (≥3 sources each)
 └── data/
     └── nist_constants.json         # NIST CODATA 2022 fundamental constants
 ```
@@ -247,7 +247,7 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 | `kmath_prove_identity` | Proves polynomial/rational algebraic equivalence (`GuardedPoly`) with domain guards & overflow rejection. |
 | `kmath_interval_eval` | Evaluates expressions using IEEE 1788-2015 outward-rounded `Interval64` + `Dual64` sensitivity. |
 | `kmath_constant` | Fetches NIST CODATA 2022 fundamental constants and exact SI definitions. |
-| `kmath_materials` | Queries and ranks 30 structural, cryogenic, UHTC, and ablative TPS materials. |
+| `kmath_materials` | Queries and ranks 60 structural, cryogenic, superalloy, ceramic, optical, polymer, UHTC, and TPS materials. |
 | `kmath_stress_check` | Checks cylindrical shell Von Mises stress, NASA SP-8007 buckling, and aerothermal TPS limits. |
 | `kmath_simulate_trajectory` | Runs 4th-order Runge-Kutta (RK4) trajectory integration with USSA-1976 7-layer atmosphere. |
 | `kmath_solve_for` | Symbolically solves canonical equations with automated SymPy/AST validation. |

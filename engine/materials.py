@@ -30,6 +30,7 @@ class Material:
         self.max_temperature = float(data.get("max_temperature_k", 500.0)) # K
         self.thermal_conductivity = float(data.get("thermal_conductivity_w_mk", 10.0)) # W/(m*K)
         self.description = data.get("description", "")
+        self.sources: List[str] = list(data.get("sources", []))
 
     @property
     def specific_strength(self) -> float:
@@ -56,6 +57,7 @@ class Material:
             "specific_strength_kN_m_kg": round(self.specific_strength / 1000.0, 2),
             "breaking_length_km": round(self.breaking_length_km, 1),
             "description": self.description,
+            "sources": self.sources,
         }
 
 

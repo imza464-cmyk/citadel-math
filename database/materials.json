@@ -358,5 +358,515 @@
     "max_temperature_k": 1473.0,
     "thermal_conductivity_w_mk": 0.015,
     "description": "Mars gezginlerinde ve LH2 tanklarında kullanılan ultra-düşük iletkenlikli nanoporöz yalıtım malzemesi."
+  },
+  {
+    "id": "mat_al_2024_t3",
+    "name": "Alüminyum Alaşımı 2024-T3 (Uçak Gövde ve Kanat Kabuğu)",
+    "category": "metal_alloy",
+    "density_kg_m3": 2780.0,
+    "tensile_strength_mpa": 483.0,
+    "yield_strength_mpa": 345.0,
+    "youngs_modulus_gpa": 73.1,
+    "max_temperature_k": 423.0,
+    "thermal_conductivity_w_mk": 121.0,
+    "description": "Yüksek yorulma dayanımı ve hasar toleransı nedeniyle uçak gövde/kanat alt yüzeylerinin standart Al-Cu alaşımı.",
+    "sources": [
+      "ASM Handbook Vol. 2: Properties and Selection: Nonferrous Alloys (Al 2024-T3)",
+      "MMPDS-14 / MIL-HDBK-5 (Aluminum 2024-T3 Sheet/Plate)",
+      "MatWeb / Aerospace Metals Material Datasheet (UNS A92024)"
+    ]
+  },
+  {
+    "id": "mat_al_7050_t7451",
+    "name": "Alüminyum Alaşımı 7050-T7451 (Kalın Havacılık Gövde Plakası)",
+    "category": "metal_alloy",
+    "density_kg_m3": 2830.0,
+    "tensile_strength_mpa": 524.0,
+    "yield_strength_mpa": 469.0,
+    "youngs_modulus_gpa": 70.3,
+    "max_temperature_k": 393.0,
+    "thermal_conductivity_w_mk": 157.0,
+    "description": "Gerilmeli korozyon çatlamasına (SCC) karşı üstün dirençli, kalın kesitli havacılık bölme ve kiriş alaşımı.",
+    "sources": [
+      "ASM International Alloy Digest (Al 7050-T7451)",
+      "MMPDS-14 / AMS 4050 (Al 7050-T7451 Plate)",
+      "MatWeb / Aerospace Specification Metals (UNS A97050)"
+    ]
+  },
+  {
+    "id": "mat_aisi_4130_qt",
+    "name": "AISI 4130 Krom-Molibden (Chromoly) Çeliği (Q&T)",
+    "category": "metal_alloy",
+    "density_kg_m3": 7850.0,
+    "tensile_strength_mpa": 930.0,
+    "yield_strength_mpa": 758.0,
+    "youngs_modulus_gpa": 205.0,
+    "max_temperature_k": 673.0,
+    "thermal_conductivity_w_mk": 42.7,
+    "description": "Kaynaklanabilirliği yüksek, motor askıları, iniş takımları ve yüksek basınçlı borularda kullanılan Cr-Mo alaşımlı çelik.",
+    "sources": [
+      "ASM Handbook Vol. 1: Properties and Selection: Irons, Steels (AISI 4130)",
+      "MMPDS-14 / AMS 6370 (MIL-S-6758 4130 Alloy Steel)",
+      "MatWeb / AZoM Technical Datasheet (UNS G41300)"
+    ]
+  },
+  {
+    "id": "mat_aisi_4340_qt",
+    "name": "AISI 4340 Ultra Yüksek Mukavemetli Ni-Cr-Mo Çeliği (Q&T)",
+    "category": "metal_alloy",
+    "density_kg_m3": 7850.0,
+    "tensile_strength_mpa": 1110.0,
+    "yield_strength_mpa": 950.0,
+    "youngs_modulus_gpa": 205.0,
+    "max_temperature_k": 673.0,
+    "thermal_conductivity_w_mk": 44.5,
+    "description": "Ağır iniş takımları, tahrik milleri ve darbe yüklü yapısal bağlantılar için standart yüksek tokluklu çelik.",
+    "sources": [
+      "ASM Handbook Vol. 1: Irons, Steels and High-Performance Alloys (AISI 4340)",
+      "MMPDS-14 / AMS 6415 (4340 Quenched & Tempered)",
+      "MatWeb / AZoM Material Properties (UNS G43400)"
+    ]
+  },
+  {
+    "id": "mat_aisi_316l",
+    "name": "AISI 316L Östenitik Paslanmaz Çelik (Kriyojenik/Denizcilik/Biyomedikal)",
+    "category": "metal_alloy",
+    "density_kg_m3": 8000.0,
+    "tensile_strength_mpa": 550.0,
+    "yield_strength_mpa": 250.0,
+    "youngs_modulus_gpa": 193.0,
+    "max_temperature_k": 1143.0,
+    "thermal_conductivity_w_mk": 15.0,
+    "description": "Molibden katkılı korozyon dirençli, kriyojenik hatlarda, kimyasal reaktörlerde ve biyomedikal implantlarda yaygın paslanmaz çelik.",
+    "sources": [
+      "ASM Specialty Handbook: Stainless Steels (Type 316L)",
+      "ASTM A240 / UNS S31603 Standard Specification",
+      "MatWeb / SpaceMatDB & Aerospace Metals (316L Annealed)"
+    ]
+  },
+  {
+    "id": "mat_invar_36",
+    "name": "Invar 36 (Fe-36Ni Sıfıra Yakın Isıl Genleşmeli Hassas Alaşım)",
+    "category": "metal_alloy",
+    "density_kg_m3": 8050.0,
+    "tensile_strength_mpa": 490.0,
+    "yield_strength_mpa": 260.0,
+    "youngs_modulus_gpa": 144.0,
+    "max_temperature_k": 500.0,
+    "thermal_conductivity_w_mk": 11.0,
+    "description": "Curie sıcaklığı altında ultra düşük CTE (~1.2e-6 /K) sağlayan uzay teleskobu, lazer optik tezgahı ve kriyojenik tank alaşımı.",
+    "sources": [
+      "Carpenter Technology Invar 36 Alloy Technical Datasheet",
+      "ASM Handbook Vol. 2: Low-Expansion Alloys (UNS K93600)",
+      "AZoM / SpaceMatDB Invar 36 Mechanical & Thermal Properties"
+    ]
+  },
+  {
+    "id": "mat_magnesium_az31b",
+    "name": "Magnezyum Alaşımı AZ31B-H24 (Ultra Hafif Yapısal Metal)",
+    "category": "metal_alloy",
+    "density_kg_m3": 1770.0,
+    "tensile_strength_mpa": 290.0,
+    "yield_strength_mpa": 220.0,
+    "youngs_modulus_gpa": 45.0,
+    "max_temperature_k": 423.0,
+    "thermal_conductivity_w_mk": 96.0,
+    "description": "En hafif yapısal mühendislik metallerinden; İHA gövdeleri, uydu aviyonik muhafazaları ve titreşim sönümleyici şasiler.",
+    "sources": [
+      "ASM Handbook Vol. 2: Magnesium and Magnesium Alloys (AZ31B-H24)",
+      "ASTM B90 / AMS 4377 Magnesium Sheet & Plate Standard",
+      "MatWeb / AZoM Material Datasheet (UNS M11311)"
+    ]
+  },
+  {
+    "id": "mat_zircaloy_4",
+    "name": "Zircaloy-4 (UNS R60804 Nükleer Yakıt Zarfı Zirkonyum Alaşımı)",
+    "category": "metal_alloy",
+    "density_kg_m3": 6560.0,
+    "tensile_strength_mpa": 514.0,
+    "yield_strength_mpa": 381.0,
+    "youngs_modulus_gpa": 99.3,
+    "max_temperature_k": 673.0,
+    "thermal_conductivity_w_mk": 21.5,
+    "description": "Çok düşük termal nötron soğurma tesir kesiti ve yüksek su/buhar korozyon direnciyle PWR nükleer yakıt zarfı standardı.",
+    "sources": [
+      "ATI Specialty Alloys Zircaloy-4 Technical Data Sheet (UNS R60804)",
+      "IAEA TECDOC-1496: Thermophysical Properties of Materials for Nuclear Engineering",
+      "AZoM / MatWeb Zircaloy-4 Properties"
+    ]
+  },
+  {
+    "id": "mat_monel_k500",
+    "name": "Monel K-500 (Yaşlandırılmış Ni-Cu Yüksek Basınç / Oksijen Alaşımı)",
+    "category": "superalloy",
+    "density_kg_m3": 8440.0,
+    "tensile_strength_mpa": 1000.0,
+    "yield_strength_mpa": 725.0,
+    "youngs_modulus_gpa": 179.0,
+    "max_temperature_k": 755.0,
+    "thermal_conductivity_w_mk": 17.4,
+    "description": "Yüksek basınçlı LOX valfleri, denizaltı milleri ve kıvılcım/tutuşma direnci gereken oksitleyici hatları için Ni-Cu süperalaşımı.",
+    "sources": [
+      "Special Metals Publication SMC-055: MONEL alloy K-500",
+      "ASM Handbook Vol. 2: Nickel-Copper Alloys (UNS N05500)",
+      "MatWeb / Elgiloy Specialty Metals Datasheet"
+    ]
+  },
+  {
+    "id": "mat_hastelloy_x",
+    "name": "Hastelloy X (UNS N06002 Gaz Türbini Yanma Odası Süperalaşımı)",
+    "category": "superalloy",
+    "density_kg_m3": 8220.0,
+    "tensile_strength_mpa": 785.0,
+    "yield_strength_mpa": 385.0,
+    "youngs_modulus_gpa": 205.0,
+    "max_temperature_k": 1366.0,
+    "thermal_conductivity_w_mk": 11.6,
+    "description": "1200 °C'ye kadar olağanüstü oksidasyon direnci ve sünme mukavemeti sunan jet motoru yanma odası ve art yakıcı süperalaşımı.",
+    "sources": [
+      "Haynes International Technical Brochure H-3009: HASTELLOY X Alloy",
+      "AMS 5536 / UNS N06002 Aerospace Material Specification",
+      "ASM Handbook / AZoM Hastelloy X Properties"
+    ]
+  },
+  {
+    "id": "mat_inconel_x750",
+    "name": "Inconel X-750 (Çökelme Sertleştirilmiş Ni-Cr Süperalaşımı)",
+    "category": "superalloy",
+    "density_kg_m3": 8280.0,
+    "tensile_strength_mpa": 1200.0,
+    "yield_strength_mpa": 790.0,
+    "youngs_modulus_gpa": 214.0,
+    "max_temperature_k": 977.0,
+    "thermal_conductivity_w_mk": 12.0,
+    "description": "Roket motoru itki odaları (F-1 / J-2 mirası), yüksek sıcaklık yayları ve nükleer reaktör içi bağlantı elemanları.",
+    "sources": [
+      "Special Metals Publication SMC-067: INCONEL alloy X-750",
+      "AMS 5667 / UNS N07750 Specification",
+      "ASM International / High Temp Metals Datasheet"
+    ]
+  },
+  {
+    "id": "mat_cmsx_4",
+    "name": "CMSX-4 (2. Nesil Tek Kristal Nikel Türbin Kanatçık Süperalaşımı)",
+    "category": "superalloy",
+    "density_kg_m3": 8750.0,
+    "tensile_strength_mpa": 1120.0,
+    "yield_strength_mpa": 1035.0,
+    "youngs_modulus_gpa": 220.0,
+    "max_temperature_k": 1423.0,
+    "thermal_conductivity_w_mk": 12.5,
+    "description": "Renyum katkılı tek kristal (SX) yapı sayesinde tane sınırı sünmesini ortadan kaldıran yüksek basınçlı jet türbini kanatçık alaşımı.",
+    "sources": [
+      "Cannon-Muskegon CMSX-4 Single-Crystal Superalloy Specification",
+      "NASA/TM-2004-213070: Mechanical Properties of Single-Crystal Superalloys",
+      "ASM International: Superalloys II (Sims, Stoloff & Hagel)"
+    ]
+  },
+  {
+    "id": "mat_grcop_84",
+    "name": "NASA GRCop-84 (Cu-8Cr-4Nb Rejeneratif Yanma Odası Bakır Alaşımı)",
+    "category": "copper_superalloy",
+    "density_kg_m3": 8760.0,
+    "tensile_strength_mpa": 395.0,
+    "yield_strength_mpa": 280.0,
+    "youngs_modulus_gpa": 118.0,
+    "max_temperature_k": 1073.0,
+    "thermal_conductivity_w_mk": 305.0,
+    "description": "NASA Glenn tarafından geliştirilen Cr2Nb dağılım sertleştirmeli, 3B LPBF ile üretilen yüksek ısı akılı roket yanma odası alaşımı.",
+    "sources": [
+      "NASA/TM-2005-213566 (D. L. Ellis): GRCop-84 A High-Temperature Copper Alloy",
+      "NASA Glenn Research Center GRCop-84 Additive Manufacturing Datasheet",
+      "ASM Materials & Processes for Spacecraft and High-Temp Propulsion"
+    ]
+  },
+  {
+    "id": "mat_ofhc_copper_c10100",
+    "name": "OFHC Bakır (UNS C10100 Oksijensiz Yüksek İletkenlikli Bakır)",
+    "category": "copper_superalloy",
+    "density_kg_m3": 8940.0,
+    "tensile_strength_mpa": 250.0,
+    "yield_strength_mpa": 195.0,
+    "youngs_modulus_gpa": 117.0,
+    "max_temperature_k": 523.0,
+    "thermal_conductivity_w_mk": 391.0,
+    "description": "%99.99 saflıkta, süperiletken mıknatıs kararlılaştırıcıları, RF boşlukları ve kriyojenik ısı değiştiriciler için referans bakır.",
+    "sources": [
+      "Copper Development Association (CDA) Datasheet UNS C10100",
+      "NIST Cryogenic Material Properties Database (OFHC Copper)",
+      "ASM Handbook Vol. 2: Copper and Copper Alloys"
+    ]
+  },
+  {
+    "id": "mat_niobium_c103",
+    "name": "Niyobyum C-103 (Nb-10Hf-1Ti Radyatif Roket Nozul Eteği Alaşımı)",
+    "category": "refractory_metal",
+    "density_kg_m3": 8850.0,
+    "tensile_strength_mpa": 375.0,
+    "yield_strength_mpa": 265.0,
+    "youngs_modulus_gpa": 90.3,
+    "max_temperature_k": 1644.0,
+    "thermal_conductivity_w_mk": 37.4,
+    "description": "Apollo SPS ve Merlin Vacuum roket motorlarının radyatif soğutmalı nozul uzantılarında kullanılan sünek refrakter niyobyum alaşımı.",
+    "sources": [
+      "ATI Wah Chang / H.C. Starck C-103 Niobium Alloy Technical Datasheet",
+      "AMS 7852 / ASTM B654 Columbium-10Hf-1Ti Specification",
+      "NASA SP-8087 / Liquid Rocket Engine Nozzles Design Criteria"
+    ]
+  },
+  {
+    "id": "mat_tantalum_10w",
+    "name": "Tantal-10W (UNS R05255 Ultra Yüksek Sıcaklık Refrakter Alaşımı)",
+    "category": "refractory_metal",
+    "density_kg_m3": 16840.0,
+    "tensile_strength_mpa": 620.0,
+    "yield_strength_mpa": 510.0,
+    "youngs_modulus_gpa": 205.0,
+    "max_temperature_k": 2273.0,
+    "thermal_conductivity_w_mk": 55.0,
+    "description": "2000 °C üzerinde vakum/inert ortamda yüksek mukavemet ve süneklik koruyan uzay itki ve kimyasal ısı kalkanı alaşımı.",
+    "sources": [
+      "ASTM B365 / H.C. Starck Ta-10W Technical Specification",
+      "Tantalum-Niobium International Study Center (T.I.C.) Property Database",
+      "ASM Handbook Vol. 2: Refractory Metals and Alloys"
+    ]
+  },
+  {
+    "id": "mat_rhenium_pure",
+    "name": "Saf Renyum (Re Tavlı Yüksek Sıcaklık İtici Yanma Odası)",
+    "category": "refractory_metal",
+    "density_kg_m3": 21020.0,
+    "tensile_strength_mpa": 1070.0,
+    "yield_strength_mpa": 310.0,
+    "youngs_modulus_gpa": 463.0,
+    "max_temperature_k": 2473.0,
+    "thermal_conductivity_w_mk": 48.0,
+    "description": "Süneklik-gevreklik geçiş sıcaklığı (DBTT) olmayan tek refrakter metal; İridyum kaplı apogee uydu itki odalarının çekirdeği.",
+    "sources": [
+      "NASA/CR-1998-206972: Iridium-Coated Rhenium Thruster Technology",
+      "ASM Handbook Vol. 2: Rhenium Properties & Applications",
+      "AZoM / ESPI Metals Pure Rhenium Technical Reference"
+    ]
+  },
+  {
+    "id": "mat_sic_sintered",
+    "name": "Sinterlenmiş Alfa Silisyum Karbür (α-SiC Teknik Seramik)",
+    "category": "technical_ceramic",
+    "density_kg_m3": 3100.0,
+    "tensile_strength_mpa": 380.0,
+    "yield_strength_mpa": 350.0,
+    "youngs_modulus_gpa": 410.0,
+    "max_temperature_k": 1873.0,
+    "thermal_conductivity_w_mk": 120.0,
+    "description": "Yüksek sertlik, olağanüstü ısıl şok direnci ve boyutsal kararlılık sunan uzay teleskobu aynası (Herschel/Gaia) ve türbin seramiği.",
+    "sources": [
+      "CoorsTek / Saint-Gobain Hexoloy SA Sintered SiC Datasheet",
+      "NIST Structural Ceramics Database (Sintered alpha-SiC)",
+      "ASM Engineered Materials Handbook Vol. 4: Ceramics and Glasses"
+    ]
+  },
+  {
+    "id": "mat_silicon_nitride_si3n4",
+    "name": "Silisyum Nitrür (Si3N4 Rulman & Yüksek Sıcaklık Seramiği)",
+    "category": "technical_ceramic",
+    "density_kg_m3": 3250.0,
+    "tensile_strength_mpa": 700.0,
+    "yield_strength_mpa": 650.0,
+    "youngs_modulus_gpa": 310.0,
+    "max_temperature_k": 1473.0,
+    "thermal_conductivity_w_mk": 29.0,
+    "description": "Yüksek kırılma tokluğu ve düşük yoğunluğuyla turbopompa hibrit rulmanları, gaz türbini statorları ve ısıl şok bileşenleri.",
+    "sources": [
+      "NIST Structural Ceramics Database (Silicon Nitride Si3N4)",
+      "CoorsTek / Kyocera SN-282 Silicon Nitride Datasheet",
+      "ASM Engineered Materials Handbook Vol. 4: Technical Ceramics"
+    ]
+  },
+  {
+    "id": "mat_alumina_995",
+    "name": "Yüksek Saflıkta Alümina (Al2O3 %99.5 Teknik Seramik)",
+    "category": "technical_ceramic",
+    "density_kg_m3": 3900.0,
+    "tensile_strength_mpa": 300.0,
+    "yield_strength_mpa": 260.0,
+    "youngs_modulus_gpa": 375.0,
+    "max_temperature_k": 1973.0,
+    "thermal_conductivity_w_mk": 33.0,
+    "description": "Elektriksel yalıtım, vakum geçişleri, RF pencereleri ve aşınma dirençli yüksek sıcaklık seramik altlıkların endüstri standardı.",
+    "sources": [
+      "CoorsTek AD-995 Alumina Technical Datasheet",
+      "NIST Ceramics WebBook (99.5% Al2O3)",
+      "ASM Engineered Materials Handbook Vol. 4"
+    ]
+  },
+  {
+    "id": "mat_zirconia_3ytzp",
+    "name": "İtriya Kararlı Zirkonya (3Y-TZP ZrO2 Termal Bariyer Seramiği)",
+    "category": "technical_ceramic",
+    "density_kg_m3": 6050.0,
+    "tensile_strength_mpa": 950.0,
+    "yield_strength_mpa": 850.0,
+    "youngs_modulus_gpa": 210.0,
+    "max_temperature_k": 1273.0,
+    "thermal_conductivity_w_mk": 2.5,
+    "description": "Faz dönüşümü tokluğu ve çok düşük ısıl iletkenliğiyle türbin termal bariyer kaplamaları (TBC) ve oksijen sensörleri.",
+    "sources": [
+      "Tosoh TZ-3Y / CoorsTek ZDY Zirconia Technical Datasheet",
+      "NIST Structural Ceramics Database (Y-TZP Zirconia)",
+      "ASM Engineered Materials Handbook Vol. 4"
+    ]
+  },
+  {
+    "id": "mat_boron_carbide_b4c",
+    "name": "Bor Karbür (B4C Balistik Zırh & Nötron Soğurucu Seramik)",
+    "category": "technical_ceramic",
+    "density_kg_m3": 2510.0,
+    "tensile_strength_mpa": 350.0,
+    "yield_strength_mpa": 320.0,
+    "youngs_modulus_gpa": 460.0,
+    "max_temperature_k": 1673.0,
+    "thermal_conductivity_w_mk": 35.0,
+    "description": "Elmas ve kübik BN'den sonra en sert malzemelerden; hafif helikopter/personel zırhı ve nükleer reaktör kontrol çubuğu.",
+    "sources": [
+      "NIST Structural Ceramics Database (Boron Carbide B4C)",
+      "Saint-Gobain Norbide / AZoM Boron Carbide Properties",
+      "ASM Engineered Materials Handbook Vol. 4"
+    ]
+  },
+  {
+    "id": "mat_beryllia_beo",
+    "name": "Berilyum Oksit (BeO Yüksek Isıl İletkenlikli Dielektrik Seramik)",
+    "category": "technical_ceramic",
+    "density_kg_m3": 2900.0,
+    "tensile_strength_mpa": 160.0,
+    "yield_strength_mpa": 140.0,
+    "youngs_modulus_gpa": 345.0,
+    "max_temperature_k": 2073.0,
+    "thermal_conductivity_w_mk": 260.0,
+    "description": "Alüminyumdan daha yüksek ısıl iletkenliğe sahip elektrik yalıtkanı; yüksek güçlü RF/mikrodalga ve uzay güç elektroniği soğutması.",
+    "sources": [
+      "Materion Thermalox 995 Beryllium Oxide Datasheet",
+      "Goodfellow / AZoM Beryllia Ceramic Properties",
+      "ASM Engineered Materials Handbook Vol. 4"
+    ]
+  },
+  {
+    "id": "mat_fused_silica",
+    "name": "Erimiş Silika (Corning 7980 Optik SiO2 Camı)",
+    "category": "semiconductor_optical",
+    "density_kg_m3": 2201.0,
+    "tensile_strength_mpa": 52.0,
+    "yield_strength_mpa": 48.0,
+    "youngs_modulus_gpa": 72.7,
+    "max_temperature_k": 1173.0,
+    "thermal_conductivity_w_mk": 1.38,
+    "description": "Ultra düşük ısıl genleşme (~0.55e-6 /K) ve derin UV geçirgenliğiyle uzay aracı pencereleri, yüksek enerjili lazer optikleri.",
+    "sources": [
+      "Corning HPFS 7980 Fused Silica Optical Material Datasheet",
+      "Crystran / Accuratus Fused Silica Reference Properties",
+      "NIST Optical & Thermal Properties of Vitreous Silica"
+    ]
+  },
+  {
+    "id": "mat_sapphire_al2o3",
+    "name": "Tek Kristal Safir (Al2O3 Kızılötesi / Hipersonik Optik Pencere)",
+    "category": "semiconductor_optical",
+    "density_kg_m3": 3980.0,
+    "tensile_strength_mpa": 400.0,
+    "yield_strength_mpa": 350.0,
+    "youngs_modulus_gpa": 370.0,
+    "max_temperature_k": 2073.0,
+    "thermal_conductivity_w_mk": 35.0,
+    "description": "Mohs 9 sertliği ve UV–MWIR şeffaflığıyla füze/sensör kubbeleri, yüksek basınç gözlem pencereleri ve aşırı ortam optikleri.",
+    "sources": [
+      "Crystran Synthetic Sapphire (Al2O3) Optical Datasheet",
+      "NASA / SPIE Handbook of Optical Materials (Sapphire)",
+      "Kyocera / ASM Single-Crystal Sapphire Properties"
+    ]
+  },
+  {
+    "id": "mat_silicon_mono",
+    "name": "Tek Kristal Silisyum (Si <100> Yarı İletken & MEMS Altlığı)",
+    "category": "semiconductor_optical",
+    "density_kg_m3": 2329.0,
+    "tensile_strength_mpa": 170.0,
+    "yield_strength_mpa": 165.0,
+    "youngs_modulus_gpa": 150.0,
+    "max_temperature_k": 1273.0,
+    "thermal_conductivity_w_mk": 148.0,
+    "description": "Mikroelektronik, MEMS ivmeölçer/jiroskop rezonatörleri, fotovoltaik güneş panelleri ve IR optiklerinin temel kristali.",
+    "sources": [
+      "Ioffe Physical-Technical Institute Semiconductor Database (Silicon)",
+      "Hopcroft, Nix & Kenny (IEEE JMEMS 2010): What is the Young's Modulus of Silicon?",
+      "NIST / ASM Electronic Materials Handbook (Monocrystalline Si)"
+    ]
+  },
+  {
+    "id": "mat_s2_glass_epoxy",
+    "name": "S-2 Cam Elyaf / Epoksi Yüksek Mukavemetli Kompozit",
+    "category": "composite",
+    "density_kg_m3": 1920.0,
+    "tensile_strength_mpa": 1700.0,
+    "yield_strength_mpa": 1450.0,
+    "youngs_modulus_gpa": 50.0,
+    "max_temperature_k": 443.0,
+    "thermal_conductivity_w_mk": 0.42,
+    "description": "RF şeffaf radar kubbeleri (radome), roket motoru filament sarım gövdeleri ve darbe toleranslı havacılık kompoziti.",
+    "sources": [
+      "AGY High-Strength S-2 Glass Fiber Technical Paper",
+      "CMH-17 / MIL-HDBK-17 Composite Materials Handbook",
+      "MatWeb S-2 Glass / Epoxy Unidirectional Laminate Data"
+    ]
+  },
+  {
+    "id": "mat_peek_unfilled",
+    "name": "PEEK 450G (Polietereterketon Yüksek Sıcaklık Termoplastiği)",
+    "category": "polymer",
+    "density_kg_m3": 1300.0,
+    "tensile_strength_mpa": 100.0,
+    "yield_strength_mpa": 97.0,
+    "youngs_modulus_gpa": 3.7,
+    "max_temperature_k": 523.0,
+    "thermal_conductivity_w_mk": 0.25,
+    "description": "Düşük gaz çıkışı (NASA ASTM E595), kimyasal direnç ve 250 °C sürekli çalışma sınırıyla uzay yalıtkanları ve tıbbi implantlar.",
+    "sources": [
+      "Victrex PEEK 450G Material Properties Guide",
+      "NASA Outgassing Database / MatWeb (Unfilled PEEK)",
+      "ASM Engineered Materials Handbook Vol. 2: Engineering Plastics"
+    ]
+  },
+  {
+    "id": "mat_ultem_9085",
+    "name": "ULTEM 9085 (PEI Alev-Duman-Toksisite Sertifikalı Havacılık Polimeri)",
+    "category": "polymer",
+    "density_kg_m3": 1340.0,
+    "tensile_strength_mpa": 69.0,
+    "yield_strength_mpa": 55.0,
+    "youngs_modulus_gpa": 2.5,
+    "max_temperature_k": 440.0,
+    "thermal_conductivity_w_mk": 0.18,
+    "description": "FAR 25.853 FST sertifikalı, uçak kabin kanalları ve 3B FDM eklemeli imalat havacılık braketleri için yüksek mukavemetli PEI.",
+    "sources": [
+      "SABIC / Stratasys ULTEM 9085 Resin Technical Data Sheet",
+      "FAA FAR 25.853 FST Aerospace Qualification Reference",
+      "MatWeb / Materialise ULTEM 9085 Mechanical Properties"
+    ]
+  },
+  {
+    "id": "mat_kapton_hn",
+    "name": "DuPont Kapton HN (Poliimid Kriyojenik & MLI Uzay Filmi)",
+    "category": "polymer",
+    "density_kg_m3": 1420.0,
+    "tensile_strength_mpa": 231.0,
+    "yield_strength_mpa": 69.0,
+    "youngs_modulus_gpa": 2.5,
+    "max_temperature_k": 673.0,
+    "thermal_conductivity_w_mk": 0.12,
+    "description": "4 K kriyojenik ortamdan +400 °C'ye kadar esnekliğini koruyan uydu çok katmanlı ısı yalıtımı (MLI) ve esnek devre altlığı.",
+    "sources": [
+      "DuPont Kapton HN Technical Bulletin H-38479",
+      "NIST Cryogenic Materials Properties (Polyimide / Kapton)",
+      "NASA GSFC Spacecraft Thermal Control Handbook (MLI Films)"
+    ]
   }
 ]

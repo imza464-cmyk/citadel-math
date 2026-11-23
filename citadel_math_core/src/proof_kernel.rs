@@ -859,7 +859,13 @@ mod tests {
 
                 // Gezegen ve Yörünge
                 "M_primary" => 1.989e30,
-                "M_body" | "m_body" => 5.972e24,
+                "M_body" | "m_body" => {
+                    if law.id == "law_gravitational_time_dilation" {
+                        5.0e32
+                    } else {
+                        5.972e24
+                    }
+                }
                 "mu" => 3.986004418e14,
                 "R_E" | "R_body" => 6_378_137.0,
                 "a_orb" => {

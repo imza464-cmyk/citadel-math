@@ -131,7 +131,16 @@
       "law_photon_rocket_thrust",
       "law_compton_wavelength",
       "law_gravitational_redshift",
-      "law_nuclear_reaction_q_value"
+      "law_nuclear_reaction_q_value",
+      "law_blackbody_radiation_pressure",
+      "law_larmor_radiated_power",
+      "law_hawking_black_hole_temperature",
+      "law_bekenstein_hawking_entropy",
+      "law_eddington_luminosity",
+      "law_planck_length",
+      "law_planck_mass",
+      "law_planck_time",
+      "law_gravitational_time_dilation"
     ]
   },
   "g_0": {
@@ -151,7 +160,17 @@
       "law_exhaust_velocity_isp",
       "law_specific_strength_breaking_length",
       "law_atmospheric_scale_height",
-      "law_rocket_mass_ratio_from_delta_v"
+      "law_rocket_mass_ratio_from_delta_v",
+      "law_stokes_terminal_velocity",
+      "law_darcy_weisbach_head_loss",
+      "law_torricelli_efflux_velocity",
+      "law_archimedes_buoyancy_force",
+      "law_jurin_capillary_rise",
+      "law_froude_number",
+      "law_shallow_water_wave_speed",
+      "law_grashof_number",
+      "law_simple_pendulum_period",
+      "law_gravitational_potential_energy_near_surface"
     ]
   },
   "I_sp": {
@@ -202,7 +221,9 @@
       "law_axial_force_stress",
       "law_thrust_coefficient_ideal",
       "law_cantilever_beam_bending_stress",
-      "law_mechanical_work"
+      "law_mechanical_work",
+      "law_cantilever_tip_deflection",
+      "law_simply_supported_midspan_deflection"
     ]
   },
   "m_dot": {
@@ -334,7 +355,8 @@
     "si_representation": "M L^-1 T^-2",
     "produced_by": [],
     "consumed_by": [
-      "law_nozzle_thrust_pressure"
+      "law_nozzle_thrust_pressure",
+      "law_ideal_gas_density"
     ]
   },
   "A_e": {
@@ -401,7 +423,8 @@
       "law_dynamic_pressure_from_mach",
       "law_choked_mass_flow_nozzle",
       "law_stagnation_sound_speed",
-      "law_pitot_rayleigh_pressure_ratio"
+      "law_pitot_rayleigh_pressure_ratio",
+      "law_otto_cycle_efficiency"
     ]
   },
   "R_spec": {
@@ -452,7 +475,8 @@
       "law_choked_throat_mass_flow",
       "law_nuclear_thermal_isp_scaling",
       "law_choked_mass_flow_nozzle",
-      "law_stagnation_sound_speed"
+      "law_stagnation_sound_speed",
+      "law_clausius_clapeyron_vapor_pressure"
     ]
   },
   "P_0": {
@@ -680,7 +704,11 @@
       "law_newton_convective_cooling",
       "law_conductor_wire_resistance",
       "law_continuity_mass_flow",
-      "law_free_molecular_rarefied_drag"
+      "law_free_molecular_rarefied_drag",
+      "law_conduction_thermal_resistance",
+      "law_convection_thermal_resistance",
+      "law_parallel_plate_capacitance",
+      "law_bekenstein_hawking_entropy"
     ]
   },
   "F_phot": {
@@ -876,7 +904,19 @@
       "law_free_molecular_rarefied_drag",
       "law_normal_shock_density_ratio",
       "law_alfven_velocity",
-      "law_flywheel_rim_stress"
+      "law_flywheel_rim_stress",
+      "law_elastic_p_wave_velocity",
+      "law_elastic_s_wave_velocity",
+      "law_elastic_rod_sound_speed",
+      "law_stokes_terminal_velocity",
+      "law_darcy_weisbach_pressure_drop",
+      "law_archimedes_buoyancy_force",
+      "law_jurin_capillary_rise",
+      "law_weber_number",
+      "law_kinematic_viscosity_def",
+      "law_specific_acoustic_impedance",
+      "law_acoustic_plane_wave_intensity",
+      "law_jeans_gravitational_instability_length"
     ]
   },
   "v_ntr": {
@@ -911,7 +951,14 @@
     "produced_by": [],
     "consumed_by": [
       "law_nuclear_thermal_isp_scaling",
-      "law_specific_gas_constant_molar"
+      "law_specific_gas_constant_molar",
+      "law_maxwell_boltzmann_rms_speed",
+      "law_maxwell_boltzmann_most_probable_speed",
+      "law_ideal_gas_density",
+      "law_arrhenius_reaction_rate",
+      "law_clausius_clapeyron_vapor_pressure",
+      "law_vant_hoff_osmotic_pressure",
+      "law_nernst_electrochemical_potential"
     ]
   },
   "M_mol": {
@@ -929,7 +976,11 @@
     "produced_by": [],
     "consumed_by": [
       "law_nuclear_thermal_isp_scaling",
-      "law_specific_gas_constant_molar"
+      "law_specific_gas_constant_molar",
+      "law_maxwell_boltzmann_rms_speed",
+      "law_maxwell_boltzmann_most_probable_speed",
+      "law_ideal_gas_density",
+      "law_faraday_electrolysis_mass"
     ]
   },
   "v": {
@@ -966,7 +1017,15 @@
       "law_hyperbolic_excess_velocity",
       "law_crocco_number",
       "law_relativity_momentum",
-      "law_flywheel_rim_stress"
+      "law_flywheel_rim_stress",
+      "law_stokes_viscous_drag",
+      "law_darcy_weisbach_pressure_drop",
+      "law_darcy_weisbach_head_loss",
+      "law_froude_number",
+      "law_weber_number",
+      "law_capillary_number",
+      "law_strouhal_number",
+      "law_peclet_number_thermal"
     ]
   },
   "mu": {
@@ -1043,7 +1102,13 @@
       "law_thin_wall_cylinder_hoop_stress",
       "law_thin_wall_cylinder_axial_stress",
       "law_spherical_pressure_vessel_stress",
-      "law_torsional_shear_stress_shaft"
+      "law_torsional_shear_stress_shaft",
+      "law_solid_shaft_polar_inertia",
+      "law_stokes_viscous_drag",
+      "law_stokes_terminal_velocity",
+      "law_jurin_capillary_rise",
+      "law_poiseuille_volumetric_flow",
+      "law_gravitational_time_dilation"
     ]
   },
   "a_orb": {
@@ -1068,7 +1133,8 @@
       "law_hill_sphere_radius",
       "law_semi_latus_rectum",
       "law_orbital_mean_motion",
-      "law_laplace_sphere_of_influence"
+      "law_laplace_sphere_of_influence",
+      "law_planetary_equilibrium_temperature"
     ]
   },
   "v_circ": {
@@ -1153,7 +1219,9 @@
       "law_antimatter_annihilation_energy",
       "law_kinetic_energy_from_momentum",
       "law_compton_wavelength",
-      "law_relativity_momentum"
+      "law_relativity_momentum",
+      "law_critical_viscous_damping",
+      "law_gravitational_potential_energy_near_surface"
     ]
   },
   "a_trans": {
@@ -1321,7 +1389,10 @@
       "law_gravitational_parameter_gm",
       "law_newton_universal_gravitation",
       "law_hill_sphere_radius",
-      "law_schwarzschild_radius"
+      "law_schwarzschild_radius",
+      "law_hawking_black_hole_temperature",
+      "law_eddington_luminosity",
+      "law_gravitational_time_dilation"
     ]
   },
   "F_grav": {
@@ -1501,7 +1572,8 @@
       "law_linear_accel_track_length",
       "law_hydrostatic_head_pressure",
       "law_kinematics_velocity_from_accel",
-      "law_kinematics_displacement_from_accel"
+      "law_kinematics_displacement_from_accel",
+      "law_larmor_radiated_power"
     ]
   },
   "E_k": {
@@ -1696,7 +1768,9 @@
     "produced_by": [
       "law_harmonic_oscillator_frequency"
     ],
-    "consumed_by": []
+    "consumed_by": [
+      "law_damped_natural_frequency"
+    ]
   },
   "k_spr": {
     "dimension_key": "spring_stiffness",
@@ -1712,7 +1786,9 @@
     "si_representation": "M T^-2",
     "produced_by": [],
     "consumed_by": [
-      "law_harmonic_oscillator_frequency"
+      "law_harmonic_oscillator_frequency",
+      "law_critical_viscous_damping",
+      "law_spring_elastic_potential_energy"
     ]
   },
   "v_wave": {
@@ -1780,7 +1856,8 @@
     "si_representation": "M L^-1 T^-2",
     "produced_by": [],
     "consumed_by": [
-      "law_specific_strength_breaking_length"
+      "law_specific_strength_breaking_length",
+      "law_hasselman_thermal_shock_r"
     ]
   },
   "sigma_hoop": {
@@ -1847,7 +1924,8 @@
       "law_biot_number",
       "law_thin_wall_cylinder_hoop_stress",
       "law_thin_wall_cylinder_axial_stress",
-      "law_spherical_pressure_vessel_stress"
+      "law_spherical_pressure_vessel_stress",
+      "law_hall_effect_voltage"
     ]
   },
   "sigma_ax_p": {
@@ -1923,7 +2001,16 @@
       "law_thermal_constrained_stress",
       "law_griffith_irwin_critical_crack",
       "law_isotropic_shear_modulus",
-      "law_thermal_stress_restrained"
+      "law_thermal_stress_restrained",
+      "law_bulk_modulus_isotropic",
+      "law_lame_first_parameter",
+      "law_elastic_p_wave_velocity",
+      "law_elastic_rod_sound_speed",
+      "law_hasselman_thermal_shock_r",
+      "law_elastic_strain_energy_density",
+      "law_cantilever_tip_deflection",
+      "law_simply_supported_midspan_deflection",
+      "law_euler_critical_buckling_load"
     ]
   },
   "L_eff": {
@@ -1940,7 +2027,8 @@
     "si_representation": "L",
     "produced_by": [],
     "consumed_by": [
-      "law_euler_column_buckling_stress"
+      "law_euler_column_buckling_stress",
+      "law_euler_critical_buckling_load"
     ]
   },
   "sigma_cr_shell": {
@@ -1995,7 +2083,8 @@
     ],
     "consumed_by": [
       "law_griffith_irwin_critical_crack",
-      "law_von_mises_plane_stress"
+      "law_von_mises_plane_stress",
+      "law_elastic_strain_energy_density"
     ]
   },
   "eps_str": {
@@ -2012,7 +2101,8 @@
     "si_representation": "1 (Boyutsuz)",
     "produced_by": [],
     "consumed_by": [
-      "law_hooke_uniaxial_stress"
+      "law_hooke_uniaxial_stress",
+      "law_poisson_lateral_strain"
     ]
   },
   "sigma_bend": {
@@ -2062,9 +2152,14 @@
       0
     ],
     "si_representation": "L^4",
-    "produced_by": [],
+    "produced_by": [
+      "law_rectangular_beam_area_inertia"
+    ],
     "consumed_by": [
-      "law_euler_bernoulli_bending_stress"
+      "law_euler_bernoulli_bending_stress",
+      "law_cantilever_tip_deflection",
+      "law_simply_supported_midspan_deflection",
+      "law_euler_critical_buckling_load"
     ]
   },
   "tau_tors": {
@@ -2097,7 +2192,9 @@
       0
     ],
     "si_representation": "L^4",
-    "produced_by": [],
+    "produced_by": [
+      "law_solid_shaft_polar_inertia"
+    ],
     "consumed_by": [
       "law_shaft_torsional_shear_stress",
       "law_torsional_shear_stress_shaft"
@@ -2135,7 +2232,10 @@
     "si_representation": "Theta^-1",
     "produced_by": [],
     "consumed_by": [
-      "law_thermal_constrained_stress"
+      "law_thermal_constrained_stress",
+      "law_hasselman_thermal_shock_r",
+      "law_linear_thermal_expansion",
+      "law_grashof_number"
     ]
   },
   "delta_T": {
@@ -2156,7 +2256,9 @@
       "law_calorimetric_sensible_heat",
       "law_fourier_conduction_power",
       "law_newton_convective_cooling",
-      "law_thermal_stress_restrained"
+      "law_thermal_stress_restrained",
+      "law_linear_thermal_expansion",
+      "law_grashof_number"
     ]
   },
   "a_crit": {
@@ -2243,7 +2345,9 @@
     "produced_by": [
       "law_isotropic_shear_modulus"
     ],
-    "consumed_by": []
+    "consumed_by": [
+      "law_elastic_s_wave_velocity"
+    ]
   },
   "nu_pois": {
     "dimension_key": "dimensionless",
@@ -2259,7 +2363,12 @@
     "si_representation": "1 (Boyutsuz)",
     "produced_by": [],
     "consumed_by": [
-      "law_isotropic_shear_modulus"
+      "law_isotropic_shear_modulus",
+      "law_bulk_modulus_isotropic",
+      "law_lame_first_parameter",
+      "law_elastic_p_wave_velocity",
+      "law_hasselman_thermal_shock_r",
+      "law_poisson_lateral_strain"
     ]
   },
   "q_dyn": {
@@ -2440,7 +2549,23 @@
       "law_isentropic_speed_of_sound",
       "law_blackbody_emissive_power",
       "law_star_luminosity_stefan_boltzmann",
-      "law_ullage_gas_pressure"
+      "law_ullage_gas_pressure",
+      "law_wiedemann_franz_thermal_cond",
+      "law_gibbs_free_energy",
+      "law_helmholtz_free_energy",
+      "law_maxwell_boltzmann_rms_speed",
+      "law_maxwell_boltzmann_most_probable_speed",
+      "law_ideal_gas_density",
+      "law_wien_displacement_wavelength",
+      "law_blackbody_radiation_pressure",
+      "law_arrhenius_reaction_rate",
+      "law_clausius_clapeyron_vapor_pressure",
+      "law_vant_hoff_osmotic_pressure",
+      "law_nernst_electrochemical_potential",
+      "law_johnson_nyquist_noise_voltage",
+      "law_semiconductor_thermal_voltage",
+      "law_einstein_mobility_diffusivity",
+      "law_shockley_diode_current"
     ]
   },
   "Mach": {
@@ -2625,7 +2750,9 @@
     "produced_by": [
       "law_reynolds_number"
     ],
-    "consumed_by": []
+    "consumed_by": [
+      "law_blasius_laminar_boundary_thickness"
+    ]
   },
   "L_char": {
     "dimension_key": "length",
@@ -2645,7 +2772,15 @@
       "law_knudsen_number",
       "law_nusselt_number",
       "law_conductor_wire_resistance",
-      "law_hagen_poiseuille_laminar_pressure_drop"
+      "law_hagen_poiseuille_laminar_pressure_drop",
+      "law_froude_number",
+      "law_weber_number",
+      "law_strouhal_number",
+      "law_blasius_laminar_boundary_thickness",
+      "law_poiseuille_volumetric_flow",
+      "law_peclet_number_thermal",
+      "law_grashof_number",
+      "law_fourier_number_transient"
     ]
   },
   "mu_visc": {
@@ -2664,7 +2799,12 @@
     "consumed_by": [
       "law_reynolds_number",
       "law_prandtl_number",
-      "law_hagen_poiseuille_laminar_pressure_drop"
+      "law_hagen_poiseuille_laminar_pressure_drop",
+      "law_stokes_viscous_drag",
+      "law_stokes_terminal_velocity",
+      "law_capillary_number",
+      "law_kinematic_viscosity_def",
+      "law_poiseuille_volumetric_flow"
     ]
   },
   "Kn": {
@@ -2870,7 +3010,9 @@
     "si_representation": "Theta",
     "produced_by": [],
     "consumed_by": [
-      "law_carnot_thermal_efficiency"
+      "law_carnot_thermal_efficiency",
+      "law_carnot_refrigerator_cop",
+      "law_carnot_heat_pump_cop"
     ]
   },
   "T_h": {
@@ -2887,7 +3029,9 @@
     "si_representation": "Theta",
     "produced_by": [],
     "consumed_by": [
-      "law_carnot_thermal_efficiency"
+      "law_carnot_thermal_efficiency",
+      "law_carnot_refrigerator_cop",
+      "law_carnot_heat_pump_cop"
     ]
   },
   "eta_brayton": {
@@ -2921,7 +3065,8 @@
     "si_representation": "1 (Boyutsuz)",
     "produced_by": [],
     "consumed_by": [
-      "law_brayton_cycle_efficiency"
+      "law_brayton_cycle_efficiency",
+      "law_otto_cycle_efficiency"
     ]
   },
   "Q_heat": {
@@ -2989,13 +3134,16 @@
       0
     ],
     "si_representation": "M L T^-3 Theta^-1",
-    "produced_by": [],
+    "produced_by": [
+      "law_wiedemann_franz_thermal_cond"
+    ],
     "consumed_by": [
       "law_fourier_conduction_power",
       "law_thermal_diffusivity",
       "law_prandtl_number",
       "law_nusselt_number",
-      "law_biot_number"
+      "law_biot_number",
+      "law_conduction_thermal_resistance"
     ]
   },
   "P_conv": {
@@ -3031,7 +3179,8 @@
     "consumed_by": [
       "law_newton_convective_cooling",
       "law_nusselt_number",
-      "law_biot_number"
+      "law_biot_number",
+      "law_convection_thermal_resistance"
     ]
   },
   "alpha_th": {
@@ -3049,7 +3198,10 @@
     "produced_by": [
       "law_thermal_diffusivity"
     ],
-    "consumed_by": []
+    "consumed_by": [
+      "law_peclet_number_thermal",
+      "law_fourier_number_transient"
+    ]
   },
   "Pr": {
     "dimension_key": "dimensionless",
@@ -3066,7 +3218,9 @@
     "produced_by": [
       "law_prandtl_number"
     ],
-    "consumed_by": []
+    "consumed_by": [
+      "law_rayleigh_number"
+    ]
   },
   "Nu": {
     "dimension_key": "dimensionless",
@@ -3138,7 +3292,10 @@
       "law_ohm_voltage",
       "law_joule_heating_power",
       "law_solenoid_magnetic_field",
-      "law_mpd_thruster_thrust"
+      "law_mpd_thruster_thrust",
+      "law_faraday_electrolysis_mass",
+      "law_schottky_shot_noise_current",
+      "law_hall_effect_voltage"
     ]
   },
   "P_B": {
@@ -3181,7 +3338,8 @@
       "law_cyclotron_gyrofrequency",
       "law_larmor_radius",
       "law_hall_thruster_eb_drift",
-      "law_alfven_velocity"
+      "law_alfven_velocity",
+      "law_hall_effect_voltage"
     ]
   },
   "mu_0": {
@@ -3202,7 +3360,9 @@
       "law_solenoid_magnetic_field",
       "law_electromagnetic_skin_depth",
       "law_mpd_thruster_thrust",
-      "law_alfven_velocity"
+      "law_alfven_velocity",
+      "law_free_space_wave_impedance",
+      "law_speed_of_light_maxwell"
     ]
   },
   "E_cap": {
@@ -3259,7 +3419,8 @@
     ],
     "consumed_by": [
       "law_capacitor_bank_energy",
-      "law_cmos_dynamic_switching_power"
+      "law_cmos_dynamic_switching_power",
+      "law_shockley_diode_current"
     ]
   },
   "E_ind": {
@@ -3317,7 +3478,8 @@
       "law_ohm_voltage",
       "law_joule_heating_power",
       "law_rc_time_constant",
-      "law_rl_time_constant"
+      "law_rl_time_constant",
+      "law_johnson_nyquist_noise_voltage"
     ]
   },
   "P_joule": {
@@ -3407,7 +3569,11 @@
       "law_poynting_electromagnetic_flux",
       "law_child_langmuir_space_charge",
       "law_plasma_debye_length",
-      "law_electron_plasma_frequency"
+      "law_electron_plasma_frequency",
+      "law_parallel_plate_capacitance",
+      "law_larmor_radiated_power",
+      "law_free_space_wave_impedance",
+      "law_speed_of_light_maxwell"
     ]
   },
   "n_turns": {
@@ -3618,7 +3784,11 @@
     ],
     "consumed_by": [
       "law_friis_free_space_received_power",
-      "law_diffraction_limited_spot_radius"
+      "law_diffraction_limited_spot_radius",
+      "law_rayleigh_angular_resolution",
+      "law_gaussian_beam_rayleigh_range",
+      "law_gaussian_beam_divergence",
+      "law_photon_momentum"
     ]
   },
   "E_rest": {
@@ -3811,7 +3981,8 @@
     "si_representation": "L",
     "produced_by": [],
     "consumed_by": [
-      "law_diffraction_limited_spot_radius"
+      "law_diffraction_limited_spot_radius",
+      "law_rayleigh_angular_resolution"
     ]
   },
   "N_queue": {
@@ -4006,7 +4177,9 @@
     "produced_by": [],
     "consumed_by": [
       "law_shannon_hartley_channel_capacity",
-      "law_nyquist_sampling_rate"
+      "law_nyquist_sampling_rate",
+      "law_johnson_nyquist_noise_voltage",
+      "law_schottky_shot_noise_current"
     ]
   },
   "SNR": {
@@ -4164,7 +4337,15 @@
       "law_plasma_debye_length",
       "law_ion_acoustic_speed",
       "law_bohm_sheath_criterion",
-      "law_plasma_beta_parameter"
+      "law_plasma_beta_parameter",
+      "law_lorenz_sommerfeld_number",
+      "law_boltzmann_statistical_entropy",
+      "law_johnson_nyquist_noise_voltage",
+      "law_semiconductor_thermal_voltage",
+      "law_einstein_mobility_diffusivity",
+      "law_shockley_diode_current",
+      "law_hawking_black_hole_temperature",
+      "law_bekenstein_hawking_entropy"
     ]
   },
   "P_hydro": {
@@ -4198,7 +4379,9 @@
     "si_representation": "L",
     "produced_by": [],
     "consumed_by": [
-      "law_hydrostatic_head_pressure"
+      "law_hydrostatic_head_pressure",
+      "law_torricelli_efflux_velocity",
+      "law_shallow_water_wave_speed"
     ]
   },
   "rho_0": {
@@ -4232,7 +4415,8 @@
     "si_representation": "L",
     "produced_by": [],
     "consumed_by": [
-      "law_barometric_isothermal_density"
+      "law_barometric_isothermal_density",
+      "law_gravitational_potential_energy_near_surface"
     ]
   },
   "H_scale": {
@@ -4269,7 +4453,9 @@
     "produced_by": [
       "law_hagen_poiseuille_laminar_pressure_drop"
     ],
-    "consumed_by": []
+    "consumed_by": [
+      "law_poiseuille_volumetric_flow"
+    ]
   },
   "Q_vol": {
     "dimension_key": "volumetric_flow_rate",
@@ -4321,7 +4507,10 @@
     "si_representation": "M T^-2",
     "produced_by": [],
     "consumed_by": [
-      "law_young_laplace_capillary_pressure"
+      "law_young_laplace_capillary_pressure",
+      "law_jurin_capillary_rise",
+      "law_weber_number",
+      "law_capillary_number"
     ]
   },
   "F_drag_fm": {
@@ -4950,7 +5139,9 @@
     "si_representation": "1 (Boyutsuz)",
     "produced_by": [],
     "consumed_by": [
-      "law_fanno_friction_parameter"
+      "law_fanno_friction_parameter",
+      "law_darcy_weisbach_pressure_drop",
+      "law_darcy_weisbach_head_loss"
     ]
   },
   "L": {
@@ -4968,7 +5159,16 @@
     "produced_by": [],
     "consumed_by": [
       "law_fanno_friction_parameter",
-      "law_cantilever_beam_bending_stress"
+      "law_cantilever_beam_bending_stress",
+      "law_linear_thermal_expansion",
+      "law_cantilever_tip_deflection",
+      "law_simply_supported_midspan_deflection",
+      "law_darcy_weisbach_pressure_drop",
+      "law_darcy_weisbach_head_loss",
+      "law_conduction_thermal_resistance",
+      "law_fick_first_diffusive_flux",
+      "law_beer_lambert_absorbance",
+      "law_simple_pendulum_period"
     ]
   },
   "D_pipe": {
@@ -4985,7 +5185,9 @@
     "si_representation": "L",
     "produced_by": [],
     "consumed_by": [
-      "law_fanno_friction_parameter"
+      "law_fanno_friction_parameter",
+      "law_darcy_weisbach_pressure_drop",
+      "law_darcy_weisbach_head_loss"
     ]
   },
   "P_pitot_approx": {
@@ -5074,7 +5276,14 @@
       "law_cyclotron_gyrofrequency",
       "law_larmor_radius",
       "law_plasma_debye_length",
-      "law_electron_plasma_frequency"
+      "law_electron_plasma_frequency",
+      "law_lorenz_sommerfeld_number",
+      "law_larmor_radiated_power",
+      "law_schottky_shot_noise_current",
+      "law_semiconductor_thermal_voltage",
+      "law_einstein_mobility_diffusivity",
+      "law_hall_effect_voltage",
+      "law_shockley_diode_current"
     ]
   },
   "V_acc": {
@@ -5198,7 +5407,8 @@
     "consumed_by": [
       "law_plasma_debye_length",
       "law_electron_plasma_frequency",
-      "law_plasma_beta_parameter"
+      "law_plasma_beta_parameter",
+      "law_hall_effect_voltage"
     ]
   },
   "omega_pe": {
@@ -5369,7 +5579,12 @@
     "produced_by": [
       "law_ion_acoustic_speed"
     ],
-    "consumed_by": []
+    "consumed_by": [
+      "law_specific_acoustic_impedance",
+      "law_acoustic_plane_wave_intensity",
+      "law_doppler_observed_frequency",
+      "law_jeans_gravitational_instability_length"
+    ]
   },
   "v_bohm": {
     "dimension_key": "velocity",
@@ -5491,7 +5706,8 @@
     "produced_by": [],
     "consumed_by": [
       "law_blackbody_emissive_power",
-      "law_star_luminosity_stefan_boltzmann"
+      "law_star_luminosity_stefan_boltzmann",
+      "law_blackbody_radiation_pressure"
     ]
   },
   "lambda_C": {
@@ -5526,7 +5742,8 @@
     "produced_by": [],
     "consumed_by": [
       "law_compton_wavelength",
-      "law_de_broglie_momentum_wavelength"
+      "law_de_broglie_momentum_wavelength",
+      "law_photon_momentum"
     ]
   },
   "lambda_db": {
@@ -5577,7 +5794,15 @@
     "si_representation": "M^-1 L^3 T^-2",
     "produced_by": [],
     "consumed_by": [
-      "law_gravitational_redshift"
+      "law_gravitational_redshift",
+      "law_hawking_black_hole_temperature",
+      "law_bekenstein_hawking_entropy",
+      "law_eddington_luminosity",
+      "law_jeans_gravitational_instability_length",
+      "law_planck_length",
+      "law_planck_mass",
+      "law_planck_time",
+      "law_gravitational_time_dilation"
     ]
   },
   "Q_value": {
@@ -6500,7 +6725,10 @@
     "produced_by": [],
     "consumed_by": [
       "law_kinematics_velocity_from_accel",
-      "law_kinematics_displacement_from_accel"
+      "law_kinematics_displacement_from_accel",
+      "law_fourier_number_transient",
+      "law_faraday_electrolysis_mass",
+      "law_gravitational_time_dilation"
     ]
   },
   "d": {
@@ -6519,7 +6747,8 @@
       "law_kinematics_displacement_from_accel"
     ],
     "consumed_by": [
-      "law_mechanical_work"
+      "law_mechanical_work",
+      "law_parallel_plate_capacitance"
     ]
   },
   "W": {
@@ -6536,6 +6765,2270 @@
     "si_representation": "M L^2 T^-2",
     "produced_by": [
       "law_mechanical_work"
+    ],
+    "consumed_by": []
+  },
+  "K_bulk": {
+    "dimension_key": "stress",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [
+      "law_bulk_modulus_isotropic"
+    ],
+    "consumed_by": []
+  },
+  "lambda_lame": {
+    "dimension_key": "stress",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [
+      "law_lame_first_parameter"
+    ],
+    "consumed_by": []
+  },
+  "v_P": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_elastic_p_wave_velocity"
+    ],
+    "consumed_by": []
+  },
+  "v_S": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_elastic_s_wave_velocity"
+    ],
+    "consumed_by": []
+  },
+  "c_rod": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_elastic_rod_sound_speed"
+    ],
+    "consumed_by": []
+  },
+  "delta_T_shock": {
+    "dimension_key": "temperature",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "si_representation": "Theta",
+    "produced_by": [
+      "law_hasselman_thermal_shock_r"
+    ],
+    "consumed_by": []
+  },
+  "delta_L_th": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_linear_thermal_expansion"
+    ],
+    "consumed_by": []
+  },
+  "u_el": {
+    "dimension_key": "pressure",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [
+      "law_elastic_strain_energy_density"
+    ],
+    "consumed_by": []
+  },
+  "delta_tip": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_cantilever_tip_deflection"
+    ],
+    "consumed_by": []
+  },
+  "delta_mid": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_simply_supported_midspan_deflection"
+    ],
+    "consumed_by": []
+  },
+  "F_cr": {
+    "dimension_key": "force",
+    "z7_vector": [
+      1,
+      1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L T^-2",
+    "produced_by": [
+      "law_euler_critical_buckling_load"
+    ],
+    "consumed_by": []
+  },
+  "eps_lat": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_poisson_lateral_strain"
+    ],
+    "consumed_by": []
+  },
+  "b_beam": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [],
+    "consumed_by": [
+      "law_rectangular_beam_area_inertia"
+    ]
+  },
+  "h_beam": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [],
+    "consumed_by": [
+      "law_rectangular_beam_area_inertia"
+    ]
+  },
+  "L_lorenz": {
+    "dimension_key": "lorenz_number",
+    "z7_vector": [
+      2,
+      4,
+      -6,
+      -2,
+      -2,
+      0,
+      0
+    ],
+    "si_representation": "M^2 L^4 T^-6 I^-2 Theta^-2",
+    "produced_by": [
+      "law_lorenz_sommerfeld_number"
+    ],
+    "consumed_by": [
+      "law_wiedemann_franz_thermal_cond"
+    ]
+  },
+  "sigma_elec": {
+    "dimension_key": "electrical_conductivity",
+    "z7_vector": [
+      -1,
+      -3,
+      3,
+      2,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M^-1 L^-3 T^3 I^2",
+    "produced_by": [],
+    "consumed_by": [
+      "law_wiedemann_franz_thermal_cond"
+    ]
+  },
+  "F_stokes": {
+    "dimension_key": "force",
+    "z7_vector": [
+      1,
+      1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L T^-2",
+    "produced_by": [
+      "law_stokes_viscous_drag"
+    ],
+    "consumed_by": []
+  },
+  "v_term": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_stokes_terminal_velocity"
+    ],
+    "consumed_by": []
+  },
+  "rho_part": {
+    "dimension_key": "density",
+    "z7_vector": [
+      1,
+      -3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-3",
+    "produced_by": [],
+    "consumed_by": [
+      "law_stokes_terminal_velocity"
+    ]
+  },
+  "delta_P_dw": {
+    "dimension_key": "pressure",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [
+      "law_darcy_weisbach_pressure_drop"
+    ],
+    "consumed_by": []
+  },
+  "h_loss": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_darcy_weisbach_head_loss"
+    ],
+    "consumed_by": []
+  },
+  "v_efflux": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_torricelli_efflux_velocity"
+    ],
+    "consumed_by": []
+  },
+  "F_buoy": {
+    "dimension_key": "force",
+    "z7_vector": [
+      1,
+      1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L T^-2",
+    "produced_by": [
+      "law_archimedes_buoyancy_force"
+    ],
+    "consumed_by": []
+  },
+  "V_disp": {
+    "dimension_key": "volume",
+    "z7_vector": [
+      0,
+      3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L^3",
+    "produced_by": [],
+    "consumed_by": [
+      "law_archimedes_buoyancy_force"
+    ]
+  },
+  "h_cap": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_jurin_capillary_rise"
+    ],
+    "consumed_by": []
+  },
+  "Fr": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_froude_number"
+    ],
+    "consumed_by": []
+  },
+  "We": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_weber_number"
+    ],
+    "consumed_by": []
+  },
+  "Ca": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_capillary_number"
+    ],
+    "consumed_by": []
+  },
+  "St": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_strouhal_number"
+    ],
+    "consumed_by": []
+  },
+  "f_vort": {
+    "dimension_key": "frequency",
+    "z7_vector": [
+      0,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_strouhal_number"
+    ]
+  },
+  "nu_kin": {
+    "dimension_key": "kinematic_viscosity",
+    "z7_vector": [
+      0,
+      2,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L^2 T^-1",
+    "produced_by": [
+      "law_kinematic_viscosity_def"
+    ],
+    "consumed_by": [
+      "law_grashof_number"
+    ]
+  },
+  "delta_bl": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_blasius_laminar_boundary_thickness"
+    ],
+    "consumed_by": []
+  },
+  "Q_poiseuille": {
+    "dimension_key": "volumetric_flow_rate",
+    "z7_vector": [
+      0,
+      3,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L^3 T^-1",
+    "produced_by": [
+      "law_poiseuille_volumetric_flow"
+    ],
+    "consumed_by": []
+  },
+  "v_sw": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_shallow_water_wave_speed"
+    ],
+    "consumed_by": []
+  },
+  "G_gibbs": {
+    "dimension_key": "energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2",
+    "produced_by": [
+      "law_gibbs_free_energy"
+    ],
+    "consumed_by": []
+  },
+  "H_enth": {
+    "dimension_key": "energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2",
+    "produced_by": [],
+    "consumed_by": [
+      "law_gibbs_free_energy"
+    ]
+  },
+  "S_ent": {
+    "dimension_key": "entropy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      -1,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2 Theta^-1",
+    "produced_by": [
+      "law_boltzmann_statistical_entropy"
+    ],
+    "consumed_by": [
+      "law_gibbs_free_energy",
+      "law_helmholtz_free_energy"
+    ]
+  },
+  "F_helm": {
+    "dimension_key": "energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2",
+    "produced_by": [
+      "law_helmholtz_free_energy"
+    ],
+    "consumed_by": []
+  },
+  "U_int": {
+    "dimension_key": "energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2",
+    "produced_by": [],
+    "consumed_by": [
+      "law_helmholtz_free_energy"
+    ]
+  },
+  "v_rms": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_maxwell_boltzmann_rms_speed"
+    ],
+    "consumed_by": []
+  },
+  "v_mp": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_maxwell_boltzmann_most_probable_speed"
+    ],
+    "consumed_by": []
+  },
+  "rho_gas": {
+    "dimension_key": "density",
+    "z7_vector": [
+      1,
+      -3,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-3",
+    "produced_by": [
+      "law_ideal_gas_density"
+    ],
+    "consumed_by": []
+  },
+  "eta_otto": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_otto_cycle_efficiency"
+    ],
+    "consumed_by": []
+  },
+  "COP_ref": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_carnot_refrigerator_cop"
+    ],
+    "consumed_by": []
+  },
+  "COP_hp": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_carnot_heat_pump_cop"
+    ],
+    "consumed_by": []
+  },
+  "Omega_micro": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_boltzmann_statistical_entropy"
+    ]
+  },
+  "lambda_peak": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_wien_displacement_wavelength"
+    ],
+    "consumed_by": []
+  },
+  "b_wien": {
+    "dimension_key": "wien_constant",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "si_representation": "L Theta",
+    "produced_by": [],
+    "consumed_by": [
+      "law_wien_displacement_wavelength"
+    ]
+  },
+  "P_bb": {
+    "dimension_key": "pressure",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [
+      "law_blackbody_radiation_pressure"
+    ],
+    "consumed_by": []
+  },
+  "R_th": {
+    "dimension_key": "thermal_resistance",
+    "z7_vector": [
+      -1,
+      -2,
+      3,
+      0,
+      1,
+      0,
+      0
+    ],
+    "si_representation": "M^-1 L^-2 T^3 Theta",
+    "produced_by": [
+      "law_conduction_thermal_resistance"
+    ],
+    "consumed_by": []
+  },
+  "R_th_conv": {
+    "dimension_key": "thermal_resistance",
+    "z7_vector": [
+      -1,
+      -2,
+      3,
+      0,
+      1,
+      0,
+      0
+    ],
+    "si_representation": "M^-1 L^-2 T^3 Theta",
+    "produced_by": [
+      "law_convection_thermal_resistance"
+    ],
+    "consumed_by": []
+  },
+  "Pe_th": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_peclet_number_thermal"
+    ],
+    "consumed_by": []
+  },
+  "Gr": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_grashof_number"
+    ],
+    "consumed_by": [
+      "law_rayleigh_number"
+    ]
+  },
+  "Ra": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_rayleigh_number"
+    ],
+    "consumed_by": []
+  },
+  "Fo": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_fourier_number_transient"
+    ],
+    "consumed_by": []
+  },
+  "k_rxn": {
+    "dimension_key": "rate",
+    "z7_vector": [
+      0,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T^-1",
+    "produced_by": [
+      "law_arrhenius_reaction_rate"
+    ],
+    "consumed_by": []
+  },
+  "A_pre": {
+    "dimension_key": "rate",
+    "z7_vector": [
+      0,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_arrhenius_reaction_rate"
+    ]
+  },
+  "E_a": {
+    "dimension_key": "molar_energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      -1,
+      0
+    ],
+    "si_representation": "M L^2 T^-2 N^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_arrhenius_reaction_rate"
+    ]
+  },
+  "P_vap": {
+    "dimension_key": "pressure",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [
+      "law_clausius_clapeyron_vapor_pressure"
+    ],
+    "consumed_by": []
+  },
+  "P_ref": {
+    "dimension_key": "pressure",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [],
+    "consumed_by": [
+      "law_clausius_clapeyron_vapor_pressure"
+    ]
+  },
+  "delta_H_vap": {
+    "dimension_key": "molar_energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      -1,
+      0
+    ],
+    "si_representation": "M L^2 T^-2 N^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_clausius_clapeyron_vapor_pressure"
+    ]
+  },
+  "P_osm": {
+    "dimension_key": "pressure",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [
+      "law_vant_hoff_osmotic_pressure"
+    ],
+    "consumed_by": []
+  },
+  "i_vh": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_vant_hoff_osmotic_pressure"
+    ]
+  },
+  "c_mol": {
+    "dimension_key": "molar_concentration",
+    "z7_vector": [
+      0,
+      -3,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "si_representation": "L^-3 N",
+    "produced_by": [],
+    "consumed_by": [
+      "law_vant_hoff_osmotic_pressure",
+      "law_beer_lambert_absorbance"
+    ]
+  },
+  "J_mol": {
+    "dimension_key": "molar_flux",
+    "z7_vector": [
+      0,
+      -2,
+      -1,
+      0,
+      0,
+      1,
+      0
+    ],
+    "si_representation": "L^-2 T^-1 N",
+    "produced_by": [
+      "law_fick_first_diffusive_flux"
+    ],
+    "consumed_by": []
+  },
+  "D_diff": {
+    "dimension_key": "mass_diffusivity",
+    "z7_vector": [
+      0,
+      2,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L^2 T^-1",
+    "produced_by": [
+      "law_einstein_mobility_diffusivity"
+    ],
+    "consumed_by": [
+      "law_fick_first_diffusive_flux"
+    ]
+  },
+  "delta_c_mol": {
+    "dimension_key": "molar_concentration",
+    "z7_vector": [
+      0,
+      -3,
+      0,
+      0,
+      0,
+      1,
+      0
+    ],
+    "si_representation": "L^-3 N",
+    "produced_by": [],
+    "consumed_by": [
+      "law_fick_first_diffusive_flux"
+    ]
+  },
+  "E_cell": {
+    "dimension_key": "voltage",
+    "z7_vector": [
+      1,
+      2,
+      -3,
+      -1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-3 I^-1",
+    "produced_by": [
+      "law_nernst_electrochemical_potential"
+    ],
+    "consumed_by": []
+  },
+  "E_std": {
+    "dimension_key": "voltage",
+    "z7_vector": [
+      1,
+      2,
+      -3,
+      -1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-3 I^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_nernst_electrochemical_potential"
+    ]
+  },
+  "z_val": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_nernst_electrochemical_potential",
+      "law_faraday_electrolysis_mass"
+    ]
+  },
+  "F_faraday": {
+    "dimension_key": "molar_charge",
+    "z7_vector": [
+      0,
+      0,
+      1,
+      1,
+      0,
+      -1,
+      0
+    ],
+    "si_representation": "T I N^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_nernst_electrochemical_potential",
+      "law_faraday_electrolysis_mass"
+    ]
+  },
+  "Q_rxn": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_nernst_electrochemical_potential"
+    ]
+  },
+  "m_dep": {
+    "dimension_key": "mass",
+    "z7_vector": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M",
+    "produced_by": [
+      "law_faraday_electrolysis_mass"
+    ],
+    "consumed_by": []
+  },
+  "A_abs": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_beer_lambert_absorbance"
+    ],
+    "consumed_by": []
+  },
+  "eps_mol": {
+    "dimension_key": "molar_attenuation",
+    "z7_vector": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      -1,
+      0
+    ],
+    "si_representation": "L^2 N^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_beer_lambert_absorbance"
+    ]
+  },
+  "d_img": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_thin_lens_image_distance"
+    ],
+    "consumed_by": []
+  },
+  "f_lens": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [],
+    "consumed_by": [
+      "law_thin_lens_image_distance"
+    ]
+  },
+  "d_obj": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [],
+    "consumed_by": [
+      "law_thin_lens_image_distance"
+    ]
+  },
+  "theta_rayleigh": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_rayleigh_angular_resolution"
+    ],
+    "consumed_by": []
+  },
+  "z_rayleigh": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_gaussian_beam_rayleigh_range"
+    ],
+    "consumed_by": []
+  },
+  "w_0": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [],
+    "consumed_by": [
+      "law_gaussian_beam_rayleigh_range",
+      "law_gaussian_beam_divergence"
+    ]
+  },
+  "theta_div": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_gaussian_beam_divergence"
+    ],
+    "consumed_by": []
+  },
+  "R_fresnel": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_fresnel_normal_reflectance"
+    ],
+    "consumed_by": []
+  },
+  "n_1": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_fresnel_normal_reflectance"
+    ]
+  },
+  "n_2": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_fresnel_normal_reflectance"
+    ]
+  },
+  "p_phot": {
+    "dimension_key": "momentum",
+    "z7_vector": [
+      1,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L T^-1",
+    "produced_by": [
+      "law_photon_momentum"
+    ],
+    "consumed_by": []
+  },
+  "Z_ac": {
+    "dimension_key": "acoustic_impedance",
+    "z7_vector": [
+      1,
+      -2,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-2 T^-1",
+    "produced_by": [
+      "law_specific_acoustic_impedance"
+    ],
+    "consumed_by": []
+  },
+  "I_ac": {
+    "dimension_key": "radiation_flux",
+    "z7_vector": [
+      1,
+      0,
+      -3,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M T^-3",
+    "produced_by": [
+      "law_acoustic_plane_wave_intensity"
+    ],
+    "consumed_by": []
+  },
+  "P_rms": {
+    "dimension_key": "pressure",
+    "z7_vector": [
+      1,
+      -1,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-1 T^-2",
+    "produced_by": [],
+    "consumed_by": [
+      "law_acoustic_plane_wave_intensity"
+    ]
+  },
+  "R_ac": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_acoustic_normal_reflection_coeff"
+    ],
+    "consumed_by": []
+  },
+  "Z_2": {
+    "dimension_key": "acoustic_impedance",
+    "z7_vector": [
+      1,
+      -2,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-2 T^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_acoustic_normal_reflection_coeff"
+    ]
+  },
+  "Z_1": {
+    "dimension_key": "acoustic_impedance",
+    "z7_vector": [
+      1,
+      -2,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^-2 T^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_acoustic_normal_reflection_coeff"
+    ]
+  },
+  "f_obs": {
+    "dimension_key": "frequency",
+    "z7_vector": [
+      0,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T^-1",
+    "produced_by": [
+      "law_doppler_observed_frequency"
+    ],
+    "consumed_by": []
+  },
+  "f_src": {
+    "dimension_key": "frequency",
+    "z7_vector": [
+      0,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_doppler_observed_frequency"
+    ]
+  },
+  "v_obs": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_doppler_observed_frequency"
+    ]
+  },
+  "v_src": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_doppler_observed_frequency"
+    ]
+  },
+  "C_pp": {
+    "dimension_key": "capacitance",
+    "z7_vector": [
+      -1,
+      -2,
+      4,
+      2,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M^-1 L^-2 T^4 I^2",
+    "produced_by": [
+      "law_parallel_plate_capacitance"
+    ],
+    "consumed_by": []
+  },
+  "eps_r": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_parallel_plate_capacitance"
+    ]
+  },
+  "P_larmor": {
+    "dimension_key": "power",
+    "z7_vector": [
+      1,
+      2,
+      -3,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-3",
+    "produced_by": [
+      "law_larmor_radiated_power"
+    ],
+    "consumed_by": []
+  },
+  "V_noise": {
+    "dimension_key": "voltage",
+    "z7_vector": [
+      1,
+      2,
+      -3,
+      -1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-3 I^-1",
+    "produced_by": [
+      "law_johnson_nyquist_noise_voltage"
+    ],
+    "consumed_by": []
+  },
+  "I_shot": {
+    "dimension_key": "current",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "I",
+    "produced_by": [
+      "law_schottky_shot_noise_current"
+    ],
+    "consumed_by": []
+  },
+  "V_th": {
+    "dimension_key": "voltage",
+    "z7_vector": [
+      1,
+      2,
+      -3,
+      -1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-3 I^-1",
+    "produced_by": [
+      "law_semiconductor_thermal_voltage"
+    ],
+    "consumed_by": []
+  },
+  "mu_mob": {
+    "dimension_key": "carrier_mobility",
+    "z7_vector": [
+      -1,
+      0,
+      2,
+      1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M^-1 T^2 I",
+    "produced_by": [],
+    "consumed_by": [
+      "law_einstein_mobility_diffusivity"
+    ]
+  },
+  "V_hall": {
+    "dimension_key": "voltage",
+    "z7_vector": [
+      1,
+      2,
+      -3,
+      -1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-3 I^-1",
+    "produced_by": [
+      "law_hall_effect_voltage"
+    ],
+    "consumed_by": []
+  },
+  "I_diode": {
+    "dimension_key": "current",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "I",
+    "produced_by": [
+      "law_shockley_diode_current"
+    ],
+    "consumed_by": []
+  },
+  "I_sat": {
+    "dimension_key": "current",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "I",
+    "produced_by": [],
+    "consumed_by": [
+      "law_shockley_diode_current"
+    ]
+  },
+  "n_id": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_shockley_diode_current"
+    ]
+  },
+  "Z_0": {
+    "dimension_key": "resistance",
+    "z7_vector": [
+      1,
+      2,
+      -3,
+      -2,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-3 I^-2",
+    "produced_by": [
+      "law_free_space_wave_impedance"
+    ],
+    "consumed_by": []
+  },
+  "c_em": {
+    "dimension_key": "velocity",
+    "z7_vector": [
+      0,
+      1,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L T^-1",
+    "produced_by": [
+      "law_speed_of_light_maxwell"
+    ],
+    "consumed_by": []
+  },
+  "T_pend": {
+    "dimension_key": "time",
+    "z7_vector": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T",
+    "produced_by": [
+      "law_simple_pendulum_period"
+    ],
+    "consumed_by": []
+  },
+  "c_crit": {
+    "dimension_key": "damping_coeff",
+    "z7_vector": [
+      1,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M T^-1",
+    "produced_by": [
+      "law_critical_viscous_damping"
+    ],
+    "consumed_by": []
+  },
+  "omega_d": {
+    "dimension_key": "angular_velocity",
+    "z7_vector": [
+      0,
+      0,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T^-1",
+    "produced_by": [
+      "law_damped_natural_frequency"
+    ],
+    "consumed_by": []
+  },
+  "zeta_damp": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_damped_natural_frequency",
+      "law_resonator_quality_factor"
+    ]
+  },
+  "Q_res": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [
+      "law_resonator_quality_factor"
+    ],
+    "consumed_by": []
+  },
+  "U_spr": {
+    "dimension_key": "energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2",
+    "produced_by": [
+      "law_spring_elastic_potential_energy"
+    ],
+    "consumed_by": []
+  },
+  "x_disp": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [],
+    "consumed_by": [
+      "law_spring_elastic_potential_energy"
+    ]
+  },
+  "U_grav": {
+    "dimension_key": "energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2",
+    "produced_by": [
+      "law_gravitational_potential_energy_near_surface"
+    ],
+    "consumed_by": []
+  },
+  "T_hawking": {
+    "dimension_key": "temperature",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "si_representation": "Theta",
+    "produced_by": [
+      "law_hawking_black_hole_temperature"
+    ],
+    "consumed_by": []
+  },
+  "hbar": {
+    "dimension_key": "action",
+    "z7_vector": [
+      1,
+      2,
+      -1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-1",
+    "produced_by": [],
+    "consumed_by": [
+      "law_hawking_black_hole_temperature",
+      "law_bekenstein_hawking_entropy",
+      "law_planck_length",
+      "law_planck_mass",
+      "law_planck_time"
+    ]
+  },
+  "S_bh": {
+    "dimension_key": "entropy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      -1,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2 Theta^-1",
+    "produced_by": [
+      "law_bekenstein_hawking_entropy"
+    ],
+    "consumed_by": []
+  },
+  "L_edd": {
+    "dimension_key": "power",
+    "z7_vector": [
+      1,
+      2,
+      -3,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-3",
+    "produced_by": [
+      "law_eddington_luminosity"
+    ],
+    "consumed_by": []
+  },
+  "m_p": {
+    "dimension_key": "mass",
+    "z7_vector": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M",
+    "produced_by": [],
+    "consumed_by": [
+      "law_eddington_luminosity"
+    ]
+  },
+  "sigma_T": {
+    "dimension_key": "area",
+    "z7_vector": [
+      0,
+      2,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L^2",
+    "produced_by": [],
+    "consumed_by": [
+      "law_eddington_luminosity"
+    ]
+  },
+  "T_eq": {
+    "dimension_key": "temperature",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "si_representation": "Theta",
+    "produced_by": [
+      "law_planetary_equilibrium_temperature"
+    ],
+    "consumed_by": []
+  },
+  "T_star": {
+    "dimension_key": "temperature",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0
+    ],
+    "si_representation": "Theta",
+    "produced_by": [],
+    "consumed_by": [
+      "law_planetary_equilibrium_temperature"
+    ]
+  },
+  "A_bond": {
+    "dimension_key": "dimensionless",
+    "z7_vector": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "1 (Boyutsuz)",
+    "produced_by": [],
+    "consumed_by": [
+      "law_planetary_equilibrium_temperature"
+    ]
+  },
+  "R_star": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [],
+    "consumed_by": [
+      "law_planetary_equilibrium_temperature"
+    ]
+  },
+  "lambda_jeans": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_jeans_gravitational_instability_length"
+    ],
+    "consumed_by": []
+  },
+  "l_planck": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_planck_length"
+    ],
+    "consumed_by": []
+  },
+  "m_planck": {
+    "dimension_key": "mass",
+    "z7_vector": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M",
+    "produced_by": [
+      "law_planck_mass"
+    ],
+    "consumed_by": []
+  },
+  "t_planck": {
+    "dimension_key": "time",
+    "z7_vector": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T",
+    "produced_by": [
+      "law_planck_time"
+    ],
+    "consumed_by": []
+  },
+  "t_proper": {
+    "dimension_key": "time",
+    "z7_vector": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T",
+    "produced_by": [
+      "law_gravitational_time_dilation"
     ],
     "consumed_by": []
   }
