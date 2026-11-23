@@ -19,7 +19,10 @@ import sys
 from typing import Any, Dict, List, Optional, Tuple
 
 import sympy as sp
-from mcp.server.fastmcp import FastMCP
+try:
+    from mcp.server.fastmcp import FastMCP
+except ImportError:
+    from mcp.server.mcpserver import MCPServer as FastMCP
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 if ROOT_DIR not in sys.path:
