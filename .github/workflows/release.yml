@@ -1,0 +1,84 @@
+name: Release Binaries
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to build and attach binaries to (e.g. v0.1.0)"
+        required: true
+        default: "v0.1.0"
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.target_name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target_name: linux-x86_64
+            bin_src: citadel_math_core/target/release/citadel_math_core
+            asset_name: citadel_math_core-linux-x86_64
+          - os: windows-latest
+            target_name: windows-x86_64
+            bin_src: citadel_math_core/target/release/citadel_math_core.exe
+            asset_name: citadel_math_core-windows-x86_64.exe
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build release binary
+        run: cargo build --release --manifest-path citadel_math_core/Cargo.toml
+
+      - name: Prepare release artifact
+        shell: bash
+        run: |
+          mkdir -p dist
+          cp "${{ matrix.bin_src }}" "dist/${{ matrix.asset_name }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: dist/${{ matrix.asset_name }}
+
+  publish:
+    name: Publish Release Assets & SHA256SUMS
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all release artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+
+      - name: Generate SHA256SUMS.txt
+        working-directory: release-assets
+        run: |
+          sha256sum citadel_math_core-* > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Upload binaries and checksums to GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          if ! gh release view "$RELEASE_TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --repo "${{ github.repository }}" --title "Citadel-Math $RELEASE_TAG" --generate-notes
+          fi
+          gh release upload "$RELEASE_TAG" --repo "${{ github.repository }}" --clobber \
+            release-assets/citadel_math_core-linux-x86_64 \
+            release-assets/citadel_math_core-windows-x86_64.exe \
+            release-assets/SHA256SUMS.txt

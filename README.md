@@ -1,6 +1,7 @@
 # Citadel-Math (`citadel_math_core` / `kmath-mcp`)
 
 [![CI](https://github.com/imza464-cmyk/citadel-math/actions/workflows/ci.yml/badge.svg)](https://github.com/imza464-cmyk/citadel-math/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/imza464-cmyk/citadel-math?color=0ea5e9)](https://github.com/imza464-cmyk/citadel-math/releases)
 [![License](https://img.shields.io/badge/License-Source_Available_%28No_Modification%29-blue.svg)](./LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-forbid%28unsafe__code%29-orange.svg)](./citadel_math_core/src/lib.rs)
 [![MCP Server](https://img.shields.io/badge/MCP-15_Deterministic_Tools-10b981.svg)](./kmath_mcp.py)
@@ -17,14 +18,70 @@ Large Language Models hallucinate units, drop denominator domain guards, confuse
 
 Büyük Dil Modelleri (LLM) formül türetirken sıklıkla birim hatası yapar, payda sıfır koşullarını atlar ve kayan nokta yuvarlama hatalarını güvenlik katsayılarına sızdırır. **Citadel-Math**, saf Rust (`#![forbid(unsafe_code)]`) ile yazılmış deterministik hesaplama çekirdeğini (`citadel_math_core`) Python/SymPy tabanlı bir MCP sunucu katmanıyla (`kmath_mcp.py`) birleştirerek yapay zekâ ajanlarına birim, aralık ve cebirsel eşdeğerlik doğrulama araçları sunar.
 
+```mermaid
+flowchart LR
+    LLM["LLM / MCP Client (Claude, Cursor, Windsurf)"] -->|"JSON-RPC (stdio)"| MCP["kmath_mcp.py (Python + Zero-Eval AST Guard)"]
+    MCP -->|"Subprocess (shell=False)"| RUST["citadel_math_core (Pure Rust, forbid unsafe)"]
+    MCP -->|"Read-only SSOT"| DB["database/ & data/ (214 Laws, 353 Symbols, CODATA 2022)"]
+    RUST -->|"Verified Bounds & Proofs"| VERDICT["Deterministic JSON Verdict"]
+    MCP --> VERDICT
+```
+
+---
+
+## Live Examples / Canlı Örnekler
+
+### 1. Catching a 1000× SI Unit Scaling Error (`kmath_dimension_check`)
+`kmath_dimension_check("kN", "kg * m / s^2")` recognizes that both sides share dimension $\text{M L T}^{-2}$ yet flags the `1000.0×` scale mismatch:
+```json
+{
+  "lhs": "kN",
+  "rhs": "kg * m / s^2",
+  "dim_lhs": "M L T^-2",
+  "dim_rhs": "M L T^-2",
+  "homogeneous": true,
+  "si_scale_ratio_lhs_over_rhs": 1000.0,
+  "verdict": "DIMENSIONALLY_HOMOGENEOUS_BUT_UNIT_SCALE_MISMATCH"
+}
+```
+
+### 2. Blocking a Domain-Guard-Dropping Simplification (`kmath_prove_identity`)
+`kmath_prove_identity("(x^2 - 1) / (x - 1)", "x + 1")` rejects naive cancellation because `x = 1` is singular on the LHS:
+```json
+{
+  "lhs_domain_guards": ["(x - 1) != 0"],
+  "rhs_domain_guards": [],
+  "proven_identical": false,
+  "reason": "Tanım kümesi (yan koşul) eşitsizliği! Yan koşul yutan sadeleştirme reddedildi.",
+  "status": "ok"
+}
+```
+
+### 3. Outward-Rounded Interval Bounds + Exact Derivative (`kmath_interval_eval`)
+`kmath_interval_eval("(x + 1) / y", '{"x": [1.0, 2.0], "y": [2.0, 4.0]}', "x")`:
+```json
+{
+  "expression": "((x + 1) / y)",
+  "outward_interval": [0.5, 1.5],
+  "midpoint_value_and_gradient": [0.8333333333333333, {"x": 0.3333333333333333, "y": -0.2777777777777778}],
+  "symbolic_derivative": "(1 / y)",
+  "status": "ok"
+}
+```
+
 ---
 
 ## Core Architecture / Temel Mimari
 
 ```text
 .
-├── .github/workflows/ci.yml        # Cross-platform CI (Linux/Windows): clippy, Rust tests, audits & MCP security tests
+├── .github/
+│   ├── ISSUE_TEMPLATE/             # Bug report & mathematical/physical soundness issue templates
+│   └── workflows/
+│       ├── ci.yml                  # Cross-platform CI (Linux/Windows): clippy, tests, audits & MCP security
+│       └── release.yml             # Automated Linux/Windows release binary & SHA256SUMS publishing
 ├── AGENTS.md                       # Engineering invariants (dimensional homogeneity & SSOT rules)
+├── CHANGELOG.md                    # Versioned release history (Keep a Changelog)
 ├── HATA_KAYIT_DEFTERI.md           # Engineering bug & regression logbook
 ├── SECURITY.md                     # Threat model, zero-eval parser policy & vulnerability disclosure
 ├── kmath.py                        # Verification cockpit CLI (10 Python SSOT + 16 Rust audit gates)
@@ -49,7 +106,7 @@ Büyük Dil Modelleri (LLM) formül türetirken sıklıkla birim hatası yapar, 
 │       └── physical_bounds.rs      # Thermodynamics 1st/2nd law (Carnot), v < c causality & momentum pruning
 ├── engine/                         # Python symbolic AST, SymPy parity, harvester, RK4 & knowledge graph
 ├── database/
-│   ├── canonical_laws.json         # 214 verified physics/system equations across 18 regimes
+│   ├── canonical_laws.json         # 214 verified laws across 25+ domains (physics, aerospace, real-time, biomechanics)
 │   ├── ONTOLOGY.json               # 353 unique SI symbol-dimension definitions (SSOT)
 │   └── materials.json              # 30 certified structural & thermal protection materials
 └── data/
@@ -138,6 +195,20 @@ python kmath.py stats                 # Show ontology & canonical law metrics
 - **Algebraic Equivalence Checker (`PolyZ` / `MultiPolyZ`):** Checks polynomial and guarded rational equivalence under overflow-checked `i64` arithmetic (`GuardedPoly`); it is not a general theorem prover like Lean/Coq or an arbitrary-precision Gröbner basis solver over $\mathbb{C}$.
 - **Astrodynamics & Trajectory (`RK4` / `RK4(5)`):** Models 2D point-mass trajectories, 7-layer USSA-1976 hydrostatic atmosphere, and secular WGS84 $J_2$ drift / two-body Lambert transfer; it does not model 6-DoF rigid-body aerodynamics or full $N$-body JPL ephemerides.
 - **Structural & Thermal Sizing (`NASA SP-8007` & `Sutton-Graves`):** Cylindrical shell stress and ablative TPS margins provide Phase-A conceptual pre-sizing filters, not flight-certification 3D finite-element analysis.
+
+---
+
+## Reference Validation / Dış Referans Karşılaştırması
+
+| Benchmark / Standard | Reference Value | Citadel-Math Check | Tolerance / Result |
+| :--- | :--- | :--- | :--- |
+| **NIST CODATA 2022** ($\mu_0 \varepsilon_0 c^2$) | `1.0` (Maxwell vacuum identity) | `constants.rs` / `kmath.py` | Relative drift `< 2e-10` (PASS) |
+| **USSA-1976 Atmosphere** (0 / 11 / 47 km) | `288.15 K` / `216.65 K` / `270.65 K` | `AtmosphereModel::state_at` | `< 1e-3 K`, sea-level `a0 = 340.294 m/s` (PASS) |
+| **WGS84 $J_2$ Critical Inclination** | `63.4349488°` ($\dot{\omega} = 0$) | `J2OrbitalModel::perigee_precession_rate_rad_s` | `|dω/dt| < 1e-16 rad/s` (PASS) |
+| **WGS84 ISS LEO RAAN Drift** ($400\text{ km}, 51.64^\circ$) | `~ -4.998°/day` (NASA/NORAD) | `J2OrbitalModel::raan_precession_rate_rad_s` | `-4.9979°/day` (PASS) |
+| **Lambert Orbital Transfer** (90° LEO) | Vis-viva energy & $\mathbf{h}$ conservation | `LambertSolver::solve` | Relative energy drift `< 1e-9` (PASS) |
+| **IEEE 1788-2015 `Interval64`** (`1/3 * 3`) | Exact inclusion `1.0 ∈ [lo, hi]` | `Interval64::div` / `mul` | `0/1-ULP` outward rounding, `0 ∈ denom` rejected (PASS) |
+| **Native Rust Audit Latency** (16 gates) | Sub-20 ms local execution | `citadel_math_core audit` | `~13–17 ms` release build |
 
 ---
 
