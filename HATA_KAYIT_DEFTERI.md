@@ -29,3 +29,13 @@ Bu belge, **Matematik Çekirdeği (`kmath` / `Citadel-Math`)** projesinde tespit
 - **Kök Neden:** `requirements.txt` dosyasında üst sürüm sınırı olmadan `mcp>=1.0.0` yazılıydı; `pip`, `FastMCP`'yi `MCPServer`'a taşıyan `mcp 2.x` sürümünü kurdu.
 - **Çözüm:** `requirements.txt` majör sürüm sınırlarıyla (`sympy>=1.12,<2.0`, `mcp>=1.0.0,<2.0.0`, `networkx>=3.0,<4.0`) sabitlendi ve `kmath_mcp.py` içinde hem `mcp 1.x` (`FastMCP`) hem `mcp 2.x` (`MCPServer`) uyumlu geri-düşüm importu eklendi.
 - **Ampirik Doğrulama:** `tests/test_mcp_security.py` yerel ortamda ve GitHub Actions `ubuntu-latest` + `windows-latest` matrisinde doğrulandı.
+
+
+---
+
+## 🛠️ 2026-11-23 — Windows `shutil.which()` Göreli Yol (`.\citadel_math_core-windows-x86_64.exe`) Normalizasyonu
+
+- **Belirti:** `v0.2.0` GitHub Release ikilisi ve wheel paketi sıfırdan izole bir kullanıcı klasöründe kurularak test edildiğinde, `PATH` otomatik keşfinde `resolve_rust_bin()` Windows üzerinde mutlak yol yerine `.\citadel_math_core-windows-x86_64.exe` göreli yolunu döndürdü.
+- **Kök Neden (Adli Kanıt):** Windows üzerinde `shutil.which()` geçerli çalışma dizinini (`.`) önceleyip göreli yol döndürür. `_run_rust_cli()` alt süreci `cwd=ROOT_DIR` (`site-packages`) ile başlattığından veya süreç sonradan `os.chdir()` yaptığında göreli yol taşınabilirliğini yitirir.
+- **Çözüm:** Hem `kmath_mcp.py` hem de `kmath.py` içindeki `resolve_rust_bin()` fonksiyonunda `shutil.which()` çıktısı `os.path.abspath(found)` ile kesin mutlak yola dönüştürüldü; `tests/test_mcp_security.py` içine `test_resolve_rust_bin_path_normalizes_relative_which_result` regresyon testi eklendi.
+- **Ampirik Doğrulama:** `python -m unittest discover -s tests -v` (`10/10 PASS`) ve canlı `v0.2.0` indirme/kurulum testinde 26/26 kapı PASS doğrulandı.

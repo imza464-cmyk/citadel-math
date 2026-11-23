@@ -99,7 +99,7 @@ def resolve_rust_bin() -> Tuple[Optional[str], List[str]]:
         found = shutil.which(pname)
         searched.append(f"PATH:{pname}")
         if found and os.path.isfile(found):
-            return found, searched
+            return os.path.abspath(found), searched
 
     return None, searched
 

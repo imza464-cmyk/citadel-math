@@ -33,17 +33,19 @@ flowchart LR
 
 Choose the workflow that fits your environment — **Rust is NOT required** if you use pre-built release binaries or Docker.
 
-### Option A — One-Command `uvx` + Pre-Built Binary (No Rust Compiler Required)
-1. **Download the self-contained Rust core binary** (`1.45 MB` on Windows, embedded SSOT JSONs) from [GitHub Releases](https://github.com/imza464-cmyk/citadel-math/releases) and verify its SHA-256 checksum against `SHA256SUMS.txt`:
+### Option A — Zero-Build Install via Wheel / `uvx` + Pre-Built Binary (No Rust or Git Required)
+1. **Download the self-contained Rust core binary** (`1.14 MB` Windows / `1.49 MB` Linux, embedded SSOT JSONs) from [GitHub Releases](https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.0) and verify its SHA-256 checksum against `SHA256SUMS.txt`:
    - Linux x86_64: `citadel_math_core-linux-x86_64` (`chmod +x` and place on `PATH` or point `KMATH_RUST_BIN` to it)
-   - Windows x86_64: `citadel_math_core-windows-x86_64.exe`
-2. **Run CLI or MCP directly via [`uvx`](https://docs.astral.sh/uv/):**
+   - Windows x86_64: `citadel_math_core-windows-x86_64.exe` (place on `PATH` or point `KMATH_RUST_BIN` to it)
+2. **Install directly from the release wheel (no `git` or Rust needed) or run via [`uvx`](https://docs.astral.sh/uv/):**
    ```bash
-   # Inspect ontology & canonical law metrics with zero manual cloning
-   uvx --from git+https://github.com/imza464-cmyk/citadel-math.git kmath stats
+   # Fastest direct wheel install (gives you `kmath` and `kmath-mcp` CLI commands)
+   pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl
+   kmath stats && kmath audit && kmath rust audit
 
-   # Start the 15-tool stdio MCP server
-   KMATH_RUST_BIN=/path/to/citadel_math_core uvx --from git+https://github.com/imza464-cmyk/citadel-math.git kmath-mcp
+   # Or run ephemerally via uvx
+   uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl kmath stats
+   KMATH_RUST_BIN=/path/to/citadel_math_core uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl kmath-mcp
    ```
 3. **MCP Client Configuration (`uvx`):**
    ```json
@@ -51,7 +53,7 @@ Choose the workflow that fits your environment — **Rust is NOT required** if y
      "mcpServers": {
        "kmath": {
          "command": "uvx",
-         "args": ["--from", "git+https://github.com/imza464-cmyk/citadel-math.git", "kmath-mcp"],
+         "args": ["--from", "https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl", "kmath-mcp"],
          "env": {
            "KMATH_RUST_BIN": "/ABSOLUTE/PATH/TO/citadel_math_core",
            "OPENBLAS_NUM_THREADS": "1",

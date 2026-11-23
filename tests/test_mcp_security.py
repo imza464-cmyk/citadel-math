@@ -117,6 +117,16 @@ class TestPackagingAndBinaryResolution(unittest.TestCase):
         resolved, searched = kmath_mcp.resolve_rust_bin()
         self.assertIsNotNone(resolved, f"Compiled Rust binary not found in {searched}")
         self.assertTrue(os.path.isfile(resolved))
+        self.assertTrue(os.path.isabs(resolved), f"Resolved path must be absolute: {resolved}")
+
+    def test_resolve_rust_bin_path_normalizes_relative_which_result(self):
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("KMATH_RUST_BIN", None)
+            with mock.patch("kmath_mcp.os.path.isfile", side_effect=lambda p: p == ".\\citadel_math_core.exe"), \
+                 mock.patch("kmath_mcp.shutil.which", return_value=".\\citadel_math_core.exe"):
+                resolved, _ = kmath_mcp.resolve_rust_bin()
+                self.assertIsNotNone(resolved)
+                self.assertTrue(os.path.isabs(resolved), f"Relative shutil.which result not normalized: {resolved}")
 
     def test_resolve_rust_bin_honors_explicit_env_override(self):
         default_bin, _ = kmath_mcp.resolve_rust_bin()
