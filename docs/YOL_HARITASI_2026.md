@@ -1,6 +1,8 @@
 # Copyright (c) 2026 Mekserina Karaosmanoğlu. Source-Available (Read & Run Only) — All Modification & Derivative Rights Reserved.
 # MATEMATİK ÇEKİRDEĞİ (`citadel_math_core`) — STRATEJİK MÜHENDİSLİK YOL HARİTASI
 
+> **Durum Notu (Tarihsel Arşiv):** Bu belge projenin ilk Faz 0 (20 yasa) aşamasında hazırlanmış tasarım yol haritasıdır. Aşağıda planlanan Faz 1–5 ve Faz 6 (214 kanonik yasa, 353 SSOT sembolü, 30 malzeme, 15 araçlı `kmath_mcp.py` ve saf-Rust `citadel_math_core`) mevcut `main` dalında uygulanmıştır; güncel mimari için bkz. [`README.md`](../README.md).
+>
 > **Vizyon:** Yapay zekanın ve insan mühendislerin fiziksel sistem (havacılık, uzay, itki, elektromanyetik, enerji ve yapısal mekanik) tasarımlarında **sıfır boyutsal hata, sıfır tanım kümesi ihlali ve sıfır malzeme/termal halüsinasyon** ile saniyeler içinde doğrulanmış ön tasarım (preliminary design) ve denklem sentezi yapmasını sağlayan **Deterministik Ön-Tasarım ve Boyutsal Doğrulama Motoru**.
 
 ---

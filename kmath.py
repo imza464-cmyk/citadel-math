@@ -35,6 +35,7 @@ from engine.dimensions import (
     Dimension,
     DIMENSIONS,
     check_dimensional_consistency,
+    safe_parse_math_expr,
     verify_law_dimensional_homogeneity,
 )
 from engine.constants import PhysicalConstants
@@ -388,7 +389,7 @@ def cmd_audit() -> bool:
 
         try:
             local_symbols = {name: sp.Symbol(name) for name in l.get("dimensions", {})}
-            expr = sp.sympify(rhs.strip(), locals=local_symbols, evaluate=False)
+            expr = safe_parse_math_expr(rhs.strip(), allowed_symbols=local_symbols)
             symbols = set(str(s) for s in expr.free_symbols)
             declared = set(l.get("inputs", []))
             unaccounted = symbols - declared

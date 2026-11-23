@@ -31,6 +31,7 @@ from engine.dimensions import (
     Dimension,
     check_dimensional_consistency,
     infer_sympy_dimension,
+    safe_parse_math_expr,
     verify_law_dimensional_homogeneity,
 )
 from engine.knowledge_graph import KnowledgeGraph
@@ -260,7 +261,7 @@ def _try_parse_unit_expression(expr_str: str) -> Optional[Tuple[float, Dimension
 
     local_syms: Dict[str, sp.Symbol] = {u: sp.Symbol(u) for u in SI_UNIT_TABLE}
     try:
-        parsed = sp.sympify(normalized, locals=local_syms, evaluate=False)
+        parsed = safe_parse_math_expr(normalized, allowed_symbols=local_syms)
     except (sp.SympifyError, TypeError, ValueError):
         return None
 
@@ -321,7 +322,7 @@ def _resolve_expression_dimension(
     # 4. Tam Sembolik AST İfadesi (örn. 'G * m1 * m2 / r**2', 'v_e * log(m_0 / m_f)')
     expr_norm = cleaned.replace("^", "**")
     local_symbols = {name: sp.Symbol(name) for name in var_dims}
-    parsed = sp.sympify(expr_norm, locals=local_symbols, evaluate=False)
+    parsed = safe_parse_math_expr(expr_norm, allowed_symbols=local_symbols)
     inferred = infer_sympy_dimension(parsed, var_dims)
     return inferred, None, "symbolic_ast"
 
@@ -361,7 +362,7 @@ def kmath_audit() -> str:
         if lhs_s.strip() != law.get("target"):
             dangling_errors.append(f"{lid}: LHS '{lhs_s.strip()}' != target '{law.get('target')}'")
         local_syms = {name: sp.Symbol(name) for name in law.get("dimensions", {})}
-        parsed_rhs = sp.sympify(rhs_s.strip(), locals=local_syms, evaluate=False)
+        parsed_rhs = safe_parse_math_expr(rhs_s.strip(), allowed_symbols=local_syms)
         free_s = {str(s) for s in parsed_rhs.free_symbols}
         decl_s = set(law.get("inputs", []))
         if free_s != decl_s:

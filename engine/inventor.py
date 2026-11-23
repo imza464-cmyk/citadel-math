@@ -11,7 +11,7 @@ yolları ve türetilmiş formüller üretir.
 from typing import List, Dict, Set, Any, Optional
 import sympy as sp
 from .knowledge_graph import KnowledgeGraph
-from .dimensions import Dimension, check_dimensional_consistency, infer_sympy_dimension
+from .dimensions import Dimension, check_dimensional_consistency, infer_sympy_dimension, safe_parse_math_expr
 from .constants import PhysicalConstants
 
 class InventionCandidate:
@@ -93,7 +93,7 @@ class InventionEngine:
                 eq_str = law["equation"]
                 lhs_str, rhs_str = eq_str.split("=")
                 lhs_var = lhs_str.strip()
-                rhs_expr = sp.sympify(rhs_str.strip(), locals=local_symbols, evaluate=False)
+                rhs_expr = safe_parse_math_expr(rhs_str.strip(), allowed_symbols=local_symbols)
 
                 # Önceki ara değişkenleri yerine koy
                 substituted_rhs = rhs_expr.subs(substitutions)

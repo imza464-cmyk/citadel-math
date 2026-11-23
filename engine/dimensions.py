@@ -8,8 +8,128 @@ tam sembolik boyutsal tutarlılık denetiminden (dim(LHS) == dim(RHS))
 geçmeden kabul edilmiş fizik tabanına eklenemez.
 """
 
-from typing import Tuple, Dict, Any
+import ast
+import re
+from typing import Tuple, Dict, Any, Optional
 import sympy as sp
+
+_SAFE_IDENT_RE = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
+_BLOCKED_NAMES = frozenset({
+    "eval", "exec", "open", "compile", "getattr", "setattr", "delattr",
+    "globals", "locals", "vars", "dir", "type", "object", "input",
+    "breakpoint", "help", "exit", "quit", "lambda", "import", "super",
+})
+_SAFE_MATH_FUNCS = {
+    "sin": sp.sin,
+    "cos": sp.cos,
+    "tan": sp.tan,
+    "asin": sp.asin,
+    "acos": sp.acos,
+    "atan": sp.atan,
+    "sinh": sp.sinh,
+    "cosh": sp.cosh,
+    "tanh": sp.tanh,
+    "exp": sp.exp,
+    "log": sp.log,
+    "ln": sp.log,
+    "sqrt": sp.sqrt,
+    "abs": sp.Abs,
+    "Abs": sp.Abs,
+}
+
+
+def safe_parse_math_expr(
+    expr_str: str,
+    allowed_symbols: Optional[Dict[str, sp.Symbol]] = None,
+) -> sp.Expr:
+    """
+    Sıfır-eval (eval/sympify çağrısız) güvenli matematik ifadesi ayrıştırıcısı.
+    Python'un ast.parse(..., mode='eval') ayrıştırıcısını yalnızca beyaz-listeli
+    aritmetik işleçler ve temel matematik fonksiyonlarıyla SymPy AST'sine çevirir;
+    öznitelik erişimi (.), dunder (__), lambda ve rastgele çağrıları kesin reddeder.
+    """
+    if not isinstance(expr_str, str):
+        raise ValueError("İfade metin (str) olmalıdır.")
+    cleaned = expr_str.strip()
+    if not cleaned:
+        raise ValueError("Boş matematik ifadesi ayrıştırılamaz.")
+    if len(cleaned) > 2048:
+        raise ValueError("İfade uzunluğu güvenlik sınırını (2048 karakter) aşıyor.")
+    if "__" in cleaned or ";" in cleaned or "\n" in cleaned or "\r" in cleaned:
+        raise ValueError("Güvenlik ihlali: ifadede yasaklı karakter veya dunder dizisi tespit edildi.")
+
+    normalized = cleaned.replace("^", "**")
+    try:
+        tree = ast.parse(normalized, mode="eval")
+    except SyntaxError as exc:
+        raise ValueError(f"Sözdizimi hatası: {exc}") from exc
+
+    def _convert(node: ast.AST) -> sp.Expr:
+        if isinstance(node, ast.Expression):
+            return _convert(node.body)
+        if isinstance(node, ast.Constant):
+            val = node.value
+            if isinstance(val, bool) or not isinstance(val, (int, float)):
+                raise ValueError(f"Desteklenmeyen sabit türü: {type(val).__name__}")
+            return sp.Integer(val) if isinstance(val, int) else sp.Float(val)
+        if isinstance(node, ast.Name):
+            ident = node.id
+            if ident.startswith("_") or ident in _BLOCKED_NAMES or not _SAFE_IDENT_RE.match(ident):
+                raise ValueError(f"Güvenlik ihlali: yasaklı veya geçersiz sembol adı '{ident}'.")
+            if allowed_symbols is not None and ident in allowed_symbols:
+                return allowed_symbols[ident]
+            if ident == "pi":
+                return sp.pi
+            return sp.Symbol(ident)
+        if isinstance(node, ast.UnaryOp):
+            if isinstance(node.op, ast.UAdd):
+                return _convert(node.operand)
+            if isinstance(node.op, ast.USub):
+                if isinstance(node.operand, ast.Constant) and not isinstance(node.operand.value, bool):
+                    val = node.operand.value
+                    if isinstance(val, int):
+                        return sp.Integer(-val)
+                    if isinstance(val, float):
+                        return sp.Float(-val)
+                return sp.Mul(sp.Integer(-1), _convert(node.operand), evaluate=False)
+            raise ValueError(f"Desteklenmeyen tekli işleç: {type(node.op).__name__}")
+        if isinstance(node, ast.BinOp):
+            left = _convert(node.left)
+            right = _convert(node.right)
+            if isinstance(node.op, ast.Add):
+                return sp.Add(left, right, evaluate=False)
+            if isinstance(node.op, ast.Sub):
+                return sp.Add(left, sp.Mul(sp.Integer(-1), right, evaluate=False), evaluate=False)
+            if isinstance(node.op, ast.Mult):
+                return sp.Mul(left, right, evaluate=False)
+            if isinstance(node.op, ast.Div):
+                if isinstance(left, sp.Integer) and isinstance(right, sp.Integer) and int(right) != 0:
+                    return sp.Rational(int(left), int(right))
+                return sp.Mul(left, sp.Pow(right, sp.Integer(-1), evaluate=False), evaluate=False)
+            if isinstance(node.op, ast.Pow):
+                return sp.Pow(left, right, evaluate=False)
+            raise ValueError(f"Desteklenmeyen ikili işleç: {type(node.op).__name__}")
+        if isinstance(node, ast.Call):
+            if not isinstance(node.func, ast.Name) or node.keywords:
+                raise ValueError("Güvenlik ihlali: öznitelik veya anahtar-kelime çağrıları yasaktır.")
+            fname = node.func.id
+            if fname not in _SAFE_MATH_FUNCS:
+                raise ValueError(f"Güvenlik ihlali: izin listesinde olmayan fonksiyon '{fname}'.")
+            args = [_convert(a) for a in node.args]
+            if fname == "sqrt":
+                if len(args) != 1:
+                    raise ValueError("sqrt() tam olarak 1 argüman alır.")
+                return sp.Pow(args[0], sp.Rational(1, 2), evaluate=False)
+            if fname in ("log", "ln"):
+                if len(args) not in (1, 2):
+                    raise ValueError(f"{fname}() 1 veya 2 argüman alır.")
+                return sp.log(*args)
+            if len(args) != 1:
+                raise ValueError(f"{fname}() tam olarak 1 argüman alır.")
+            return _SAFE_MATH_FUNCS[fname](args[0])
+        raise ValueError(f"Güvenlik/sözdizimi ihlali: desteklenmeyen ifade düğümü '{type(node).__name__}'.")
+
+    return _convert(tree)
 
 
 class Dimension:
@@ -221,7 +341,7 @@ def infer_sympy_dimension(expr: sp.Expr, var_dims: Dict[str, Dimension]) -> Dime
       4. Üs (Pow): Üs boyutsuz olmalıdır; taban boyutu rasyonel üsle ölçeklenir.
       5. Aşkın fonksiyonlar (log, exp, sin, cos, tan): Argüman boyutsuz (1) olmak zorundadır ve sonuç boyutsuzdur.
     """
-    if expr.is_Number:
+    if expr.is_Number or expr in (sp.pi, sp.E):
         return Dimension()
 
     if expr.is_Symbol:
@@ -265,9 +385,11 @@ def infer_sympy_dimension(expr: sp.Expr, var_dims: Dict[str, Dimension]) -> Dime
             return base_dim.rational_pow(int(rat.p), int(rat.q))
         raise ValueError(f"Boyutlu tabanın ({base}) üssü ({exp}) rasyonel olmalıdır.")
 
-    # Aşkın fonksiyonlar (log, ln, exp, sin, cos, tan, sinh, cosh)
+    # Aşkın fonksiyonlar ve mutlak değer
     func_name = expr.func.__name__.lower()
-    if func_name in ("log", "ln", "exp", "sin", "cos", "tan", "asin", "acos", "atan"):
+    if func_name == "abs" and len(expr.args) == 1:
+        return infer_sympy_dimension(expr.args[0], var_dims)
+    if func_name in ("log", "ln", "exp", "sin", "cos", "tan", "asin", "acos", "atan", "sinh", "cosh", "tanh"):
         for arg in expr.args:
             arg_dim = infer_sympy_dimension(arg, var_dims)
             if not arg_dim.is_dimensionless():
@@ -302,7 +424,7 @@ def verify_law_dimensional_homogeneity(law: Dict[str, Any]) -> Tuple[bool, str]:
     _, rhs_str = eq_str.split("=", 1)
     try:
         local_symbols = {name: sp.Symbol(name) for name in var_dims}
-        rhs_expr = sp.sympify(rhs_str.strip(), locals=local_symbols, evaluate=False)
+        rhs_expr = safe_parse_math_expr(rhs_str.strip(), allowed_symbols=local_symbols)
         rhs_dim = infer_sympy_dimension(rhs_expr, var_dims)
         lhs_dim = var_dims[target]
         if lhs_dim != rhs_dim:

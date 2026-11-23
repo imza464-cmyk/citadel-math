@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, open-source]
+    branches: [main]
   pull_request:
-    branches: [main, open-source]
+    branches: [main]
 
 env:
   CARGO_TERM_COLOR: always
@@ -13,8 +13,12 @@ env:
 
 jobs:
   verify:
-    name: Rust Unit Tests & 26-Gate Verification Suite
-    runs-on: ubuntu-latest
+    name: Verify (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,11 +37,14 @@ jobs:
       - name: Build release Rust verification engine
         run: cargo build --release --manifest-path citadel_math_core/Cargo.toml
 
-      - name: Run 16-gate native Rust verification suite
-        run: ./citadel_math_core/target/release/citadel_math_core audit
-
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Run 16-gate native Rust verification suite
+        run: python kmath.py rust audit
+
       - name: Run 10-gate Python & SSOT ontology verification suite
         run: python kmath.py audit
+
+      - name: Run MCP security & end-to-end integration tests
+        run: python -m unittest discover -s tests -v

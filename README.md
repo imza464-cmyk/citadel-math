@@ -23,12 +23,14 @@ Büyük Dil Modelleri (LLM) formül türetirken sıklıkla birim hatası yapar, 
 
 ```text
 .
-├── .github/workflows/ci.yml        # GitHub Actions CI: cargo test (33 tests) + 26 audit gates
+├── .github/workflows/ci.yml        # Cross-platform CI (Linux/Windows): Rust tests, audits & MCP security tests
 ├── AGENTS.md                       # Engineering invariants (dimensional homogeneity & SSOT rules)
 ├── HATA_KAYIT_DEFTERI.md           # Engineering bug & regression logbook
 ├── kmath.py                        # Verification cockpit CLI (10 Python SSOT + 16 Rust audit gates)
-├── kmath_mcp.py                    # 15-Tool Model Context Protocol (MCP) Server for LLM Agents
+├── kmath_mcp.py                    # 15-Tool Model Context Protocol (MCP) Server (zero-eval AST input parser)
 ├── mcp_config.example.json         # Portable MCP client configuration example
+├── tests/
+│   └── test_mcp_security.py        # Zero-eval RCE rejection & live Python-to-Rust MCP integration tests
 ├── citadel_math_core/              # Pure-Rust (#![forbid(unsafe_code)]) Engine & Native Binary
 │   └── src/
 │       ├── proof_kernel.rs         # Z[x] & MultiPolyZ (grevlex) algebraic equivalence + GuardedPoly guards
@@ -68,23 +70,21 @@ cargo build --release --manifest-path citadel_math_core/Cargo.toml
 pip install -r requirements.txt
 ```
 
-### 3. Verify All 26 Audit Gates / Tüm Denetim Kapılarını Doğrulayın
+### 3. Verify All 26 Audit Gates & MCP Security Suite / Denetim Kapıları ve Güvenlik Testleri
 ```bash
 python kmath.py audit
-```
-And run the standalone native Rust audit (`16` mathematical & physical gates):
-```bash
-./citadel_math_core/target/release/citadel_math_core audit
+python kmath.py rust audit
+python -m unittest discover -s tests -v
 ```
 
 ### 4. Connect as an MCP Server / MCP Sunucusu Olarak Bağlayın
-Copy `mcp_config.example.json` into your MCP client configuration (updating the path to `kmath_mcp.py` if needed):
+Copy `mcp_config.example.json` into your MCP client configuration and replace `/ABSOLUTE/PATH/TO/citadel-math/kmath_mcp.py` with your absolute local path:
 ```json
 {
   "mcpServers": {
     "kmath": {
       "command": "python",
-      "args": ["./kmath_mcp.py"],
+      "args": ["/ABSOLUTE/PATH/TO/citadel-math/kmath_mcp.py"],
       "env": {
         "OPENBLAS_NUM_THREADS": "1",
         "PYTHONUNBUFFERED": "1"
@@ -143,8 +143,9 @@ python kmath.py stats                 # Show ontology & canonical law metrics
 ## Verification Summary / Doğrulama Özeti
 
 - **Rust Unit Tests (`cargo test`):** `33 passed; 0 failed` (`24` in `proof_kernel`, `4` in `cad`, `5` cross-module tests in `lib.rs`).
+- **MCP Security & Integration Tests (`unittest`):** Zero-`eval` AST parser rejects `__import__`, attribute traversal, and `lambda` injection payloads (`0` calls to `sympy.sympify()`), and verifies live Python-to-Rust MCP tool bridges.
 - **Python Audit (`python kmath.py audit`):** `10/10 PASS` (`214` canonical laws, `353` ontology symbols, `18` physical regimes, `30` materials).
-- **Rust Audit (`citadel_math_core audit`):** `16/16 PASS` (`#![forbid(unsafe_code)]`, `214` SSOT AST laws + `544` inverse laws, IEEE 1788-2015 outward-rounded intervals, Buckingham-$\Pi$, NSGA-II Skyline, 2D CAD R12 DXF/SVG).
+- **Rust Audit (`python kmath.py rust audit`):** `16/16 PASS` (`#![forbid(unsafe_code)]`, `214` SSOT AST laws + `544` inverse laws, IEEE 1788-2015 outward-rounded intervals, Buckingham-$\Pi$, NSGA-II Skyline, 2D CAD R12 DXF/SVG).
 
 ---
 

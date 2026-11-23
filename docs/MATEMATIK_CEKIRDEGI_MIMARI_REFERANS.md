@@ -1,7 +1,7 @@
 # Matematik Çekirdeği — Mimari Referans
 
 **Tarih:** 26 Ekim 2026  
-**Durum:** Tasarım önerisi / görüşme referansı. Uygulanmış veya doğrulanmış sistem belgesi değildir.  
+**Durum:** Tarihsel mimari tasarım referansı (çalışan `v0.1.0` uygulaması ve CI doğrulaması için bkz. [`README.md`](../README.md) ve [`citadel_math_core/`](../citadel_math_core/)).  
 **Kapsam:** Bağımsız saf matematik, kanıt ve deterministik doğrulama projesi.
 
 ## 1. Amaç ve kesin ayrımlar

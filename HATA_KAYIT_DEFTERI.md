@@ -9,3 +9,13 @@ Bu belge, **Matematik Çekirdeği (`kmath` / `Citadel-Math`)** projesinde tespit
 1. **Boyutsal Tutarlılık Değişmezi:** Boyutları uyuşmayan iki fiziksel büyüklük toplanamaz, çıkarılamaz veya eşitlenemez (`kmath_dimension_check`).
 2. **Host PC Sanal Bellek Koruması:** Python 3.14 üzerinde `import numpy` / `import scipy` çağrılarından önce `os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")` tanımlanması ZORUNLUDUR (süreç başına `640 MB` sanal bellek şişmesini engeller).
 3. **Kayıt Disiplini:** Tespit edilen ve çözülen her kritik matematiksel veya sayısal hata bu deftere ampirik doğrulama sonucuyla işlenir.
+
+
+---
+
+## 🔒 2026-11-23 — `sympy.sympify()` Üzerinden Prompt-Injection / Keyfi Kod Çalıştırma (RCE) Koruması
+
+- **Belirti:** `kmath_mcp.py`, `engine/dimensions.py`, `engine/inventor.py` ve `kmath.py` içinde matematiksel ifadeler doğrudan `sp.sympify(..., evaluate=False)` ile ayrıştırılıyordu.
+- **Kök Neden (Adli Kanıt):** SymPy'nin `sympify()` fonksiyonu arka planda Python `eval()` çalıştırdığı için, bir MCP istemcisinden gelen kötü niyetli string (`__import__('os').system(...)`, `().__class__.__bases__`, `lambda`) keyfi kod çalıştırma (RCE) riski oluşturuyordu.
+- **Çözüm:** `engine/dimensions.py` içine Python'un kod yürütmeyen `ast.parse(..., mode="eval")` ayrıştırıcısına dayalı, yalnızca beyaz-listeli aritmetik işleçleri ve 15 temel matematik fonksiyonunu kabul eden `safe_parse_math_expr()` yazıldı; tüm `sp.sympify()` çağrıları kaldırıldı (repo genelinde `0` `sympify()` / `eval()`).
+- **Ampirik Doğrulama:** `tests/test_mcp_security.py` içinde 11 adet RCE/injection vektörünün reddedildiği ve 15 araçlı MCP köprüsünün çalıştığı doğrulandı; GitHub Actions Linux + Windows matrisine eklendi.
