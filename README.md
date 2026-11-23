@@ -23,7 +23,7 @@ Büyük Dil Modelleri (LLM) formül türetirken sıklıkla birim hatası yapar, 
 flowchart LR
     LLM["LLM / MCP Client (Claude, Cursor, Windsurf)"] -->|"JSON-RPC (stdio)"| MCP["kmath_mcp.py (Python + Zero-Eval AST Guard)"]
     MCP -->|"Subprocess (shell=False)"| RUST["citadel_math_core (Pure Rust, forbid unsafe)"]
-    MCP -->|"Read-only SSOT"| DB["database/ & data/ (214 Laws, 353 Symbols, CODATA 2022)"]
+    MCP -->|"Read-only SSOT"| DB["database/ & data/ (217 Laws, 356 Symbols, CODATA 2022)"]
     RUST -->|"Verified Bounds & Proofs"| VERDICT["Deterministic JSON Verdict"]
     MCP --> VERDICT
 ```
@@ -35,18 +35,18 @@ flowchart LR
 Choose the workflow that fits your environment — **Rust is NOT required** if you use pre-built release binaries or Docker.
 
 ### Option A — Zero-Build Install via Wheel / `uvx` + Pre-Built Binary (No Rust or Git Required)
-1. **Download the self-contained Rust core binary** (`1.14 MB` Windows / `1.49 MB` Linux, embedded SSOT JSONs) from [GitHub Releases](https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.0) and verify its SHA-256 checksum against `SHA256SUMS.txt`:
+1. **Download the self-contained Rust core binary** (`1.14 MB` Windows / `1.49 MB` Linux, embedded SSOT JSONs) from [GitHub Releases](https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.1) and verify its SHA-256 checksum against `SHA256SUMS.txt`:
    - Linux x86_64: `citadel_math_core-linux-x86_64` (`chmod +x` and place on `PATH` or point `KMATH_RUST_BIN` to it)
    - Windows x86_64: `citadel_math_core-windows-x86_64.exe` (place on `PATH` or point `KMATH_RUST_BIN` to it)
 2. **Install directly from the release wheel (no `git` or Rust needed) or run via [`uvx`](https://docs.astral.sh/uv/):**
    ```bash
    # Fastest direct wheel install (gives you `kmath` and `kmath-mcp` CLI commands)
-   pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl
+   pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl
    kmath stats && kmath audit && kmath rust audit
 
    # Or run ephemerally via uvx
-   uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl kmath stats
-   KMATH_RUST_BIN=/path/to/citadel_math_core uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl kmath-mcp
+   uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl kmath stats
+   KMATH_RUST_BIN=/path/to/citadel_math_core uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl kmath-mcp
    ```
 3. **MCP Client Configuration (`uvx`):**
    ```json
@@ -54,7 +54,7 @@ Choose the workflow that fits your environment — **Rust is NOT required** if y
      "mcpServers": {
        "kmath": {
          "command": "uvx",
-         "args": ["--from", "https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl", "kmath-mcp"],
+         "args": ["--from", "https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl", "kmath-mcp"],
          "env": {
            "KMATH_RUST_BIN": "/ABSOLUTE/PATH/TO/citadel_math_core",
            "OPENBLAS_NUM_THREADS": "1",
@@ -77,10 +77,10 @@ docker run -i --rm \
   --pids-limit=128 \
   --memory=512m \
   --network=none \
-  ghcr.io/imza464-cmyk/citadel-math:0.2.0
+  ghcr.io/imza464-cmyk/citadel-math:0.2.1
 
 # Or build locally from source
-docker build -t citadel-math:0.2.0 .
+docker build -t citadel-math:0.2.1 .
 ```
 See [`docker-compose.yml`](./docker-compose.yml) for the declarative hardened service definition. To attach Docker directly in Claude Desktop / Cursor:
 ```json
@@ -94,7 +94,7 @@ See [`docker-compose.yml`](./docker-compose.yml) for the declarative hardened se
         "--cap-drop=ALL",
         "--security-opt=no-new-privileges:true",
         "--network=none",
-        "ghcr.io/imza464-cmyk/citadel-math:0.2.0"
+        "ghcr.io/imza464-cmyk/citadel-math:0.2.1"
       ]
     }
   }
@@ -201,7 +201,7 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 │       ├── dimensions.rs           # Z^7 SI Dimensional Shield & ScaledUnit converter
 │       ├── buckingham.rs           # Exact rational/integer Z^7 nullspace Buckingham-Pi discovery
 │       ├── pareto.rs               # Exact Skyline & NSGA-II multi-objective Pareto optimizer
-│       ├── graph.rs                # SSOT canonical hypergraph (214 laws, 544 inverse laws, 18 regimes)
+│       ├── graph.rs                # SSOT canonical hypergraph (217 laws, 550 inverse laws, 18 regimes)
 │       ├── simulator.rs            # RK4 & adaptive Dormand-Prince RK4(5) integrator + USSA-1976 model
 │       ├── astrodynamics.rs        # WGS84 J2 orbital precession & universal-variable Lambert solver
 │       ├── materials.rs            # 30 aerospace/UHTC/TPS materials, NASA SP-8007 buckling & TPS checks
@@ -211,8 +211,8 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 │       └── physical_bounds.rs      # Thermodynamics 1st/2nd law (Carnot), v < c causality & momentum pruning
 ├── engine/                         # Python symbolic AST, SymPy parity, harvester, RK4 & knowledge graph
 ├── database/
-│   ├── canonical_laws.json         # 214 verified laws across 25+ domains (physics, aerospace, real-time, biomechanics)
-│   ├── ONTOLOGY.json               # 353 unique SI symbol-dimension definitions (SSOT)
+│   ├── canonical_laws.json         # 217 verified laws across 25+ domains (physics, aerospace, real-time, biomechanics)
+│   ├── ONTOLOGY.json               # 356 unique SI symbol-dimension definitions (SSOT)
 │   └── materials.json              # 30 certified structural & thermal protection materials
 └── data/
     └── nist_constants.json         # NIST CODATA 2022 fundamental constants

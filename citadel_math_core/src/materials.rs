@@ -176,7 +176,7 @@ impl StructuralStressChecker {
         )
     }
 
-    /// Termal yumuşama (σ_y(T)) etkisini hesaba katan iki eksenli Von Mises ince cidar denetimi.
+    /// Termal yumuşama (σ_y(T)) etkisini hesaba katan iki eksenli Von Mises ince cidar denetimi (varsayılan 3 bar).
     pub fn check_hull_at_temp(
         material: &Material,
         total_mass_kg: f64,
@@ -185,6 +185,30 @@ impl StructuralStressChecker {
         hull_radius_m: f64,
         wall_thickness_mm: f64,
         wall_temp_k: f64,
+    ) -> (f64, f64, bool) {
+        Self::check_hull_at_temp_with_pressure(
+            material,
+            total_mass_kg,
+            g_force,
+            max_q_pa,
+            hull_radius_m,
+            wall_thickness_mm,
+            wall_temp_k,
+            3.0,
+        )
+    }
+
+    /// Termal yumuşama (σ_y(T)) ve kullanıcı tanımlı iç tank basıncı (`tank_pressure_bar`) ile iki eksenli Von Mises denetimi.
+    #[allow(clippy::too_many_arguments)]
+    pub fn check_hull_at_temp_with_pressure(
+        material: &Material,
+        total_mass_kg: f64,
+        g_force: f64,
+        max_q_pa: f64,
+        hull_radius_m: f64,
+        wall_thickness_mm: f64,
+        wall_temp_k: f64,
+        tank_pressure_bar: f64,
     ) -> (f64, f64, bool) {
         let t_m = wall_thickness_mm / 1000.0;
         let r_m = hull_radius_m;
@@ -203,7 +227,7 @@ impl StructuralStressChecker {
             0.0
         };
 
-        let p_int = 3.0 * 100_000.0; // 3 bar standart tank basıncı
+        let p_int = tank_pressure_bar.max(0.0) * 100_000.0;
         let sigma_theta = if t_m > 0.0 { (p_int * r_m) / t_m } else { 0.0 };
 
         // İki eksenli Von Mises Eşdeğer Gerilmesi
@@ -255,7 +279,7 @@ impl StructuralStressChecker {
         )
     }
 
-    /// Termal yumuşama (E(T)) etkisini hesaba katan birleşik NASA SP-8007 + Euler kolon burkulma denetimi.
+    /// Termal yumuşama (E(T)) etkisini hesaba katan birleşik NASA SP-8007 + Euler kolon burkulma denetimi (varsayılan 3 bar).
     pub fn check_cylinder_buckling_at_temp(
         material: &Material,
         total_mass_kg: f64,
@@ -263,6 +287,28 @@ impl StructuralStressChecker {
         max_q_pa: f64,
         geom: CylinderGeometry,
         wall_temp_k: f64,
+    ) -> (f64, f64, bool) {
+        Self::check_cylinder_buckling_at_temp_with_pressure(
+            material,
+            total_mass_kg,
+            g_force,
+            max_q_pa,
+            geom,
+            wall_temp_k,
+            3.0,
+        )
+    }
+
+    /// Termal yumuşama (E(T)) ve iç tank basıncı (`tank_pressure_bar`) ile birleşik NASA SP-8007 + Euler burkulma denetimi.
+    #[allow(clippy::too_many_arguments)]
+    pub fn check_cylinder_buckling_at_temp_with_pressure(
+        material: &Material,
+        total_mass_kg: f64,
+        g_force: f64,
+        max_q_pa: f64,
+        geom: CylinderGeometry,
+        wall_temp_k: f64,
+        tank_pressure_bar: f64,
     ) -> (f64, f64, bool) {
         let t_m = (geom.wall_thickness_mm / 1000.0).max(1e-5);
         let r_m = geom.radius_m.max(0.05);
@@ -297,9 +343,6 @@ impl StructuralStressChecker {
         let sigma_comp_peak = sigma_axial + sigma_bend;
 
         // 1. NASA SP-8007 (1968 / 2020 REV2) Yerel Kabuk Burkulması:
-        //    - Eksenel basma kusur düşürme (Eq. 11): gamma_axial = 1 - 0.901 * (1 - exp(-phi))
-        //    - Saf eğilme kusur düşürme (Eq. 13):    gamma_bend  = 1 - 0.731 * (1 - exp(-phi)),  phi = sqrt(R/t)/16
-        //    - Birleşik etkileşim (Eq. 17):          R_comb = sigma_axial / sigma_cr_axial + sigma_bend / sigma_cr_bend <= 1
         let phi = (r_m / t_m).sqrt() / 16.0;
         let exp_neg_phi = (-phi).exp();
         let gamma_axial = 1.0 - 0.901 * (1.0 - exp_neg_phi);
@@ -307,7 +350,7 @@ impl StructuralStressChecker {
         let denom = (3.0 * (1.0 - nu * nu)).sqrt();
         let sigma_cl_orthogrid = 1.45 * (derated_e / denom) * (t_m / r_m);
 
-        let p_int = 3.0 * 100_000.0; // 3 bar iç basınç (%50 konservatif eksenel rahatlama)
+        let p_int = tank_pressure_bar.max(0.0) * 100_000.0;
         let sigma_press_relief = 0.50 * (p_int * r_m) / (2.0 * t_m);
         let sigma_cr_axial = gamma_axial * sigma_cl_orthogrid + sigma_press_relief;
         let sigma_cr_bend = gamma_bend * sigma_cl_orthogrid + sigma_press_relief;

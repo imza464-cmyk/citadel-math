@@ -44,6 +44,16 @@ impl VerifiedCodegen {
     /// Citadel-Math standartlarına uygun (`#![forbid(unsafe_code)]`, sıfır-panik, `Result<f64, &'static str>`)
     /// ve çalışma zamanı tanım kümesi bekçilerini (`domain_guards`) zorunlu koşan Rust fonksiyonuna derler.
     pub fn emit_safe_rust_fn(formula: &SynthesizedFormula) -> String {
+        Self::emit_safe_rust_fn_with_meta(formula, true, None)
+    }
+
+    /// Boyut doğrulama durumu (`dim_verified`) ve opsiyonel kök dalı uyarısıyla (`branch_warning`)
+    /// sıfır-panik Rust fonksiyonu üretir. Doğrulanmamış boyut asla `[1 (Boyutsuz)]` olarak damgalanmaz.
+    pub fn emit_safe_rust_fn_with_meta(
+        formula: &SynthesizedFormula,
+        dim_verified: bool,
+        branch_warning: Option<&str>,
+    ) -> String {
         let mut sorted_vars = formula.free_variables.clone();
         sorted_vars.sort();
         let params: Vec<String> = sorted_vars.iter().map(|v| format!("{}: f64", v)).collect();
@@ -57,10 +67,19 @@ impl VerifiedCodegen {
             "/// - Kanonik Denklem : `{} = {}`\n",
             formula.target, formula.symbolic_expr
         ));
-        code.push_str(&format!(
-            "/// - Z^7 Boyut İspatı: `[{}]`\n",
-            formula.inferred_dimension
-        ));
+        if dim_verified {
+            code.push_str(&format!(
+                "/// - Z^7 Boyut İspatı: `[{}]`\n",
+                formula.inferred_dimension
+            ));
+        } else {
+            code.push_str(
+                "/// - Z^7 Boyut İspatı: `[Bilinmiyor / Doğrulanmadı — SSOT Ontoloji Dışı Sembol]`\n",
+            );
+        }
+        if let Some(warn_msg) = branch_warning {
+            code.push_str(&format!("/// - Dal Varsayımı   : {}\n", warn_msg));
+        }
         code.push_str(&format!(
             "/// - Türetim Zinciri : `{}`\n",
             formula.chain_ids.join(" -> ")

@@ -403,9 +403,9 @@ fn run_simulate() {
         s2_isp: 0.0,
     };
 
-    for v in [&v_chem, &v_beamed, &v_kinetic] {
+    for (v, g_cap) in [(&v_chem, Some(4.5)), (&v_beamed, Some(4.5)), (&v_kinetic, None)] {
         println!("▶ [{}] SİMÜLE EDİLİYOR...", v.name);
-        let res = sim.simulate(v, 1200.0);
+        let res = sim.simulate_for_orbit(v, 200.0, g_cap, 1200.0);
         let status = if res.orbit_achieved {
             "✓ YÖRÜNGE BAŞARIYLA YAKALANDI (LEO Orbit Achieved)"
         } else {
@@ -812,25 +812,46 @@ fn run_mcp(args: &[String]) {
             };
             match Expr::solve_for(&lhs, &rhs, target) {
                 Ok((isolated, guards)) => {
+                    fn expr_has_sqrt(e: &Expr) -> bool {
+                        match e {
+                            Expr::Sqrt(_) => true,
+                            Expr::Neg(a) | Expr::Ln(a) | Expr::Exp(a) => expr_has_sqrt(a),
+                            Expr::Add(a, b)
+                            | Expr::Sub(a, b)
+                            | Expr::Mul(a, b)
+                            | Expr::Div(a, b)
+                            | Expr::Pow(a, b) => expr_has_sqrt(a) || expr_has_sqrt(b),
+                            Expr::Constant(_) | Expr::Variable(_) => false,
+                        }
+                    }
+
                     let kg = KnowledgeGraph::new();
-                    let inferred_dim = isolated
-                        .infer_dimension(&kg.variable_dimensions)
-                        .map(|d| d.to_string())
-                        .ok();
+                    let dim_res = isolated.infer_dimension(&kg.variable_dimensions);
+                    let dim_verified = dim_res.is_ok();
+                    let inferred_dim = dim_res.as_ref().ok().map(|d| d.to_string());
+                    let introduced_sqrt =
+                        expr_has_sqrt(&isolated) && !expr_has_sqrt(&lhs) && !expr_has_sqrt(&rhs);
+                    let branch_warning = if introduced_sqrt {
+                        Some("Çift kuvvet terslemesi: ana pozitif kök dalı (+sqrt) seçildi; fiziksel problem negatif yönü de kapsıyorsa ±sqrt dalı ayrıca değerlendirilmelidir.")
+                    } else {
+                        None
+                    };
                     let synth = SynthesizedFormula {
                         target: target.clone(),
                         chain_ids: vec!["symbolic_solve_for".to_string()],
                         chain_names: vec!["Sembolik Cebirsel Tersleme".to_string()],
                         regimes: vec!["universal".to_string()],
                         free_variables: isolated.free_variables(),
-                        inferred_dimension: isolated
-                            .infer_dimension(&kg.variable_dimensions)
-                            .unwrap_or_else(|_| Dimension::dimensionless()),
+                        inferred_dimension: dim_res.unwrap_or_else(|_| Dimension::dimensionless()),
                         symbolic_expr: isolated.clone(),
                         domain_guards: guards.clone(),
                         effective_bounds: HashMap::new(),
                     };
-                    let safe_rust = VerifiedCodegen::emit_safe_rust_fn(&synth);
+                    let safe_rust = VerifiedCodegen::emit_safe_rust_fn_with_meta(
+                        &synth,
+                        dim_verified,
+                        branch_warning,
+                    );
                     println!(
                         "{}",
                         json!({
@@ -839,6 +860,8 @@ fn run_mcp(args: &[String]) {
                             "isolated_rhs": isolated.to_string(),
                             "equation": format!("{} = {}", target, isolated),
                             "inferred_dimension": inferred_dim,
+                            "dimension_verified": dim_verified,
+                            "branch_warning": branch_warning,
                             "domain_guards": guards,
                             "safe_rust_fn": safe_rust
                         })
@@ -1121,6 +1144,7 @@ fn run_mcp(args: &[String]) {
                 println!("{}", json!({"status": "error", "message": "Sayısal parametre hatası."}));
                 return;
             };
+            let tank_pressure_bar = p(9).unwrap_or(3.0);
             let mdb = MaterialsDatabase::load_canonical();
             let Some(mat) = mdb.get(mat_id) else {
                 let ids: Vec<&str> = mdb.list.iter().map(|m| m.id.as_str()).collect();
@@ -1130,32 +1154,72 @@ fn run_mcp(args: &[String]) {
                 );
                 return;
             };
+            let round2 = |v: f64| (v * 100.0).round() / 100.0;
             let (s_vm, sf_yield, ok_yield) =
-                StructuralStressChecker::check_hull(mat, mass_kg, g_load, max_q_pa, r_m, t_mm);
-            let (s_cr, sf_buckle, ok_buckle) = StructuralStressChecker::check_cylinder_buckling(
-                mat, mass_kg, g_load, max_q_pa, r_m, l_m, t_mm,
-            );
+                StructuralStressChecker::check_hull_at_temp_with_pressure(
+                    mat,
+                    mass_kg,
+                    g_load,
+                    max_q_pa,
+                    r_m,
+                    t_mm,
+                    293.15,
+                    tank_pressure_bar,
+                );
+            let (s_cr, sf_buckle, ok_buckle) =
+                StructuralStressChecker::check_cylinder_buckling_at_temp_with_pressure(
+                    mat,
+                    mass_kg,
+                    g_load,
+                    max_q_pa,
+                    CylinderGeometry {
+                        radius_m: r_m,
+                        length_m: l_m,
+                        wall_thickness_mm: t_mm,
+                    },
+                    293.15,
+                    tank_pressure_bar,
+                );
             let tps = StructuralStressChecker::size_ablative_tps(mat, speed_ms, r_m, 55.0);
+            let bare_thermal_pass = tps.bare_wall_temp_k <= mat.max_temperature_k;
+            let bare_overall_pass = ok_yield && ok_buckle && bare_thermal_pass;
+            let tps_protected_overall_pass =
+                ok_yield && ok_buckle && (tps.protected_bondline_temp_k <= mat.max_temperature_k);
+            let verdict = if !ok_yield || !ok_buckle {
+                "[✗ YAPISAL RED] Akma veya NASA SP-8007 burkulma emniyet sınırı (1.35x) aşıldı."
+            } else if bare_overall_pass {
+                "[✓ ÇIPLAK GÖVDE GÜVENLİ] Yapısal dayanım, burkulma ve termal sınır ek TPS gerekmeden geçti."
+            } else if tps_protected_overall_pass {
+                "[⚠️ PICA-X TPS ZORUNLU] Çıplak gövde termal sınırı aşıyor; önerilen PICA-X ablatif kalkan ile güvenli."
+            } else {
+                "[✗ TERMAL RED] TPS korumasına rağmen bağ hattı sıcaklığı malzeme sınırını aşıyor."
+            };
             println!(
                 "{}",
                 json!({
                     "status": "ok",
+                    "engine": "citadel_math_core (SSOT Rust — NASA SP-8007 + PICA-X)",
                     "material_id": mat.id,
                     "material_name": mat.name,
-                    "von_mises_mpa": (s_vm / 1e6 * 100.0).round() / 100.0,
-                    "yield_strength_mpa": mat.yield_strength / 1e6,
+                    "tank_pressure_bar": round2(tank_pressure_bar),
+                    "von_mises_mpa": round2(s_vm / 1e6),
+                    "yield_strength_mpa": round2(mat.yield_strength / 1e6),
                     "yield_safety_factor": (sf_yield * 1000.0).round() / 1000.0,
                     "yield_pass": ok_yield,
-                    "sp8007_buckling_critical_mpa": (s_cr / 1e6 * 100.0).round() / 100.0,
+                    "sp8007_buckling_critical_mpa": round2(s_cr / 1e6),
                     "buckling_safety_factor": (sf_buckle * 1000.0).round() / 1000.0,
                     "buckling_pass": ok_buckle,
-                    "bare_wall_temp_c": (tps.bare_wall_temp_k - 273.15),
-                    "material_max_temp_c": (mat.max_temperature_k - 273.15),
+                    "bare_wall_temp_c": round2(tps.bare_wall_temp_k - 273.15),
+                    "material_max_temp_c": round2(mat.max_temperature_k - 273.15),
+                    "bare_thermal_pass": bare_thermal_pass,
+                    "bare_overall_pass": bare_overall_pass,
                     "tps_required": tps.tps_required,
-                    "pica_x_thickness_mm": tps.tps_thickness_mm,
-                    "pica_x_mass_kg": tps.tps_mass_kg,
-                    "protected_bondline_temp_c": (tps.protected_bondline_temp_k - 273.15),
-                    "overall_pass": ok_yield && ok_buckle && (tps.protected_bondline_temp_k <= mat.max_temperature_k)
+                    "pica_x_thickness_mm": round2(tps.tps_thickness_mm),
+                    "pica_x_mass_kg": round2(tps.tps_mass_kg),
+                    "protected_bondline_temp_c": round2(tps.protected_bondline_temp_k - 273.15),
+                    "tps_protected_overall_pass": tps_protected_overall_pass,
+                    "overall_pass": tps_protected_overall_pass,
+                    "verdict": verdict
                 })
             );
         }
@@ -1180,37 +1244,44 @@ fn run_mcp(args: &[String]) {
                 temp_cold_k: raw.get("temp_cold_k").and_then(|v| v.as_f64()),
                 entropy_delta_j_k: raw.get("entropy_delta_j_k").and_then(|v| v.as_f64()),
             };
-            match PhysicalBoundsShield::verify_candidate(&cand) {
-                Ok(()) => {
-                    let lorentz_gamma = cand
-                        .velocity_ms
-                        .and_then(|v| PhysicalBoundsShield::check_subluminal_velocity(v).ok());
-                    let carnot_max = match (cand.temp_hot_k, cand.temp_cold_k) {
-                        (Some(th), Some(tc)) if th > 0.0 => Some(1.0 - tc / th),
-                        _ => None,
-                    };
-                    println!(
-                        "{}",
-                        json!({
-                            "status": "ok",
-                            "physically_realizable": true,
-                            "verdict": "FİZİKSEL OLARAK GEÇERLİ (Termodinamik 1./2. Yasa, Nedensellik ve Momentum Korunumu Doğrulandı)",
-                            "lorentz_gamma": lorentz_gamma,
-                            "carnot_max_efficiency": carnot_max
-                        })
-                    );
+            let violations = PhysicalBoundsShield::collect_violations(&cand);
+            let lorentz_gamma = cand
+                .velocity_ms
+                .and_then(|v| PhysicalBoundsShield::check_subluminal_velocity(v).ok());
+            let carnot_max = match (cand.temp_hot_k, cand.temp_cold_k) {
+                (Some(th), Some(tc)) if th.is_finite() && tc.is_finite() && th > 0.0 && tc >= 0.0 && tc <= th => {
+                    Some(1.0 - tc / th)
                 }
-                Err(viol) => {
-                    println!(
-                        "{}",
-                        json!({
-                            "status": "ok",
-                            "physically_realizable": false,
-                            "verdict": "FİZİKSEL OLARAK İMKÂNSIZ (BUDANDI / KARANTİNA)",
-                            "violation": viol.to_string()
-                        })
-                    );
-                }
+                _ => None,
+            };
+            if violations.is_empty() {
+                println!(
+                    "{}",
+                    json!({
+                        "status": "ok",
+                        "physically_realizable": true,
+                        "violation_count": 0,
+                        "violations": [],
+                        "verdict": "FİZİKSEL OLARAK GEÇERLİ (Termodinamik 1./2. Yasa, Nedensellik ve Momentum Korunumu Doğrulandı)",
+                        "lorentz_gamma": lorentz_gamma,
+                        "carnot_max_efficiency": carnot_max
+                    })
+                );
+            } else {
+                let viol_strs: Vec<String> = violations.iter().map(|v| v.to_string()).collect();
+                println!(
+                    "{}",
+                    json!({
+                        "status": "ok",
+                        "physically_realizable": false,
+                        "violation_count": viol_strs.len(),
+                        "violation": viol_strs[0],
+                        "violations": viol_strs,
+                        "verdict": format!("FİZİKSEL OLARAK İMKÂNSIZ ({} İHLAL TESPİT EDİLDİ — BUDANDI)", viol_strs.len()),
+                        "lorentz_gamma": lorentz_gamma,
+                        "carnot_max_efficiency": carnot_max
+                    })
+                );
             }
         }
         "regime_check" if args.len() >= 3 => {

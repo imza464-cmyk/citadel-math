@@ -171,6 +171,7 @@ class RocketVehicle:
         stage_2_propellant_kg: float = 0.0,
         stage_2_thrust_n: float = 0.0,
         stage_2_isp_s: float = 0.0,
+        max_g_throttle: float = 4.5,
     ):
         self.name = name
         self.dry_mass = float(dry_mass_kg)
@@ -180,6 +181,7 @@ class RocketVehicle:
         self.isp = float(isp_vacuum_s)
         self.area = float(cross_section_m2)
         self.cd = float(drag_coeff)
+        self.max_g_throttle = float(max_g_throttle)
 
         self.v_e = self.isp * PhysicalConstants.g0
         if burn_time_s and burn_time_s > 0:
@@ -217,14 +219,41 @@ class RK4TrajectorySimulator:
         self.dt = dt_seconds
 
     @staticmethod
-    def _pitch_angle(alt: float) -> float:
-        if alt < 1200.0:
+    def _pitch_angle(
+        alt: float,
+        vx: float,
+        vh: float,
+        accel_thrust: float,
+        req_perigee_m: float,
+        target_alt_m: float,
+        cur_apogee_m: float,
+    ) -> float:
+        if alt < 1500.0:
             return math.radians(90.0)
-        if alt > 160000.0:
-            return 0.0
-        frac = (alt - 1200.0) / (160000.0 - 1200.0)
-        deg = 90.0 * (1.0 - math.sqrt(frac))
-        return math.radians(max(0.0, deg))
+        if alt < 55000.0:
+            frac = max(0.0, min(1.0, (alt - 1500.0) / (55000.0 - 1500.0)))
+            deg = 90.0 * (1.0 - (frac ** 0.58))
+            return math.radians(max(14.0, min(90.0, deg)))
+
+        r = PhysicalConstants.R_earth + max(0.0, alt)
+        g = AtmosphereModel.gravity(alt)
+        g_eff = g - (vx * vx) / r
+        a_eff = max(1.0, accel_thrust)
+
+        if cur_apogee_m >= req_perigee_m + 2000.0 and alt >= req_perigee_m - 25000.0:
+            req_ah = g_eff - 0.18 * vh
+            sin_theta = max(-0.50, min(0.40, req_ah / a_eff))
+            return math.asin(sin_theta)
+
+        target_alt = max(185000.0, target_alt_m)
+        dh = target_alt - alt
+        a_dec = 3.5
+        vh_brake = math.sqrt(2.0 * a_dec * dh) if dh >= 0.0 else -math.sqrt(2.0 * a_dec * (-dh))
+        vh_cap = 1500.0 if target_alt > 260000.0 else 950.0
+        vh_des = min(vh_brake, vh_cap) if dh > 0.0 else max(-180.0, vh_brake)
+        req_ah = g_eff + 0.35 * (vh_des - vh)
+        sin_theta = max(-0.75, min(0.80, req_ah / a_eff))
+        return math.asin(sin_theta)
 
     def _derivatives(
         self,
@@ -233,6 +262,8 @@ class RK4TrajectorySimulator:
         vehicle: RocketVehicle,
         stage: int,
         s2_start_t: float,
+        req_perigee_m: float = 200000.0,
+        target_alt_m: float = 212000.0,
     ) -> Tuple[float, float, float, float, float, float, float, float, float]:
         """
         Verilen (t, state) noktasında (dx/dt, dh/dt, dvx/dt, dvh/dt, dm/dt) türevlerini
@@ -242,14 +273,27 @@ class RK4TrajectorySimulator:
         eff_m = max(1.0, m)
 
         if stage == 1:
-            burning = (t < vehicle.burn_time) and (eff_m > vehicle.dry_mass)
-            thrust = vehicle.thrust_vac if burning else 0.0
-            mdot = vehicle.m_dot if burning else 0.0
+            burning = (eff_m > vehicle.dry_mass + 1e-6) and (vehicle.thrust_vac > 0.0)
+            raw_thrust = vehicle.thrust_vac if burning else 0.0
+            raw_mdot = vehicle.m_dot if burning else 0.0
+            stage_ve = vehicle.v_e
         else:
-            s2_elapsed = t - s2_start_t
-            burning = (s2_elapsed < vehicle.s2_burn_time) and (eff_m > vehicle.s2_dry_mass)
-            thrust = vehicle.s2_thrust if burning else 0.0
-            mdot = vehicle.s2_mdot if burning else 0.0
+            burning = (eff_m > vehicle.s2_dry_mass + 1e-6) and (vehicle.s2_thrust > 0.0)
+            raw_thrust = vehicle.s2_thrust if burning else 0.0
+            raw_mdot = vehicle.s2_mdot if burning else 0.0
+            stage_ve = vehicle.s2_ve
+
+        if burning and vehicle.max_g_throttle > 0.0:
+            max_thrust_n = eff_m * vehicle.max_g_throttle * PhysicalConstants.g0
+            if raw_thrust > max_thrust_n:
+                avail_thrust = max_thrust_n
+                avail_mdot = (avail_thrust / stage_ve) if stage_ve > 0.0 else 0.0
+            else:
+                avail_thrust = raw_thrust
+                avail_mdot = raw_mdot
+        else:
+            avail_thrust = raw_thrust
+            avail_mdot = raw_mdot
 
         rho = AtmosphereModel.density(h)
         g = AtmosphereModel.gravity(h)
@@ -262,7 +306,29 @@ class RK4TrajectorySimulator:
         centrifugal_lift = (vx * vx) / r_curr
         coriolis_tangential = (vx * vh) / r_curr
 
-        pitch = self._pitch_angle(h)
+        if h >= 90000.0:
+            _cur_p, cur_apogee, cur_ecc = self._compute_orbital_elements(h, vx, vh)
+        else:
+            cur_apogee, cur_ecc = 0.0, 1.0
+        v_circ_req = math.sqrt(PhysicalConstants.mu_earth / (PhysicalConstants.R_earth + req_perigee_m))
+        a_avail = max(1.0, avail_thrust / eff_m)
+        t_circ = max(0.0, v_circ_req - vx) / a_avail
+        g_eff_pos = max(0.3, g - centrifugal_lift)
+        t_apo = (vh / g_eff_pos) if vh > 0.0 else 0.0
+        coasting = (
+            avail_thrust > 0.0
+            and h >= 90000.0
+            and cur_apogee >= req_perigee_m + 6000.0
+            and vh > 15.0
+            and t_apo > 0.55 * t_circ + 4.0
+            and cur_ecc < 0.85
+        )
+        thrust = 0.0 if coasting else avail_thrust
+        mdot = 0.0 if coasting else avail_mdot
+
+        pitch = self._pitch_angle(
+            h, vx, vh, thrust / eff_m, req_perigee_m, target_alt_m, cur_apogee
+        )
         fx_thrust = thrust * math.cos(pitch)
         fh_thrust = thrust * math.sin(pitch)
 
@@ -283,6 +349,22 @@ class RK4TrajectorySimulator:
 
         return (vx, vh, ax, ah, -mdot, thrust, drag, q, g_load)
 
+    @staticmethod
+    def _compute_orbital_elements(h: float, vx: float, vh: float) -> Tuple[float, float, float]:
+        """Kepler vis-viva enberi (perigee_m), enöte (apogee_m) ve eksantriklik (e)."""
+        r = PhysicalConstants.R_earth + max(0.0, h)
+        mu = PhysicalConstants.mu_earth
+        v_sq = vx * vx + vh * vh
+        eps = 0.5 * v_sq - (mu / r)
+        h_ang = r * vx
+        e_sq = max(0.0, 1.0 + (2.0 * eps * h_ang * h_ang) / (mu * mu))
+        ecc = math.sqrt(e_sq)
+        if eps >= -1e-6:
+            r_p = (h_ang * h_ang / mu) / (1.0 + ecc)
+            return r_p - PhysicalConstants.R_earth, 1e9, ecc
+        a = -mu / (2.0 * eps)
+        return a * (1.0 - ecc) - PhysicalConstants.R_earth, a * (1.0 + ecc) - PhysicalConstants.R_earth, ecc
+
     def simulate(self, vehicle: RocketVehicle, target_orbit_km: float = 200.0, max_time_s: float = 1200.0) -> Dict[str, Any]:
         t = 0.0
         x = 0.0
@@ -291,6 +373,12 @@ class RK4TrajectorySimulator:
         vh = v0 * 0.8
         vx = v0 * 0.6
         m = vehicle.total_mass
+
+        target_orbit_m = max(160000.0, target_orbit_km * 1000.0)
+        target_alt_m = target_orbit_m + 12000.0
+        target_orbital_speed = math.sqrt(
+            PhysicalConstants.mu_earth / (PhysicalConstants.R_earth + target_orbit_m)
+        )
 
         telemetry: List[FlightState] = []
         max_q_observed = 0.0
@@ -304,9 +392,9 @@ class RK4TrajectorySimulator:
         dt = self.dt
 
         while t < max_time_s and (h >= 0.0 or t < 5.0):
-            # Aşama geçişi (Staging) kontrolü
+            # Aşama geçişi (Staging) kontrolü — fiziksel yakıt tükenmesine göre
             if current_stage == 1:
-                burning_s1 = (t < vehicle.burn_time) and (m > vehicle.dry_mass)
+                burning_s1 = (m > vehicle.dry_mass + 1e-6) and (vehicle.thrust_vac > 0.0)
                 if not burning_s1 and vehicle.has_stage_2 and not staged_already:
                     current_stage = 2
                     staged_already = True
@@ -314,18 +402,17 @@ class RK4TrajectorySimulator:
                     s2_start_time = t
 
             y0 = (x, h, vx, vh, m)
-            k1 = self._derivatives(t, y0, vehicle, current_stage, s2_start_time)
+            k1 = self._derivatives(t, y0, vehicle, current_stage, s2_start_time, target_orbit_m, target_alt_m)
 
             y1 = tuple(y0[i] + 0.5 * dt * k1[i] for i in range(5))
-            k2 = self._derivatives(t + 0.5 * dt, y1, vehicle, current_stage, s2_start_time)
+            k2 = self._derivatives(t + 0.5 * dt, y1, vehicle, current_stage, s2_start_time, target_orbit_m, target_alt_m)
 
             y2 = tuple(y0[i] + 0.5 * dt * k2[i] for i in range(5))
-            k3 = self._derivatives(t + 0.5 * dt, y2, vehicle, current_stage, s2_start_time)
+            k3 = self._derivatives(t + 0.5 * dt, y2, vehicle, current_stage, s2_start_time, target_orbit_m, target_alt_m)
 
             y3 = tuple(y0[i] + dt * k3[i] for i in range(5))
-            k4 = self._derivatives(t + dt, y3, vehicle, current_stage, s2_start_time)
+            k4 = self._derivatives(t + dt, y3, vehicle, current_stage, s2_start_time, target_orbit_m, target_alt_m)
 
-            # 4. Derece Runge-Kutta Ağırlıklı Ortalaması: (k1 + 2*k2 + 2*k3 + k4) / 6
             x = x + (dt / 6.0) * (k1[0] + 2.0 * k2[0] + 2.0 * k3[0] + k4[0])
             h = h + (dt / 6.0) * (k1[1] + 2.0 * k2[1] + 2.0 * k3[1] + k4[1])
             vx = vx + (dt / 6.0) * (k1[2] + 2.0 * k2[2] + 2.0 * k3[2] + k4[2])
@@ -345,14 +432,14 @@ class RK4TrajectorySimulator:
             if int(round(t * 10)) % 10 == 0:
                 telemetry.append(FlightState(t, x, h, vx, vh, m, thrust, drag, q, g_load))
 
-            if h >= 180000.0 and vx >= 7750.0:
-                orbit_achieved = True
-                break
+            if h >= target_orbit_m and vx >= target_orbital_speed * 0.96:
+                perigee_m, _apogee_m, ecc = self._compute_orbital_elements(h, vx, vh)
+                if perigee_m >= target_orbit_m and ecc < 0.08:
+                    orbit_achieved = True
+                    break
 
         final_speed = math.sqrt(vx * vx + vh * vh)
-        target_orbital_speed = math.sqrt(
-            PhysicalConstants.mu_earth / (PhysicalConstants.R_earth + target_orbit_km * 1000.0)
-        )
+        perigee_m, apogee_m, ecc = self._compute_orbital_elements(h, vx, vh)
         remaining_fuel = (m - vehicle.dry_mass) if current_stage == 1 else (m - vehicle.s2_dry_mass)
 
         return {
@@ -361,12 +448,16 @@ class RK4TrajectorySimulator:
             "flight_duration_s": round(t, 2),
             "final_altitude_km": round(h / 1000.0, 2),
             "max_altitude_km": round(max_alt_reached / 1000.0, 2),
+            "perigee_km": round(perigee_m / 1000.0, 2),
+            "apogee_km": round(min(apogee_m / 1000.0, 99999.0), 2),
+            "eccentricity": round(ecc, 4),
             "final_speed_ms": round(final_speed, 2),
             "target_orbital_speed_ms": round(target_orbital_speed, 2),
             "orbit_achieved": orbit_achieved,
             "remaining_fuel_kg": round(max(0.0, remaining_fuel), 2),
             "max_q_kPa": round(max_q_observed / 1000.0, 2),
             "max_g_force": round(max_g_observed, 2),
+            "max_g_throttle_limit": vehicle.max_g_throttle,
             "total_telemetry_points": len(telemetry),
             "summary": (
                 "YÖRÜNGE BAŞARIYLA YAKALANDI (LEO Orbit Achieved)"

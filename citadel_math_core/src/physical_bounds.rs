@@ -107,13 +107,15 @@ impl PhysicalBoundsShield {
         Ok(1.0 / (1.0 - beta * beta).sqrt())
     }
 
-    /// Bir sistem adayını AGENTS.md Değişmez 2 kapsamındaki 4 temel doğa yasasına karşı denetler.
-    pub fn verify_candidate(cand: &PhysicalSystemCandidate) -> Result<(), PhysicalLawViolation> {
+    /// Bir sistem adayını AGENTS.md Değişmez 2 kapsamındaki 4 temel doğa yasasına karşı
+    /// erken çıkış yapmadan denetler ve tespit edilen TÜM ihlalleri toplar.
+    pub fn collect_violations(cand: &PhysicalSystemCandidate) -> Vec<PhysicalLawViolation> {
         const EPS: f64 = 1e-9;
+        let mut violations: Vec<PhysicalLawViolation> = Vec::new();
 
         if let Some(m) = cand.mass_kg {
             if !m.is_finite() || m < 0.0 {
-                return Err(PhysicalLawViolation::NonPhysicalState(format!(
+                violations.push(PhysicalLawViolation::NonPhysicalState(format!(
                     "Kütle negatif veya tanımsız olamaz: {} kg",
                     m
                 )));
@@ -122,24 +124,25 @@ impl PhysicalBoundsShield {
 
         // 1. Özel Görelilik Nedensellik Sınırı (v < c, v_e < c)
         if let Some(v) = cand.velocity_ms {
-            if v.is_finite() && v.abs() > 0.0 || !v.is_finite() {
-                if let Some(m) = cand.mass_kg {
-                    if m > 0.0 {
-                        Self::check_subluminal_velocity(v)?;
+            if (v.is_finite() && v.abs() > 0.0) || !v.is_finite() {
+                let check_massive = cand.mass_kg.map(|m| m > 0.0).unwrap_or(true);
+                if check_massive {
+                    if let Err(err) = Self::check_subluminal_velocity(v) {
+                        violations.push(err);
                     }
-                } else {
-                    Self::check_subluminal_velocity(v)?;
                 }
             }
         }
         if let Some(ve) = cand.exhaust_velocity_ms {
-            Self::check_subluminal_velocity(ve)?;
+            if let Err(err) = Self::check_subluminal_velocity(ve) {
+                violations.push(err);
+            }
         }
 
         // 2. Termodinamik 2. Yasa: Entropi (dS >= 0), Verim (0 <= eta <= 1) ve Carnot Sınırı
         if let Some(ds) = cand.entropy_delta_j_k {
             if !ds.is_finite() || ds < -1e-12 {
-                return Err(PhysicalLawViolation::SecondLawEntropyViolation {
+                violations.push(PhysicalLawViolation::SecondLawEntropyViolation {
                     detail: format!("İzole sistem entropisi azalamaz: dS = {:.3e} J/K < 0", ds),
                 });
             }
@@ -147,31 +150,31 @@ impl PhysicalBoundsShield {
 
         if let Some(eta) = cand.efficiency {
             if !eta.is_finite() || !(0.0..=1.0 + EPS).contains(&eta) {
-                return Err(PhysicalLawViolation::SecondLawEntropyViolation {
+                violations.push(PhysicalLawViolation::SecondLawEntropyViolation {
                     detail: format!("Termodinamik dönüşüm verimi [0, 1] aralığında olmalıdır: eta = {}", eta),
                 });
             }
             if let (Some(th), Some(tc)) = (cand.temp_hot_k, cand.temp_cold_k) {
                 if !th.is_finite() || !tc.is_finite() || th <= 0.0 || tc <= 0.0 {
-                    return Err(PhysicalLawViolation::NonPhysicalState(format!(
+                    violations.push(PhysicalLawViolation::NonPhysicalState(format!(
                         "Mutlak sıcaklık 0 K üzerinde olmalıdır (3. Yasa): T_h = {} K, T_c = {} K",
                         th, tc
                     )));
-                }
-                if tc > th {
-                    return Err(PhysicalLawViolation::NonPhysicalState(format!(
+                } else if tc > th {
+                    violations.push(PhysicalLawViolation::NonPhysicalState(format!(
                         "Soğuk rezervuar sıcaklığı ({} K) sıcak rezervuardan ({} K) büyük olamaz",
                         tc, th
                     )));
-                }
-                let carnot_max = 1.0 - (tc / th);
-                if eta > carnot_max + EPS {
-                    return Err(PhysicalLawViolation::CarnotBoundViolation {
-                        claimed_eta: eta,
-                        carnot_max_eta: carnot_max,
-                        t_hot_k: th,
-                        t_cold_k: tc,
-                    });
+                } else {
+                    let carnot_max = 1.0 - (tc / th);
+                    if eta.is_finite() && eta > carnot_max + EPS {
+                        violations.push(PhysicalLawViolation::CarnotBoundViolation {
+                            claimed_eta: eta,
+                            carnot_max_eta: carnot_max,
+                            t_hot_k: th,
+                            t_cold_k: tc,
+                        });
+                    }
                 }
             }
         }
@@ -179,12 +182,11 @@ impl PhysicalBoundsShield {
         // 3. Termodinamik 1. Yasa: Enerji Korunumu (P_out <= P_in ve P_jet <= eta * P_in)
         if let (Some(p_in), Some(p_out)) = (cand.power_in_w, cand.power_out_w) {
             if !p_in.is_finite() || !p_out.is_finite() || p_in < 0.0 || p_out < 0.0 {
-                return Err(PhysicalLawViolation::NonPhysicalState(
+                violations.push(PhysicalLawViolation::NonPhysicalState(
                     "Güç değerleri negatif olmayan sonlu sayılar olmalıdır".to_string(),
                 ));
-            }
-            if p_out > p_in * (1.0 + EPS) + 1e-9 {
-                return Err(PhysicalLawViolation::FirstLawEnergyViolation {
+            } else if p_out > p_in * (1.0 + EPS) + 1e-9 {
+                violations.push(PhysicalLawViolation::FirstLawEnergyViolation {
                     power_out_w: p_out,
                     power_in_w: p_in,
                 });
@@ -194,38 +196,50 @@ impl PhysicalBoundsShield {
         if let (Some(mdot), Some(ve), Some(p_in)) =
             (cand.mass_flow_kg_s, cand.exhaust_velocity_ms, cand.power_in_w)
         {
-            if mdot < 0.0 {
-                return Err(PhysicalLawViolation::NonPhysicalState(
-                    "Kütlesel debi negatif olamaz".to_string(),
+            if !mdot.is_finite() || mdot < 0.0 {
+                violations.push(PhysicalLawViolation::NonPhysicalState(
+                    "Kütlesel debi negatif veya tanımsız olamaz".to_string(),
                 ));
-            }
-            let p_jet = 0.5 * mdot * ve * ve;
-            let eff_limit = cand.efficiency.unwrap_or(1.0).clamp(0.0, 1.0);
-            let max_allowed_jet = p_in * eff_limit;
-            if p_jet > max_allowed_jet * (1.0 + 1e-6) + 1e-6 {
-                return Err(PhysicalLawViolation::FirstLawEnergyViolation {
-                    power_out_w: p_jet,
-                    power_in_w: max_allowed_jet,
-                });
-            }
-        }
-
-        // 4. Çizgisel Momentum Korunumu: Tepkisiz İtki (Reactionless Drive) Budaması
-        if let (Some(mdot), Some(thrust)) = (cand.mass_flow_kg_s, cand.thrust_n) {
-            let abs_f = thrust.abs();
-            if mdot.abs() <= 1e-15 && abs_f > 0.0 {
-                let p_in = cand.power_in_w.unwrap_or(0.0).max(0.0);
-                // Tam yansıtmalı ideal foton yelkeni / lazer kovuğu üst sınırı: F_max = 2 * P_in / c
-                let max_photon_thrust = (2.0 * p_in) / PhysicalConstants::C;
-                if abs_f > max_photon_thrust * (1.0 + 1e-6) + 1e-15 {
-                    return Err(PhysicalLawViolation::ReactionlessMomentumViolation {
-                        thrust_n: abs_f,
-                        max_photon_thrust_n: max_photon_thrust,
+            } else if ve.is_finite() && p_in.is_finite() && p_in >= 0.0 {
+                let p_jet = 0.5 * mdot * ve * ve;
+                let eff_limit = cand.efficiency.unwrap_or(1.0).clamp(0.0, 1.0);
+                let max_allowed_jet = p_in * eff_limit;
+                if p_jet > max_allowed_jet * (1.0 + 1e-6) + 1e-6 {
+                    violations.push(PhysicalLawViolation::FirstLawEnergyViolation {
+                        power_out_w: p_jet,
+                        power_in_w: max_allowed_jet,
                     });
                 }
             }
         }
 
-        Ok(())
+        // 4. Çizgisel Momentum Korunumu: Tepkisiz İtki (Reactionless Drive) Budaması
+        if let (Some(mdot), Some(thrust)) = (cand.mass_flow_kg_s, cand.thrust_n) {
+            if mdot.is_finite() && thrust.is_finite() {
+                let abs_f = thrust.abs();
+                if mdot.abs() <= 1e-15 && abs_f > 0.0 {
+                    let p_in = cand.power_in_w.unwrap_or(0.0).max(0.0);
+                    let max_photon_thrust = (2.0 * p_in) / PhysicalConstants::C;
+                    if abs_f > max_photon_thrust * (1.0 + 1e-6) + 1e-15 {
+                        violations.push(PhysicalLawViolation::ReactionlessMomentumViolation {
+                            thrust_n: abs_f,
+                            max_photon_thrust_n: max_photon_thrust,
+                        });
+                    }
+                }
+            }
+        }
+
+        violations
+    }
+
+    /// Bir sistem adayını AGENTS.md Değişmez 2 kapsamındaki 4 temel doğa yasasına karşı denetler.
+    pub fn verify_candidate(cand: &PhysicalSystemCandidate) -> Result<(), PhysicalLawViolation> {
+        let mut violations = Self::collect_violations(cand);
+        if violations.is_empty() {
+            Ok(())
+        } else {
+            Err(violations.remove(0))
+        }
     }
 }

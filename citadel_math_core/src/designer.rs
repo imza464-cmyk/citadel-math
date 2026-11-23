@@ -219,9 +219,20 @@ impl InverseDesignEngine {
             "mat_inconel_718",
         ];
 
-        let radii_m = [0.75, 1.00, 1.30, 1.65];
-        let walls_mm = [2.2, 3.2, 4.5, 6.5];
-        let fuel_multipliers = [5.5, 8.0, 11.5, 16.5, 24.0, 34.0];
+        let payload_scale = (constraints.payload_kg.max(50.0) / 500.0).cbrt().clamp(0.75, 3.0);
+        let radii_m = [
+            0.75 * payload_scale,
+            1.00 * payload_scale,
+            1.30 * payload_scale,
+            1.65 * payload_scale,
+        ];
+        let walls_mm = [
+            2.2 * payload_scale.sqrt(),
+            3.2 * payload_scale.sqrt(),
+            4.5 * payload_scale.sqrt(),
+            6.5 * payload_scale.sqrt(),
+        ];
+        let fuel_multipliers = [5.5, 8.0, 11.5, 16.5, 24.0, 36.0];
         let twr_options = [1.45, 1.68, 1.95];
 
         let mut total_evaluated = 0usize;
@@ -270,11 +281,11 @@ impl InverseDesignEngine {
                                 let pre_dry_mass_kg = constraints.payload_kg + base_structural_kg + 25.0;
 
                                 let vehicle = if arch.has_stage_2 {
-                                    let s1_fuel = total_fuel_kg * 0.76;
-                                    let s2_fuel = total_fuel_kg * 0.24;
-                                    let s1_dry = base_structural_kg * 0.75;
-                                    let s2_dry = constraints.payload_kg + 25.0 + base_structural_kg * 0.25;
-                                    let s2_thrust = (s2_dry + s2_fuel) * PhysicalConstants::G0 * 1.18;
+                                    let s1_fuel = total_fuel_kg * 0.72;
+                                    let s2_fuel = total_fuel_kg * 0.28;
+                                    let s1_dry = base_structural_kg * 0.72;
+                                    let s2_dry = constraints.payload_kg + 25.0 + base_structural_kg * 0.28;
+                                    let s2_thrust = (s2_dry + s2_fuel) * PhysicalConstants::G0 * 1.32;
                                     VehicleConfig {
                                         name: arch.name,
                                         dry_mass: s1_dry,
@@ -310,15 +321,20 @@ impl InverseDesignEngine {
                                     }
                                 };
 
-                                let sim_res = sim.simulate(&vehicle, 1200.0);
+                                let sim_res = sim.simulate_for_orbit(
+                                    &vehicle,
+                                    constraints.target_orbit_km,
+                                    Some(constraints.max_g_limit),
+                                    1400.0,
+                                );
                                 if !sim_res.orbit_achieved
-                                    || sim_res.perigee_altitude_km < constraints.target_orbit_km * 0.85
+                                    || sim_res.perigee_altitude_km < constraints.target_orbit_km
                                 {
                                     continue;
                                 }
                                 orbit_passed += 1;
 
-                                if sim_res.max_g_force > constraints.max_g_limit {
+                                if sim_res.max_g_force > constraints.max_g_limit + 0.05 {
                                     continue;
                                 }
                                 g_passed += 1;

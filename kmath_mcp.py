@@ -12,15 +12,19 @@ Anayasal Kurallar (AGENTS.md):
   - Sıfır Sessiz Hata Yutma: Hiçbir istisna 'except Exception: pass' ile gizlenmez.
 """
 
+import functools
+import inspect
 import json
 import os
 import shutil
 import subprocess
 import sys
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Annotated, Any, Dict, List, Optional, Tuple
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 
+import anyio
+from pydantic import Field
 import sympy as sp
 try:
     from mcp.server.fastmcp import FastMCP
@@ -42,7 +46,7 @@ from engine.dimensions import (
     verify_law_dimensional_homogeneity,
 )
 from engine.knowledge_graph import KnowledgeGraph
-from engine.materials import MaterialsDatabase, StructuralStressChecker
+from engine.materials import MaterialsDatabase
 from engine.simulator import RK4TrajectorySimulator, RocketVehicle
 
 
@@ -125,10 +129,38 @@ mcp = FastMCP(
         "Olasılıksal tahmin yerine Z^7 sembolik AST boyut analizi, Z[x1..xn] kanonik polinom "
         "ve yan-koşul (GuardedPoly) ispat çekirdeği, IEEE-754 dışa yuvarlamalı Interval64 + Dual64 "
         "otomatik türev, 355 NIST CODATA sabiti, AND-OR hipergraf formül sentezi, RK4/RK45 yörünge "
-        "simülasyonu, NASA SP-8007 burkulma + PICA-X TPS dayanım analizi ve 4.608 adaylı Pareto "
+        "simülasyonu, NASA SP-8007 burkulma + PICA-X TPS dayanım analizi ve 6.912 adaylı Pareto "
         "tersine mühendislik tasarım motorunu deterministik olarak sunar."
     ),
 )
+
+
+def _async_mcp_tool(fn):
+    """MCP sunucusunda paralel çağrıların event-loop'u bloklamaması için aracı
+    `anyio.to_thread.run_sync` üzerinde asenkron kaydeder; doğrudan Python çağrıları
+    (unittest, Docker HEALTHCHECK) için senkron fonksiyon referansını korur."""
+    sig = inspect.signature(fn)
+
+    @functools.wraps(fn)
+    async def _wrapper(*args: Any, **kwargs: Any) -> Any:
+        return await anyio.to_thread.run_sync(functools.partial(fn, *args, **kwargs))
+
+    _wrapper.__signature__ = sig  # type: ignore[attr-defined]
+    mcp.tool(name=fn.__name__, description=fn.__doc__)(_wrapper)
+    return fn
+
+
+SI_AXIS_DIMENSIONS: Dict[str, Dimension] = {
+    "M": Dimension(m=1),
+    "L": Dimension(l=1),
+    "T": Dimension(t=1),
+    "I": Dimension(i=1),
+    "Theta": Dimension(theta=1),
+    "THETA": Dimension(theta=1),
+    "N": Dimension(n=1),
+    "J": Dimension(j=1),
+    "1": Dimension(),
+}
 
 # Temel fiziksel sabitlerin ve SI birim sembollerinin Z^7 boyut ve ölçek eşlemeleri (SSOT uzantısı)
 FUNDAMENTAL_SYMBOL_DIMENSIONS: Dict[str, Dimension] = {
@@ -306,6 +338,36 @@ def _canonical_vehicles() -> Dict[str, RocketVehicle]:
     }
 
 
+def _parse_dimension_spec(spec: str) -> Optional[Dimension]:
+    """Boyut kategorisi ('length'), SI birimi ('m/s'), SI temel ekseni ('L', 'M', 'T') veya
+    boyutsal ifade ('M * L / T^2', 'M L T^-2') dizesini Z^7 Dimension nesnesine çevirir."""
+    key = spec.strip()
+    if not key:
+        return None
+    if key.lower() in DIMENSIONS:
+        return DIMENSIONS[key.lower()]
+    if key in SI_AXIS_DIMENSIONS:
+        return SI_AXIS_DIMENSIONS[key]
+    if key in SI_UNIT_TABLE:
+        return SI_UNIT_TABLE[key][1]
+    # Boşlukla ayrılmış SI boyut notasyonunu ('M L T^-2') çarpıma dönüştür
+    tokens = key.split()
+    expr_candidate = "*".join(tokens) if (len(tokens) > 1 and all(tok[0].isalpha() for tok in tokens)) else key
+    expr_norm = expr_candidate.replace("^", "**")
+    axis_syms = {k: sp.Symbol(k) for k in SI_AXIS_DIMENSIONS if k != "1"}
+    try:
+        parsed = safe_parse_math_expr(expr_norm, allowed_symbols=axis_syms)
+        free_names = {str(s) for s in parsed.free_symbols}
+        if free_names and free_names.issubset(axis_syms.keys()):
+            return infer_sympy_dimension(parsed, SI_AXIS_DIMENSIONS)
+    except (ValueError, TypeError, sp.SympifyError):
+        pass
+    unit_parsed = _try_parse_unit_expression(key)
+    if unit_parsed is not None:
+        return unit_parsed[1]
+    return None
+
+
 def _build_ssot_symbol_dimensions(extra_dims: Optional[Dict[str, str]] = None) -> Dict[str, Dimension]:
     """canonical_laws.json + temel fizik sabitleri + kullanıcı ek tanımlarından Z^7 sembol tablosu kurar."""
     var_dims: Dict[str, Dimension] = dict(FUNDAMENTAL_SYMBOL_DIMENSIONS)
@@ -316,14 +378,15 @@ def _build_ssot_symbol_dimensions(extra_dims: Optional[Dict[str, str]] = None) -
 
     if extra_dims:
         for sym_name, dim_spec in extra_dims.items():
-            key = dim_spec.strip()
-            if key.lower() in DIMENSIONS:
-                var_dims[sym_name] = DIMENSIONS[key.lower()]
-            elif key in SI_UNIT_TABLE:
-                var_dims[sym_name] = SI_UNIT_TABLE[key][1]
+            resolved = _parse_dimension_spec(dim_spec)
+            if resolved is not None:
+                var_dims[sym_name] = resolved
             else:
+                sample_cats = ", ".join(sorted(list(DIMENSIONS.keys()))[:12])
                 raise ValueError(
-                    f"Değişken '{sym_name}' için geçersiz boyut/birim anahtarı: '{dim_spec}'"
+                    f"Değişken '{sym_name}' için geçersiz boyut/birim anahtarı: '{dim_spec}'. "
+                    f"Geçerli formatlar: SI boyut eksenleri (M, L, T, I, Theta, N, J veya 'M L T^-2'), "
+                    f"SI birimleri (m, kg, s, N, Pa, kW...) veya boyut kategorileri ({sample_cats}, ...)."
                 )
     return var_dims
 
@@ -403,7 +466,7 @@ def _resolve_expression_dimension(
     return inferred, None, "symbolic_ast"
 
 
-@mcp.tool()
+@_async_mcp_tool
 def kmath_audit() -> str:
     """Matematik Çekirdeğinin hem 10 katmanlı Python SSOT denetimini hem de 16 katmanlı saf-Rust Citadel-Math kanıt denetimini koşturur."""
     if not os.path.exists(DB_PATH):
@@ -490,15 +553,13 @@ def kmath_audit() -> str:
     )
 
 
-@mcp.tool()
-def kmath_dimension_check(lhs: str, rhs: str, var_dimensions_json: str = "") -> str:
-    """İki fiziksel ifadenin, SI biriminin veya denklemin Z^7 ([M, L, T, I, Theta, N, J]) boyutsal homojenliğini ve birim ölçek eşliğini denetler.
-
-    Args:
-        lhs: Sol taraf ifadesi, SI birimi veya boyut adı (örn: 'F', 'force', 'kPa', 'm * a', 'delta_v').
-        rhs: Sağ taraf ifadesi, SI birimi veya boyut adı (örn: 'G * m1 * m2 / r**2', 'Pa', 'v_e * log(m_0 / m_f)').
-        var_dimensions_json: Opsiyonel özel değişken boyut sözlüğü JSON'u (örn: '{"k_spring": "mass_flow_rate"}').
-    """
+@_async_mcp_tool
+def kmath_dimension_check(
+    lhs: Annotated[str, Field(description="Sol taraf ifadesi, SI birimi veya boyut adı (örn: 'F', 'kN', 'm * a', 'P * r / t', 'delta_v').")],
+    rhs: Annotated[str, Field(description="Sağ taraf ifadesi, SI birimi veya boyut adı (örn: 'kg * m / s^2', 'Pa', 'G * m1 * m2 / r**2').")],
+    var_dimensions_json: Annotated[str, Field(description="Opsiyonel özel değişken boyut sözlüğü JSON'u. SI ekseni ('L', 'M', 'T', 'M L T^-2'), kategori ('length', 'pressure') veya SI birimi ('Pa', 'm') kabul eder (örn: '{\"d\": \"L\", \"P\": \"pressure\"}').")] = "",
+) -> str:
+    """İki fiziksel ifadenin, SI biriminin veya denklemin Z^7 ([M, L, T, I, Theta, N, J]) boyutsal homojenliğini ve birim ölçek eşliğini denetler."""
     extra_dims: Optional[Dict[str, str]] = None
     if var_dimensions_json.strip():
         try:
@@ -522,6 +583,7 @@ def kmath_dimension_check(lhs: str, rhs: str, var_dimensions_json: str = "") -> 
                 "homogeneous": False,
                 "verdict": "DIMENSIONAL_OR_SYNTAX_ERROR",
                 "message": str(exc),
+                "hint": "Tanımsız semboller için var_dimensions_json ile boyut tanımlayın (örn: '{\"d\": \"L\"}' veya '{\"d\": \"length\"}').",
             },
             indent=2,
             ensure_ascii=False,
@@ -561,13 +623,11 @@ def kmath_dimension_check(lhs: str, rhs: str, var_dimensions_json: str = "") -> 
     )
 
 
-@mcp.tool()
-def kmath_constant(query: str) -> str:
-    """355 resmi NIST CODATA fiziksel sabiti ve IAU gezegen parametreleri içerisinden kesin değer, birim ve tam duyarlılık sorgular.
-
-    Args:
-        query: Sabit sembolü ('c', 'G', 'h', 'hbar', 'k_B', 'e', 'm_e', 'm_p', 'mu_0', 'eps_0', 'sigma_SB', 'N_A', 'R_gas', 'g0', 'alpha', 'M_earth', 'mu_earth') veya İngilizce NIST adı/alt-dizesi ('Planck', 'magnetic', 'proton').
-    """
+@_async_mcp_tool
+def kmath_constant(
+    query: Annotated[str, Field(description="Sabit sembolü ('c', 'G', 'h', 'hbar', 'k_B', 'e', 'm_e', 'm_p', 'mu_0', 'eps_0', 'sigma_SB', 'N_A', 'R_gas', 'g0', 'alpha', 'M_earth', 'mu_earth') veya İngilizce NIST adı/alt-dizesi ('Planck', 'magnetic', 'proton').")],
+) -> str:
+    """355 resmi NIST CODATA fiziksel sabiti ve IAU gezegen parametreleri içerisinden kesin değer, birim ve tam duyarlılık sorgular."""
     q = query.strip()
     if not q:
         return json.dumps({"status": "error", "message": "Boş sabit sorgusu."}, ensure_ascii=False)
@@ -667,34 +727,62 @@ def kmath_constant(query: str) -> str:
     )
 
 
-@mcp.tool()
-def kmath_materials(sort_by: str = "breaking_length", category: str = "all") -> str:
-    """SSOT havacılık/uzay ve aşırı ortam malzeme veritabanını (30 sertifikalı malzeme: CNT, Grafen, Zylon PBO, T1000G, IM7/8552, Al-Li 2195, Starship 304L, Maraging 300, Inconel 718/625, GRCop-42, HfC/ZrB2-SiC UHTC, RCC, PICA-X, Avcoat vb.) sorgular.
-
-    Args:
-        sort_by: 'breaking_length' (km), 'specific_strength', 'yield_strength' (MPa), 'max_temp' (K).
-        category: 'all', 'nanomaterial', 'composite', 'metal_alloy', 'superalloy', 'refractory_metal', 'copper_superalloy', 'ceramic_composite', 'uhtc_ceramic', 'ablative_tps', 'insulator'.
-    """
+@_async_mcp_tool
+def kmath_materials(
+    sort_by: Annotated[str, Field(description="Sıralama kriteri: 'breaking_length' (km), 'specific_strength', 'yield_strength' (MPa), veya 'max_temp' (K).")] = "breaking_length",
+    category: Annotated[str, Field(description="Malzeme kategorisi: 'all', 'nanomaterial', 'composite', 'metal_alloy', 'superalloy', 'refractory_metal', 'copper_superalloy', 'ceramic_composite', 'uhtc_ceramic', 'ablative_tps', 'insulator'.")] = "all",
+) -> str:
+    """SSOT havacılık/uzay ve aşırı ortam malzeme veritabanını (30 sertifikalı malzeme) sorgular ve sıralar."""
     mdb = MaterialsDatabase(MAT_PATH)
-    mat_list = list(mdb.materials.values())
+    all_mats = list(mdb.materials.values())
+    available_categories = sorted({m.category for m in all_mats})
 
-    if category.lower() != "all":
-        mat_list = [m for m in mat_list if m.category.lower() == category.lower()]
+    if category.strip().lower() != "all":
+        cat_q = category.strip().lower()
+        mat_list = [m for m in all_mats if m.category.lower() == cat_q]
+    else:
+        cat_q = "all"
+        mat_list = list(all_mats)
 
-    if sort_by == "breaking_length":
-        mat_list.sort(key=lambda m: m.breaking_length_km, reverse=True)
-    elif sort_by == "specific_strength":
-        mat_list.sort(key=lambda m: m.specific_strength, reverse=True)
-    elif sort_by == "yield_strength":
-        mat_list.sort(key=lambda m: m.yield_strength, reverse=True)
-    elif sort_by == "max_temp":
-        mat_list.sort(key=lambda m: m.max_temperature, reverse=True)
+    def _sort_mats(items: List[Any]) -> None:
+        if sort_by == "breaking_length":
+            items.sort(key=lambda m: m.breaking_length_km, reverse=True)
+        elif sort_by == "specific_strength":
+            items.sort(key=lambda m: m.specific_strength, reverse=True)
+        elif sort_by == "yield_strength":
+            items.sort(key=lambda m: m.yield_strength, reverse=True)
+        elif sort_by == "max_temp":
+            items.sort(key=lambda m: m.max_temperature, reverse=True)
+
+    _sort_mats(mat_list)
+
+    if not mat_list and cat_q != "all":
+        suggested = [
+            m
+            for m in all_mats
+            if cat_q in m.id.lower() or cat_q in m.name.lower() or cat_q in m.description.lower()
+        ]
+        _sort_mats(suggested)
+        return json.dumps(
+            {
+                "status": "ok",
+                "total_materials": 0,
+                "requested_category": category,
+                "available_categories": available_categories,
+                "hint": f"'{category}' geçerli bir kategori değil. Geçerli kategoriler: {', '.join(available_categories)}.",
+                "suggested_matches": [m.to_dict() for m in suggested],
+                "materials": [],
+            },
+            indent=2,
+            ensure_ascii=False,
+        )
 
     return json.dumps(
         {
             "status": "ok",
             "total_materials": len(mat_list),
             "sorted_by": sort_by,
+            "available_categories": available_categories,
             "materials": [m.to_dict() for m in mat_list],
         },
         indent=2,
@@ -702,58 +790,19 @@ def kmath_materials(sort_by: str = "breaking_length", category: str = "all") -> 
     )
 
 
-@mcp.tool()
+@_async_mcp_tool
 def kmath_stress_check(
-    material_id: str,
-    mass_kg: float,
-    g_load: float,
-    max_q_pa: float,
-    radius_m: float = 1.85,
-    length_m: float = 42.0,
-    wall_thickness_mm: float = 5.0,
-    speed_ms: float = 7800.0,
-    tank_pressure_bar: float = 3.0,
+    material_id: Annotated[str, Field(description="Kanonik malzeme ID'si (örn: 'mat_alli_2195', 'mat_carbon_fiber_t1000g', 'mat_inconel_718', 'mat_titanium_ti6al4v', 'mat_sic_cmc').")],
+    mass_kg: Annotated[float, Field(description="Toplam araç kütlesi (kg).")],
+    g_load: Annotated[float, Field(description="Eksenel ivme yükü (G).")],
+    max_q_pa: Annotated[float, Field(description="Maksimum aerodinamik basınç Max-Q (Pa).")],
+    radius_m: Annotated[float, Field(description="Silindir gövde yarıçapı (m).")] = 1.85,
+    length_m: Annotated[float, Field(description="Silindir gövde boyu (m, Euler/SP-8007 burkulma için).")] = 42.0,
+    wall_thickness_mm: Annotated[float, Field(description="Cidar et kalınlığı (mm).")] = 5.0,
+    speed_ms: Annotated[float, Field(description="Uçuş hızı (m/s, Sutton-Graves ısınma ve PICA-X TPS hesabı için).")] = 7800.0,
+    tank_pressure_bar: Annotated[float, Field(description="İç tank basıncı (bar).")] = 3.0,
 ) -> str:
-    """İnce cidarlı silindirik gövde üzerinde kanonik Biaxial Von Mises akma, NASA SP-8007 + Euler burkulma ve Sutton-Graves / PICA-X ablatif ısı kalkanı denetimini yürütür.
-
-    Args:
-        material_id: Kanonik malzeme ID'si (örn: 'mat_alli_2195', 'mat_carbon_fiber_t1000g', 'mat_inconel_718', 'mat_titanium_ti6al4v', 'mat_sic_cmc', 'mat_haynes_282').
-        mass_kg: Toplam araç kütlesi (kg).
-        g_load: Eksenel ivme yükü (G).
-        max_q_pa: Maksimum aerodinamik basınç Max-Q (Pa).
-        radius_m: Silindir gövde yarıçapı (m).
-        length_m: Silindir gövde boyu (m, Euler/SP-8007 burkulma için).
-        wall_thickness_mm: Cidar et kalınlığı (mm).
-        speed_ms: Uçuş hızı (m/s, Sutton-Graves ısınma ve PICA-X TPS hesabı için).
-        tank_pressure_bar: İç tank basıncı (bar).
-    """
-    mdb = MaterialsDatabase(MAT_PATH)
-    mat = mdb.get(material_id)
-    if mat is None:
-        return json.dumps(
-            {
-                "status": "error",
-                "message": f"Malzeme ID bulunamadı: '{material_id}'",
-                "available_ids": sorted(mdb.materials.keys()),
-            },
-            indent=2,
-            ensure_ascii=False,
-        )
-
-    py_hull = StructuralStressChecker.check_rocket_hull(
-        material=mat,
-        total_mass_kg=mass_kg,
-        g_force=g_load,
-        max_q_pa=max_q_pa,
-        hull_radius_m=radius_m,
-        wall_thickness_mm=wall_thickness_mm,
-        tank_pressure_bar=tank_pressure_bar,
-    )
-    py_thermal = StructuralStressChecker.check_aerodynamic_heating(
-        material=mat,
-        max_speed_ms=speed_ms,
-    )
-
+    """Tekil kaynaklı (SSOT) saf-Rust çekirdeğiyle ince cidarlı silindirik gövdede Biaxial Von Mises akma, NASA SP-8007 + Euler burkulma ve Sutton-Graves / PICA-X ablatif ısı kalkanı denetimini yürütür."""
     rc, rust_out, rust_err = _run_rust_cli(
         [
             "mcp",
@@ -766,30 +815,23 @@ def kmath_stress_check(
             str(length_m),
             str(wall_thickness_mm),
             str(speed_ms),
+            str(tank_pressure_bar),
         ]
     )
-    rust_detail: Any = json.loads(rust_out) if (rc == 0 and rust_out) else {"error": rust_err}
-
-    return json.dumps(
-        {
-            "status": "ok",
-            "material_id": material_id,
-            "python_von_mises_hull": py_hull,
-            "python_sutton_graves_heating": py_thermal,
-            "rust_sp8007_buckling_and_pica_x_tps": rust_detail,
-        },
-        indent=2,
-        ensure_ascii=False,
-    )
+    if rc != 0:
+        return json.dumps({"status": "error", "message": rust_err or rust_out}, ensure_ascii=False)
+    try:
+        parsed = json.loads(rust_out)
+        return json.dumps(parsed, indent=2, ensure_ascii=False)
+    except json.JSONDecodeError:
+        return rust_out
 
 
-@mcp.tool()
-def kmath_simulate_trajectory(vehicle_type: str = "compare") -> str:
-    """Gerçek 4-aşamalı Runge-Kutta (RK4, O(dt^4)) yörünge entegratörü ile 2D atmosferik uçuş, Kepler yörünge (enberi/enöte/e) ve canlı ısı yükü simülasyonunu koşturur.
-
-    Args:
-        vehicle_type: 'compare' (3 referans mimari karşılaştırması), 'chemical', 'beamed', veya 'kinetic'.
-    """
+@_async_mcp_tool
+def kmath_simulate_trajectory(
+    vehicle_type: Annotated[str, Field(description="Simüle edilecek referans fırlatma aracı: 'compare' (3 mimari karşılaştırması), 'chemical' (2-kademeli LOX/RP-1), 'beamed' (Lazer SSTO) veya 'kinetic' (Kinetik hibrit).")] = "compare",
+) -> str:
+    """Gerçek 4-aşamalı Runge-Kutta (RK4, O(dt^4)) yörünge entegratörü ile 2D atmosferik uçuş, G-kısma (throttle), Kepler yörünge (enberi/enöte/e) ve canlı ısı yükü simülasyonunu koşturur."""
     if vehicle_type == "compare":
         rc, rust_out, _ = _run_rust_cli(["simulate"])
         if rc == 0 and rust_out:
@@ -815,44 +857,38 @@ def kmath_simulate_trajectory(vehicle_type: str = "compare") -> str:
     )
 
 
-@mcp.tool()
-def kmath_solve_for(equation: str, target_var: str) -> str:
-    """Sembolik bir 'LHS = RHS' denklemini hedef değişken için cebirsel olarak tersler, zorunlu tanım kümesi yan koşullarını (!= 0, > 0, >= 0) çıkarır ve sıfır-panik Rust kodu üretir.
-
-    Args:
-        equation: Terslenecek denklem (örn: 'delta_v = (g_0 * I_sp) * ln(m_0 / m_f)' veya 'P_beam = (F * v_e) / (2 * eta)').
-        target_var: Yalnız bırakılacak değişken (örn: 'm_0', 'I_sp', 'eta').
-    """
+@_async_mcp_tool
+def kmath_solve_for(
+    equation: Annotated[str, Field(description="Terslenecek 'LHS = RHS' denklemi (örn: 'delta_v = (g_0 * I_sp) * ln(m_0 / m_f)' veya 'P_beam = (F * v_e) / (2 * eta)').")],
+    target_var: Annotated[str, Field(description="Yalnız bırakılacak hedef değişken adı (örn: 'm_0', 'I_sp', 'eta', 'v').")],
+) -> str:
+    """Sembolik bir 'LHS = RHS' denklemini hedef değişken için cebirsel olarak tersler, zorunlu tanım kümesi yan koşullarını (!= 0, > 0, >= 0) ve ±sqrt dal uyarılarını çıkarır, sıfır-panik Rust kodu üretir."""
     rc, out, err = _run_rust_cli(["mcp", "solve_for", equation, target_var])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)
     return out
 
 
-@mcp.tool()
-def kmath_prove_identity(lhs: str, rhs: str, max_degree: int = 16) -> str:
-    """İki cebirsel ifadenin çok değişkenli kanonik polinom halkası Z[x_1, ..., x_n] (grevlex, checked_i64 taşma korumalı) üzerinde tam özdeşliğini ve tanım kümesi yan koşul korunumunu ispatlar.
-
-    Args:
-        lhs: Sol cebirsel ifade (örn: '(x + y + z)^2' veya '(x - 1) / (x - 1)').
-        rhs: Sağ cebirsel ifade (örn: 'x^2 + y^2 + z^2 + 2*x*y + 2*x*z + 2*y*z' veya '1').
-        max_degree: Maksimum polinom derece bütçesi (varsayılan: 16).
-    """
+@_async_mcp_tool
+def kmath_prove_identity(
+    lhs: Annotated[str, Field(description="Sol cebirsel ifade (örn: '(x + y + z)^2' veya '(x^2 - 1) / (x - 1)').")],
+    rhs: Annotated[str, Field(description="Sağ cebirsel ifade (örn: 'x^2 + y^2 + z^2 + 2*x*y + 2*x*z + 2*y*z' veya 'x + 1').")],
+    max_degree: Annotated[int, Field(description="Maksimum polinom derece bütçesi (varsayılan: 16).")] = 16,
+) -> str:
+    """İki cebirsel ifadenin çok değişkenli kanonik polinom halkası Z[x_1, ..., x_n] (grevlex, checked_i64 taşma korumalı) üzerinde tam özdeşliğini ve tanım kümesi yan koşul korunumunu ispatlar."""
     rc, out, err = _run_rust_cli(["mcp", "prove_poly", lhs, rhs, str(max_degree)])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)
     return out
 
 
-@mcp.tool()
-def kmath_interval_eval(expression: str, intervals_json: str, diff_var: str = "") -> str:
-    """IEEE-754 dışa yuvarlamalı Interval64, bağımlılık eleyen Taylor/Mean-Value aralığı, Dual64 tam gradyan ve sembolik türev hesaplar.
-
-    Args:
-        expression: Sembolik ifade (örn: '(g_0 * I_sp) * ln(m_0 / m_f)' veya '(2*x + 1) - 2*x').
-        intervals_json: Değişken aralık haritası JSON'u (örn: '{"g_0": [9.80665, 9.80665], "I_sp": [448.0, 452.0], "m_0": [9990.0, 10010.0], "m_f": [1195.0, 1205.0]}').
-        diff_var: Opsiyonel sembolik türev değişkeni (örn: 'I_sp').
-    """
+@_async_mcp_tool
+def kmath_interval_eval(
+    expression: Annotated[str, Field(description="Sembolik matematiksel ifade (örn: '(P * r) / t' veya '(g_0 * I_sp) * ln(m_0 / m_f)').")],
+    intervals_json: Annotated[str, Field(description="Değişken aralık haritası JSON'u: '{\"x\": [lo, hi], ...}' (örn: '{\"P\": [390000, 410000], \"r\": [1.795, 1.805], \"t\": [0.0049, 0.0051]}').")],
+    diff_var: Annotated[str, Field(description="Opsiyonel sembolik türev alınacak değişken adı (örn: 't', 'I_sp').")] = "",
+) -> str:
+    """IEEE-754 dışa yuvarlamalı Interval64, bağımlılık eleyen Taylor/Mean-Value aralığı, Dual64 tam gradyan ve sembolik türev hesaplar."""
     cmd = ["mcp", "interval_eval", expression, intervals_json]
     if diff_var.strip():
         cmd.append(diff_var.strip())
@@ -862,36 +898,27 @@ def kmath_interval_eval(expression: str, intervals_json: str, diff_var: str = ""
     return out
 
 
-@mcp.tool()
-def kmath_synthesize(inputs_csv: str, target_var: str, max_depth: int = 4) -> str:
-    """Çift-yönlü AND-OR bilgi hipergrafı üzerinde eldeki girdilerden hedef fiziksel niceliği türeten tüm Z^7 doğrulamalı sembolik formülleri ve sıfır-panik Rust fonksiyonlarını sentezler.
-
-    Args:
-        inputs_csv: Virgülle ayrılmış bilinen değişkenler (örn: 'g_0,I_sp,m_dot,eta' veya 'delta_v,g_0,I_sp,m_f').
-        target_var: Sentezlenecek hedef değişken (örn: 'P_beam', 'delta_v', 'm_0').
-        max_depth: Maksimum hipergraf zincirleme derinliği (varsayılan: 4).
-    """
+@_async_mcp_tool
+def kmath_synthesize(
+    inputs_csv: Annotated[str, Field(description="Virgülle ayrılmış bilinen SSOT değişkenleri (örn: 'F,m,t', 'g_0,I_sp,m_dot,eta' veya 'delta_v,g_0,I_sp,m_f').")],
+    target_var: Annotated[str, Field(description="Sentezlenecek hedef fiziksel nicelik (örn: 'E_k', 'P_beam', 'delta_v', 'm_0').")],
+    max_depth: Annotated[int, Field(description="Maksimum hipergraf zincirleme derinliği (varsayılan: 4).")] = 4,
+) -> str:
+    """Çift-yönlü AND-OR bilgi hipergrafı üzerinde eldeki girdilerden hedef fiziksel niceliği türeten tüm Z^7 doğrulamalı sembolik formülleri ve sıfır-panik Rust fonksiyonlarını sentezler."""
     rc, out, err = _run_rust_cli(["mcp", "synthesize", inputs_csv, target_var, str(max_depth)])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)
     return out
 
 
-@mcp.tool()
+@_async_mcp_tool
 def kmath_inverse_design(
-    payload_kg: float = 500.0,
-    target_orbit_km: float = 200.0,
-    max_g_limit: float = 8.5,
-    min_safety_factor: float = 1.35,
+    payload_kg: Annotated[float, Field(description="Hedef faydalı yük kütlesi (kg, örn: 500 veya 1000).")] = 500.0,
+    target_orbit_km: Annotated[float, Field(description="Hedef LEO yörünge enberi irtifası (km, örn: 200 veya 400).")] = 200.0,
+    max_g_limit: Annotated[float, Field(description="İzin verilen azami ivme yükü ve motor kısma sınırı (G, örn: 4.5 veya 8.5).")] = 8.5,
+    min_safety_factor: Annotated[float, Field(description="Minimum akma ve NASA SP-8007 burkulma emniyet katsayısı (örn: 1.35).")] = 1.35,
 ) -> str:
-    """Kapalı döngü tersine mühendislik ve Pareto optimizasyon motorunu (4.608 aday x RK4 + Kepler enberi + Von Mises + NASA SP-8007 burkulma + PICA-X TPS) çalıştırır.
-
-    Args:
-        payload_kg: Hedef faydalı yük kütlesi (kg).
-        target_orbit_km: Hedef LEO yörünge irtifası (km).
-        max_g_limit: İzin verilen azami ivme yükü (G).
-        min_safety_factor: Minimum akma ve burkulma emniyet katsayısı (örn: 1.35).
-    """
+    """Kapalı döngü tersine mühendislik ve Pareto optimizasyon motorunu (6.912 aday x G-kısmalı RK4 + sıkı Kepler enberi >= target_orbit_km + Von Mises + NASA SP-8007 burkulma + PICA-X TPS) çalıştırır."""
     rc, out, err = _run_rust_cli(
         [
             "mcp",
@@ -908,21 +935,21 @@ def kmath_inverse_design(
     return out
 
 
-@mcp.tool()
+@_async_mcp_tool
 def kmath_physical_bounds_check(
-    mass_kg: Optional[float] = None,
-    velocity_ms: Optional[float] = None,
-    exhaust_velocity_ms: Optional[float] = None,
-    mass_flow_kg_s: Optional[float] = None,
-    thrust_n: Optional[float] = None,
-    power_in_w: Optional[float] = None,
-    power_out_w: Optional[float] = None,
-    efficiency: Optional[float] = None,
-    temp_hot_k: Optional[float] = None,
-    temp_cold_k: Optional[float] = None,
-    entropy_delta_j_k: Optional[float] = None,
+    mass_kg: Annotated[Optional[float], Field(description="Kütle (kg, >= 0).")] = None,
+    velocity_ms: Annotated[Optional[float], Field(description="Cisim hızı (m/s, |v| < c).")] = None,
+    exhaust_velocity_ms: Annotated[Optional[float], Field(description="Egzoz hızı (m/s, |v_e| < c).")] = None,
+    mass_flow_kg_s: Annotated[Optional[float], Field(description="Kütlesel debi m_dot (kg/s, >= 0).")] = None,
+    thrust_n: Annotated[Optional[float], Field(description="İtki kuvveti F (N). m_dot=0 iken F <= 2*P_in/c denetlenir.")] = None,
+    power_in_w: Annotated[Optional[float], Field(description="Giriş gücü P_in (W, >= 0).")] = None,
+    power_out_w: Annotated[Optional[float], Field(description="Çıkış gücü P_out (W, <= P_in).")] = None,
+    efficiency: Annotated[Optional[float], Field(description="Verim eta ([0, 1] ve <= Carnot 1 - T_c/T_h).")] = None,
+    temp_hot_k: Annotated[Optional[float], Field(description="Sıcak kaynak sıcaklığı T_hot (K, > 0).")] = None,
+    temp_cold_k: Annotated[Optional[float], Field(description="Soğuk kaynak sıcaklığı T_cold (K, > 0 ve <= T_hot).")] = None,
+    entropy_delta_j_k: Annotated[Optional[float], Field(description="İzole sistem entropi değişimi dS (J/K, >= 0).")] = None,
 ) -> str:
-    """AGENTS.md Değişmez 2 uyarınca bir fiziksel/mühendislik adayını Termodinamik 1./2. Yasa, Carnot sınırı, Özel Görelilik nedenselliği (v < c) ve Momentum korunumuna (tepkisiz itki yasağı) karşı denetler."""
+    """AGENTS.md Değişmez 2 uyarınca bir fiziksel/mühendislik adayını Termodinamik 1./2. Yasa, Carnot sınırı, Özel Görelilik nedenselliği (v < c) ve Momentum korunumuna karşı erken çıkış yapmadan denetler ve tespit edilen TÜM ihlalleri raporlar."""
     payload = {
         k: v
         for k, v in {
@@ -946,35 +973,26 @@ def kmath_physical_bounds_check(
     return out
 
 
-@mcp.tool()
-def kmath_regime_check(law_id: str, bindings_json: str) -> str:
-    """Faz 1.3 Fiziksel Geçerlilik Bölgesi (DomainBounds) kalkanı: Verilen sayısal girdilerin kanonik bir yasanın (veya terslenmiş yasanın) Mach, hız, basınç veya ergodik kararlılık rejim sınırları içinde kalıp kalmadığını denetler ve geçerliyse hedef niceliği hesaplar.
-
-    Args:
-        law_id: Kanonik yasa ID'si (örn: 'law_prandtl_glauert_subsonic_cp', 'law_ackeret_supersonic_wave_cp', 'law_lorentz_factor', 'law_mm1_mean_response_time').
-        bindings_json: Sayısal değişken değerleri JSON'u (örn: '{"Mach": 0.55, "C_p0": -0.4}' veya '{"v": 299792458.0, "c": 299792458.0}').
-    """
+@_async_mcp_tool
+def kmath_regime_check(
+    law_id: Annotated[str, Field(description="Kanonik yasa ID'si (örn: 'law_prandtl_glauert_subsonic_cp', 'law_ackeret_supersonic_wave_cp', 'law_lorentz_factor', 'law_mm1_mean_response_time').")],
+    bindings_json: Annotated[str, Field(description="Sayısal değişken değerleri JSON'u (örn: '{\"Mach\": 0.55, \"C_p0\": -0.4}' veya '{\"v\": 299792458.0, \"c\": 299792458.0}').")],
+) -> str:
+    """Faz 1.3 Fiziksel Geçerlilik Bölgesi (DomainBounds) kalkanı: Verilen sayısal girdilerin kanonik bir yasanın Mach, hız, basınç veya ergodik kararlılık rejim sınırları içinde kalıp kalmadığını denetler."""
     rc, out, err = _run_rust_cli(["mcp", "regime_check", law_id, bindings_json])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)
     return out
 
 
-@mcp.tool()
+@_async_mcp_tool
 def kmath_buckingham_pi(
-    variables_spec: str,
-    target_var: str = "",
-    samples_json: str = "",
-    repeating_csv: str = "",
+    variables_spec: Annotated[str, Field(description="Virgülle ayrılmış SSOT değişkenleri veya 'ad:boyut' çiftleri ya da JSON nesnesi (örn: 'F_drag,rho,v,L_char,mu_visc' veya 'r,E,rho,t').")],
+    target_var: Annotated[str, Field(description="Opsiyonel izole edilecek hedef değişken (örn: 'F_drag', 'r', 'T_orb').")] = "",
+    samples_json: Annotated[str, Field(description="Opsiyonel deneysel/simülasyon örneklem dizisi JSON'u (örn: '[{\"r\": 80.5, \"E\": 8.4e13, \"rho\": 1.225, \"t\": 0.006}]').")] = "",
+    repeating_csv: Annotated[str, Field(description="Opsiyonel tekrarlayan (pivot) taban değişkenleri öncelik listesi (örn: 'rho,v,L_char').")] = "",
 ) -> str:
-    """Tam tamsayı Z^7 çekirdek uzayı (nullspace) üzerinde Buckingham-Pi boyutsuz benzerlik gruplarını (Re, Ma, Eu/Cd, Fr, We, Pr, Nu, Taylor-Sedov, Kepler vb.) keşfeder, hedef değişkenin boyutsal ölçekleme yasasını ve sıfır-panik Rust kodunu sentezler, verilirse deneysel/simülasyon örneklerinden güç-yasası katsayısını (C_pi, R^2) kalibre eder.
-
-    Args:
-        variables_spec: Virgülle ayrılmış SSOT değişkenleri veya 'ad:boyut' çiftleri ya da JSON nesnesi (örn: 'F_drag,rho,v,L_char,mu_visc' veya 'r,E,rho,t' veya 'T_orb,a_orb,mu').
-        target_var: Opsiyonel izole edilecek hedef değişken (örn: 'F_drag', 'r', 'T_orb').
-        samples_json: Opsiyonel sayısal örneklem dizisi JSON'u (örn: '[{"r": 80.5, "E": 8.4e13, "rho": 1.225, "t": 0.006}, ...]').
-        repeating_csv: Opsiyonel tekrarlayan (pivot) taban değişkenleri öncelik listesi (örn: 'rho,v,L_char').
-    """
+    """Tam tamsayı Z^7 çekirdek uzayı (nullspace) üzerinde Buckingham-Pi boyutsuz benzerlik gruplarını keşfeder, hedef ölçekleme yasasını ve sıfır-panik Rust kodunu sentezler, örneklem verilirse kalibre eder."""
     cmd = [
         "mcp",
         "buckingham",
@@ -990,14 +1008,12 @@ def kmath_buckingham_pi(
     return out
 
 
-@mcp.tool()
-def kmath_pareto_front(objectives_json: str, candidates_json: str) -> str:
-    """Çok amaçlı kesin Pareto cephesi (Exact Skyline / NSGA-II Rank 0), baskılanmamış cephe ayrışımı (F_0, F_1, ...), kalabalık mesafesi (Crowding Distance), Ütopya/Nadir vektörleri, uzlaşma diz-noktası (Knee) ve 2B süpürme hiperhacmini hesaplar.
-
-    Args:
-        objectives_json: Amaç tanım dizisi JSON'u (örn: '[{"name": "mass_kg", "direction": "min", "unit": "kg"}, {"name": "safety_factor", "direction": "max", "unit": "x"}]').
-        candidates_json: Aday noktalar dizisi JSON'u (örn: '[{"id": "A", "values": [1000.0, 1.4]}, {"id": "B", "values": [1220.0, 2.1]}]').
-    """
+@_async_mcp_tool
+def kmath_pareto_front(
+    objectives_json: Annotated[str, Field(description="Amaç tanım dizisi JSON'u (örn: '[{\"name\": \"mass_kg\", \"direction\": \"min\", \"unit\": \"kg\"}, {\"name\": \"safety_factor\", \"direction\": \"max\", \"unit\": \"x\"}]').")],
+    candidates_json: Annotated[str, Field(description="Aday noktalar dizisi JSON'u (örn: '[{\"id\": \"A\", \"values\": [1000.0, 1.4]}, {\"id\": \"B\", \"values\": [1220.0, 2.1]}]').")],
+) -> str:
+    """Çok amaçlı kesin Pareto cephesi (Exact Skyline / NSGA-II Rank 0), kalabalık mesafesi, Ütopya/Nadir vektörleri, uzlaşma diz-noktası (Knee) ve 2B süpürme hiperhacmini hesaplar."""
     rc, out, err = _run_rust_cli(["mcp", "pareto", objectives_json, candidates_json])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)

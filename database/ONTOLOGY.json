@@ -201,7 +201,8 @@
       "law_tether_transverse_wave_speed",
       "law_axial_force_stress",
       "law_thrust_coefficient_ideal",
-      "law_cantilever_beam_bending_stress"
+      "law_cantilever_beam_bending_stress",
+      "law_mechanical_work"
     ]
   },
   "m_dot": {
@@ -944,7 +945,8 @@
     ],
     "si_representation": "L T^-1",
     "produced_by": [
-      "law_vis_viva"
+      "law_vis_viva",
+      "law_kinematics_velocity_from_accel"
     ],
     "consumed_by": [
       "law_oberth_effect",
@@ -1497,7 +1499,9 @@
     "consumed_by": [
       "law_newton_second",
       "law_linear_accel_track_length",
-      "law_hydrostatic_head_pressure"
+      "law_hydrostatic_head_pressure",
+      "law_kinematics_velocity_from_accel",
+      "law_kinematics_displacement_from_accel"
     ]
   },
   "E_k": {
@@ -6480,5 +6484,59 @@
     "consumed_by": [
       "law_mri_slice_voxel_volume"
     ]
+  },
+  "t": {
+    "dimension_key": "time",
+    "z7_vector": [
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "T",
+    "produced_by": [],
+    "consumed_by": [
+      "law_kinematics_velocity_from_accel",
+      "law_kinematics_displacement_from_accel"
+    ]
+  },
+  "d": {
+    "dimension_key": "length",
+    "z7_vector": [
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "L",
+    "produced_by": [
+      "law_kinematics_displacement_from_accel"
+    ],
+    "consumed_by": [
+      "law_mechanical_work"
+    ]
+  },
+  "W": {
+    "dimension_key": "energy",
+    "z7_vector": [
+      1,
+      2,
+      -2,
+      0,
+      0,
+      0,
+      0
+    ],
+    "si_representation": "M L^2 T^-2",
+    "produced_by": [
+      "law_mechanical_work"
+    ],
+    "consumed_by": []
   }
 }

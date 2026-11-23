@@ -6433,5 +6433,80 @@
       }
     },
     "description": "MR/BT görüntüleme kesitlerinden fiziksel voksel hacmi hesabı (m^3)."
+  },
+  {
+    "id": "law_kinematics_velocity_from_accel",
+    "name": "Sabit İvmeli Doğrusal Hız Denklemi (v = a * t)",
+    "domain": "classical_mechanics",
+    "regime": "classical_nonrelativistic",
+    "latex": "v = a t",
+    "equation": "v = a * t",
+    "target": "v",
+    "inputs": [
+      "a",
+      "t"
+    ],
+    "dimensions": {
+      "v": "velocity",
+      "a": "acceleration",
+      "t": "time"
+    },
+    "domain_bounds": {
+      "v": {
+        "min": 0.0,
+        "max": 29979245.8,
+        "note": "Klasik mekanik hız sınırı (v <= 0.1c)"
+      },
+      "t": {
+        "min": 0.0,
+        "note": "Negatif olmayan süre"
+      }
+    },
+    "description": "Durgun halden sabit ivmeyle hızlanan cismin t süresi sonundaki hızı."
+  },
+  {
+    "id": "law_kinematics_displacement_from_accel",
+    "name": "Sabit İvmeli Yer Değiştirme Denklemi (d = 0.5 * a * t^2)",
+    "domain": "classical_mechanics",
+    "regime": "classical_nonrelativistic",
+    "latex": "d = \\frac{1}{2} a t^2",
+    "equation": "d = 0.5 * a * t**2",
+    "target": "d",
+    "inputs": [
+      "a",
+      "t"
+    ],
+    "dimensions": {
+      "d": "length",
+      "a": "acceleration",
+      "t": "time"
+    },
+    "domain_bounds": {
+      "t": {
+        "min": 0.0,
+        "note": "Negatif olmayan süre"
+      }
+    },
+    "description": "Durgun halden sabit ivmeyle hareket eden cismin t süresinde aldığı yol."
+  },
+  {
+    "id": "law_mechanical_work",
+    "name": "Mekanik İş Denklemi (W = F * d)",
+    "domain": "classical_mechanics",
+    "regime": "classical_nonrelativistic",
+    "latex": "W = F d",
+    "equation": "W = F * d",
+    "target": "W",
+    "inputs": [
+      "F",
+      "d"
+    ],
+    "dimensions": {
+      "W": "energy",
+      "F": "force",
+      "d": "length"
+    },
+    "domain_bounds": {},
+    "description": "Sabit bir kuvvetin hareket doğrultusunda yaptığı mekanik iş."
   }
 ]

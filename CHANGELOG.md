@@ -4,6 +4,18 @@ All notable changes to **Citadel-Math (`citadel_math_core` + `kmath-mcp`)** are 
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.1] - 2026-11-23
+
+### Fixed
+- **Honest Dimension & Branch Reporting (`kmath_solve_for`, `codegen.rs`, `main.rs`):** Eliminated false `[1 (Boyutsuz)]` Z^7 proof stamps when target variables are outside the SSOT ontology (`dimension_verified: false` + explicit `[Bilinmiyor / Doğrulanmadı — SSOT Ontoloji Dışı Sembol]` header), and added explicit `±sqrt` principal-branch warnings on even-root inversions.
+- **Single-SSOT Structural & TPS Audit (`kmath_stress_check`, `materials.rs`, `kmath_mcp.py`):** Removed divergent duplicate Python Von Mises / thermal calculations so `kmath_stress_check` reports directly from `citadel_math_core` with active `tank_pressure_bar` coupling and explicit separation between `bare_overall_pass` and `tps_protected_overall_pass`.
+- **Full Multi-Violation Physical Bounds Collection (`kmath_physical_bounds_check`, `physical_bounds.rs`):** Removed early short-circuit returns so concurrent violations (e.g. causality `|v| >= c` + Carnot bound `eta > eta_Carnot`) are all collected and reported in `violations[]` with `violation_count`.
+- **Orbital Guidance & Inverse Design Realism (`simulator.rs`, `engine/simulator.py`, `designer.rs`):** Implemented closed-loop Hohmann coast-to-apogee (`t_apo > 0.55 * t_circ + 4.0`) + apogee circularization (`vh -> 0`) + `4.5 G` throttling and strict Kepler SECO (`perigee >= target_orbit_km && e < 0.08`). Both chemical (`e = 0.0003–0.0009`) and beamed-laser SSTO (`e = 0.0007`) achieve circular LEO without hyperbolic overshoot, and `kmath_inverse_design(1000 kg, 400 km, 4.5 G)` scales hull geometry with payload to discover `765` structurally/thermally feasible designs (`min_perigee >= 402.6 km`).
+
+### Added
+- **FastMCP AI Ergonomics & Non-Blocking Concurrency (`kmath_mcp.py`, `engine/materials.py`):** Added `Annotated[..., Field(description=...)]` schemas across all 15 MCP tools, async thread-pool execution (`_async_mcp_tool`, 9-way concurrent calls in `~0.03s`), SI axis dimension parsing (`L`, `M L T^-2`), `available_categories` + `suggested_matches` hints on unknown material categories, and clean rounded Celsius temperatures.
+- **Kinematics & Work Hypergraph Bridges (`database/canonical_laws.json`, `database/ONTOLOGY.json`):** Added 3 canonical laws (`217` laws, `550` inverse laws, `356` symbols) enabling multi-hop synthesis of `F, m, t -> E_k` and `F, m, t -> W`, plus `test_hohmann_circular_orbit_400km_45g_and_beamed_200km` (`34/34` Rust unit tests).
+
 ## [0.2.0] - 2026-11-23
 
 ### Changed

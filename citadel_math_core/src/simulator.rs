@@ -162,13 +162,15 @@ type DerivStep = ([f64; 5], f64, f64, f64, f64);
 struct StageFlightCtx<'a> {
     vehicle: &'a VehicleConfig,
     stage: u8,
-    s2_start_t: f64,
     s1_burnout_mass: f64,
     m_dot_s1: f64,
-    burn_time_s1: f64,
     m_dot_s2: f64,
-    burn_time_s2: f64,
+    v_e_s1: f64,
+    v_e_s2: f64,
     nose_radius_m: f64,
+    req_perigee_m: f64,
+    target_alt_m: f64,
+    max_g_throttle: Option<f64>,
 }
 
 pub struct RK4Simulator {
@@ -213,76 +215,98 @@ impl RK4Simulator {
         )
     }
 
-    /// Kapalı Döngü Faz-Düzlemi (Phase-Plane) Yörüngeye Oturtma ve Daireselleştirme Güdümü:
+    /// Kapalı Döngü Faz-Düzlemi (Phase-Plane) + Hohmann Enöte Daireselleştirme Güdümü:
     /// - 0 .. 1.5 km: Dikey kalkış (90°)
-    /// - 1.5 .. 60 km: Atmosferik ağırlık dönüşü (Gravity Turn)
-    /// - `>= 60 km` (Vakum Faz-Düzlemi Regülatörü):
-    ///   Hedef irtifa `h_target = 202 km` noktasına dikey hız `vh = 0 m/s` ile teğet oturmak için
-    ///   faz-düzlemi hız referansı `vh_des = sign(dh) * sqrt(2 * a_dec * |dh|)`
-    ///   ve gereken dikey itki ivmesi `req_ah = (g - vx^2/r) + k_v * (vh_des - vh)` uygulanır.
+    /// - 1.5 .. 55 km: Atmosferik ağırlık dönüşü (Gravity Turn)
+    /// - `>= 55 km`: Hedef enöteye tırmanış (frenleme zarfı `vh_brake = sqrt(2 * a_dec * dh)`)
+    ///   ve hedef enöte yakalandığında enöte çevresinde yatay daireselleştirme (`vh -> 0`).
     #[inline(always)]
-    fn guidance_pitch_angle(alt: f64, vx: f64, vh: f64, accel_thrust: f64) -> f64 {
+    fn guidance_pitch_angle(
+        alt: f64,
+        vx: f64,
+        vh: f64,
+        accel_thrust: f64,
+        req_perigee_m: f64,
+        target_alt_m: f64,
+        cur_apogee_m: f64,
+    ) -> f64 {
         if alt < 1500.0 {
             return std::f64::consts::FRAC_PI_2;
         }
-        if alt < 60_000.0 {
-            let frac = ((alt - 1500.0) / (60_000.0 - 1500.0)).clamp(0.0, 1.0);
-            let deg = 90.0 * (1.0 - frac.powf(0.62));
-            return deg.to_radians().clamp(0.22, std::f64::consts::FRAC_PI_2);
+        if alt < 55_000.0 {
+            let frac = ((alt - 1500.0) / (55_000.0 - 1500.0)).clamp(0.0, 1.0);
+            let deg = 90.0 * (1.0 - frac.powf(0.58));
+            return deg.to_radians().clamp(14.0_f64.to_radians(), std::f64::consts::FRAC_PI_2);
         }
-
-        let target_alt = 195_000.0;
-        let r_target = PhysicalConstants::R_EARTH + target_alt;
-        let v_circ = (PhysicalConstants::MU_EARTH / r_target).sqrt();
 
         let r = PhysicalConstants::R_EARTH + alt.max(0.0);
         let g = AtmosphereModel::gravity(alt);
         let centrifugal = (vx * vx) / r;
         let g_eff = g - centrifugal;
-
         let a_eff = accel_thrust.max(1.0);
-        let dv_x = (v_circ - vx).max(15.0);
-        let t_go = (dv_x / (a_eff * 0.78)).clamp(6.0, 240.0);
 
+        // Enöte daireselleştirme fazı: enöte hedef yörüngeye ulaştıysa dikey hızı sıfırlayıp
+        // itkiyi yatay yörünge hızına (vx -> v_circ) yönlendir.
+        if cur_apogee_m >= req_perigee_m + 2_000.0 && alt >= req_perigee_m - 25_000.0 {
+            let req_ah_thrust = g_eff - 0.18 * vh;
+            let sin_theta = (req_ah_thrust / a_eff).clamp(-0.50, 0.40);
+            return sin_theta.asin();
+        }
+
+        let target_alt = target_alt_m.max(185_000.0);
         let dh = target_alt - alt;
-        let a_dec = 1.80_f64;
-        let vh_phase = if dh >= 0.0 {
+        let a_dec = 3.5_f64;
+        let vh_brake = if dh >= 0.0 {
             (2.0 * a_dec * dh).sqrt()
         } else {
             -((2.0 * a_dec * (-dh)).sqrt())
         };
+        let vh_cap = if target_alt > 260_000.0 { 1500.0 } else { 950.0 };
         let vh_des = if dh > 0.0 {
-            (1.65 * dh / t_go).max(vh_phase).min(880.0)
+            vh_brake.min(vh_cap)
         } else {
-            vh_phase.max(-120.0)
+            vh_brake.max(-180.0)
         };
 
         let vh_err = vh_des - vh;
-        let req_ah_thrust = g_eff + 0.22 * vh_err;
-        let sin_theta = (req_ah_thrust / a_eff).clamp(-0.55, 0.82);
+        let req_ah_thrust = g_eff + 0.35 * vh_err;
+        let sin_theta = (req_ah_thrust / a_eff).clamp(-0.75, 0.80);
         sin_theta.asin()
     }
 
     #[inline(always)]
-    fn derivatives(t: f64, state: &StateVec, ctx: &StageFlightCtx<'_>) -> DerivStep {
+    fn derivatives(_t: f64, state: &StateVec, ctx: &StageFlightCtx<'_>) -> DerivStep {
         let (_x, h, vx, vh, m) = (state[0], state[1], state[2], state[3], state[4]);
         let eff_m = m.max(1.0);
         let vehicle = ctx.vehicle;
 
-        let (thrust, mass_loss) = if ctx.stage == 1 {
-            let is_burning = t < ctx.burn_time_s1 && eff_m > ctx.s1_burnout_mass;
+        let (raw_thrust, raw_mdot, stage_ve) = if ctx.stage == 1 {
+            let is_burning = eff_m > ctx.s1_burnout_mass + 1e-6 && vehicle.thrust_vac > 0.0;
             if is_burning {
-                (vehicle.thrust_vac, ctx.m_dot_s1)
+                (vehicle.thrust_vac, ctx.m_dot_s1, ctx.v_e_s1)
             } else {
-                (0.0, 0.0)
+                (0.0, 0.0, ctx.v_e_s1)
             }
         } else {
-            let is_burning = (t - ctx.s2_start_t) < ctx.burn_time_s2 && eff_m > vehicle.s2_dry_mass;
+            let is_burning = eff_m > vehicle.s2_dry_mass + 1e-6 && vehicle.s2_thrust > 0.0;
             if is_burning {
-                (vehicle.s2_thrust, ctx.m_dot_s2)
+                (vehicle.s2_thrust, ctx.m_dot_s2, ctx.v_e_s2)
             } else {
-                (0.0, 0.0)
+                (0.0, 0.0, ctx.v_e_s2)
             }
+        };
+
+        let (avail_thrust, avail_mdot) = match ctx.max_g_throttle {
+            Some(g_cap) if g_cap > 0.0 && raw_thrust > 0.0 => {
+                let max_t = eff_m * g_cap * PhysicalConstants::G0;
+                if raw_thrust > max_t {
+                    let mdot_throttled = if stage_ve > 0.0 { max_t / stage_ve } else { 0.0 };
+                    (max_t, mdot_throttled)
+                } else {
+                    (raw_thrust, raw_mdot)
+                }
+            }
+            _ => (raw_thrust, raw_mdot),
         };
 
         let (rho, _p_amb, t_amb, a_sound) = AtmosphereModel::state_at(h);
@@ -298,8 +322,42 @@ impl RK4Simulator {
         // zorunlu Coriolis/teğetsel kuplaj terimi: - (vx * vh) / r
         let coriolis_tangential = (vx * vh) / r_curr;
 
+        // Hohmann Enöteye Süzülme (Coast-to-Apogee): Enöte hedef yörüngeye ulaştığında
+        // daireselleştirme yanmasını enöte çevresinde ortalamak için motoru beklet.
+        let (_cur_perigee, cur_apogee, cur_ecc) = if h >= 90_000.0 {
+            Self::compute_orbital_elements(h, vx, vh)
+        } else {
+            (-PhysicalConstants::R_EARTH, 0.0, 1.0)
+        };
+        let v_circ_req =
+            (PhysicalConstants::MU_EARTH / (PhysicalConstants::R_EARTH + ctx.req_perigee_m)).sqrt();
+        let a_avail = (avail_thrust / eff_m).max(1.0);
+        let t_circ = (v_circ_req - vx).max(0.0) / a_avail;
+        let g_eff_pos = (g - centrifugal_lift).max(0.3);
+        let t_apo = if vh > 0.0 { vh / g_eff_pos } else { 0.0 };
+        let coasting = avail_thrust > 0.0
+            && h >= 90_000.0
+            && cur_apogee >= ctx.req_perigee_m + 6_000.0
+            && vh > 15.0
+            && t_apo > 0.55 * t_circ + 4.0
+            && cur_ecc < 0.85;
+
+        let (thrust, mass_loss) = if coasting {
+            (0.0, 0.0)
+        } else {
+            (avail_thrust, avail_mdot)
+        };
+
         let accel_thrust = thrust / eff_m;
-        let theta = Self::guidance_pitch_angle(h, vx, vh, accel_thrust);
+        let theta = Self::guidance_pitch_angle(
+            h,
+            vx,
+            vh,
+            accel_thrust,
+            ctx.req_perigee_m,
+            ctx.target_alt_m,
+            cur_apogee,
+        );
         let fx_thrust = thrust * theta.cos();
         let fh_thrust = thrust * theta.sin();
 
@@ -336,7 +394,22 @@ impl RK4Simulator {
 
     /// Gerçek 4. Derece Klasik Runge-Kutta (RK4) Entegrasyonu + Canlı Aerotermal Entegrasyon
     pub fn simulate(&self, vehicle: &VehicleConfig, max_time_s: f64) -> SimulationResult {
+        self.simulate_for_orbit(vehicle, 172.0, None, max_time_s)
+    }
+
+    /// Hedef yörünge irtifası (`target_orbit_km`) ve opsiyonel azami G-kısması (`max_g_throttle`) ile RK4 yörünge entegrasyonu.
+    /// SECO ancak gerçek Kepler enberisi `perigee_m >= target_orbit_km * 1000.0` olduğunda onaylanır.
+    pub fn simulate_for_orbit(
+        &self,
+        vehicle: &VehicleConfig,
+        target_orbit_km: f64,
+        max_g_throttle: Option<f64>,
+        max_time_s: f64,
+    ) -> SimulationResult {
         let start_time = std::time::Instant::now();
+        let req_perigee_m = (target_orbit_km * 1000.0).max(160_000.0);
+        let target_alt_m = req_perigee_m + 12_000.0;
+        let v_circ_target = (PhysicalConstants::MU_EARTH / (PhysicalConstants::R_EARTH + req_perigee_m)).sqrt();
 
         let mut t = 0.0;
         let s2_total_mass = if vehicle.has_stage_2 {
@@ -360,15 +433,12 @@ impl RK4Simulator {
 
         let v_e = vehicle.isp * PhysicalConstants::G0;
         let m_dot_s1 = if v_e > 0.0 { vehicle.thrust_vac / v_e } else { 0.0 };
-        let burn_time_s1 = if m_dot_s1 > 0.0 { vehicle.propellant_mass / m_dot_s1 } else { 0.0 };
 
         let s2_ve = vehicle.s2_isp * PhysicalConstants::G0;
         let m_dot_s2 = if s2_ve > 0.0 { vehicle.s2_thrust / s2_ve } else { 0.0 };
-        let burn_time_s2 = if m_dot_s2 > 0.0 { vehicle.s2_propellant / m_dot_s2 } else { 0.0 };
 
         let mut current_stage: u8 = 1;
         let mut staged = false;
-        let mut s2_start_time = 0.0;
 
         let mut max_q = 0.0;
         let mut max_g = 0.0;
@@ -381,25 +451,26 @@ impl RK4Simulator {
 
         while t < max_time_s && (y[1] >= 0.0 || t < 5.0) {
             if current_stage == 1 {
-                let is_burning = t < burn_time_s1 && y[4] > s1_burnout_mass;
+                let is_burning = y[4] > s1_burnout_mass + 1e-6 && vehicle.thrust_vac > 0.0;
                 if !is_burning && vehicle.has_stage_2 && !staged {
                     current_stage = 2;
                     staged = true;
                     y[4] = s2_total_mass;
-                    s2_start_time = t;
                 }
             }
 
             let ctx = StageFlightCtx {
                 vehicle,
                 stage: current_stage,
-                s2_start_t: s2_start_time,
                 s1_burnout_mass,
                 m_dot_s1,
-                burn_time_s1,
                 m_dot_s2,
-                burn_time_s2,
+                v_e_s1: v_e,
+                v_e_s2: s2_ve,
                 nose_radius_m,
+                req_perigee_m,
+                target_alt_m,
+                max_g_throttle,
             };
 
             let (k1, q, g_load, q_conv, t_wall) = Self::derivatives(t, &y, &ctx);
@@ -422,7 +493,6 @@ impl RK4Simulator {
             }
             let (k4, _, _, q_conv4, _) = Self::derivatives(t + dt, &y3, &ctx);
 
-            // 4. Derece Runge-Kutta Ağırlıklı Güncellemesi (Durum + Simpson/RK4 Isı İntegrali)
             for i in 0..5 {
                 y[i] += (dt / 6.0) * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]);
             }
@@ -453,10 +523,10 @@ impl RK4Simulator {
             }
 
             // Gerçek Kepler Yörünge Kararlılık Kriteri (SECO):
-            // Anlık irtifa >= 172 km VE Enberi (Perigee) >= 172 km VE Eksantriklik e < 0.065
-            if y[1] >= 172_000.0 && y[2] >= 7650.0 {
+            // Anlık irtifa >= hedef enberi VE Enberi >= hedef enberi VE Eksantriklik e < 0.08
+            if y[1] >= req_perigee_m && y[2] >= v_circ_target * 0.96 {
                 let (perigee_m, _apogee_m, ecc) = Self::compute_orbital_elements(y[1], y[2], y[3]);
-                if perigee_m >= 172_000.0 && ecc < 0.065 {
+                if perigee_m >= req_perigee_m && ecc < 0.08 {
                     orbit_achieved = true;
                     break;
                 }
@@ -525,11 +595,9 @@ impl RK4Simulator {
 
         let s2_ve = vehicle.s2_isp * PhysicalConstants::G0;
         let m_dot_s2 = if s2_ve > 0.0 { vehicle.s2_thrust / s2_ve } else { 0.0 };
-        let burn_time_s2 = if m_dot_s2 > 0.0 { vehicle.s2_propellant / m_dot_s2 } else { 0.0 };
 
         let mut current_stage: u8 = 1;
         let mut staged = false;
-        let mut s2_start_time = 0.0;
 
         let mut max_q = 0.0;
         let mut max_g = 0.0;
@@ -561,7 +629,6 @@ impl RK4Simulator {
                     current_stage = 2;
                     staged = true;
                     y[4] = s2_total_mass;
-                    s2_start_time = t;
                 }
             }
 
@@ -574,13 +641,15 @@ impl RK4Simulator {
             let ctx = StageFlightCtx {
                 vehicle,
                 stage: current_stage,
-                s2_start_t: s2_start_time,
                 s1_burnout_mass,
                 m_dot_s1,
-                burn_time_s1,
                 m_dot_s2,
-                burn_time_s2,
+                v_e_s1: v_e,
+                v_e_s2: s2_ve,
                 nose_radius_m,
+                req_perigee_m: 172_000.0,
+                target_alt_m: 190_000.0,
+                max_g_throttle: None,
             };
 
             let (k1, dyn_q1, g1, q1, tw1) = Self::derivatives(t, &y, &ctx);
@@ -710,5 +779,58 @@ impl RK4Simulator {
             peak_wall_temp_k,
             execution_time_micros: elapsed,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_hohmann_circular_orbit_400km_45g_and_beamed_200km() {
+        let sim = RK4Simulator::new(0.2);
+        let v_lh2 = VehicleConfig {
+            name: "Test-LOX-LH2-400km",
+            dry_mass: 2200.0,
+            propellant_mass: 17280.0,
+            thrust_vac: 480_000.0,
+            isp: 425.0,
+            area: PI,
+            cd: 0.26,
+            initial_velocity: 0.0,
+            initial_altitude: 0.0,
+            has_stage_2: true,
+            s2_dry_mass: 1850.0,
+            s2_propellant: 6720.0,
+            s2_thrust: 110_000.0,
+            s2_isp: 474.6,
+        };
+        let r = sim.simulate_for_orbit(&v_lh2, 400.0, Some(4.5), 1400.0);
+        assert!(r.orbit_achieved, "400 km yörüngeye oturmalı: {:?}", r);
+        assert!(r.perigee_altitude_km >= 400.0, "Enberi >= 400 km olmalı: {}", r.perigee_altitude_km);
+        assert!(r.max_g_force <= 4.55, "Max-G <= 4.55 olmalı: {}", r.max_g_force);
+        assert!(r.eccentricity < 0.08, "Dairesel yörünge e < 0.08 olmalı: {}", r.eccentricity);
+
+        let v_beamed = VehicleConfig {
+            name: "Test-Beamed-SSTO-200km",
+            dry_mass: 1_200.0,
+            propellant_mass: 6_000.0,
+            thrust_vac: 120_000.0,
+            isp: 950.0,
+            area: 1.5,
+            cd: 0.25,
+            initial_velocity: 0.0,
+            initial_altitude: 0.0,
+            has_stage_2: false,
+            s2_dry_mass: 0.0,
+            s2_propellant: 0.0,
+            s2_thrust: 0.0,
+            s2_isp: 0.0,
+        };
+        let rb = sim.simulate_for_orbit(&v_beamed, 200.0, Some(4.5), 1200.0);
+        assert!(rb.orbit_achieved, "Beamed SSTO 200 km yörüngeye oturmalı: {:?}", rb);
+        assert!(rb.perigee_altitude_km >= 200.0, "Beamed enberi >= 200 km olmalı: {}", rb.perigee_altitude_km);
+        assert!(rb.max_g_force <= 4.55, "Beamed Max-G <= 4.55 olmalı: {}", rb.max_g_force);
+        assert!(rb.eccentricity < 0.08, "Beamed e < 0.08 olmalı: {}", rb.eccentricity);
     }
 }

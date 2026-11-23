@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>Citadel-Math v0.2.0 — Deterministik Fizik &amp; Boyut Doğrulama Motoru</title>
-  <meta name="description" content="Citadel-Math v0.2.0 (citadel_math_core + kmath-mcp): Saf Rust (#![forbid(unsafe_code)]) Z^7 boyutsal kalkan, checked_i64 cebirsel ispat çekirdeği, IEEE 1788-2015 Interval64 ve 15 araçlı çevrimdışı MCP sunucusu.">
-  <meta property="og:title" content="Citadel-Math v0.2.0 — Deterministik Matematik &amp; Fizik Doğrulama Motoru">
-  <meta property="og:description" content="LLM halüsinasyonuna karşı Saf Rust + Python/SymPy 15 araçlı MCP sunucusu · 214 Kanonik Yasa · 353 Z^7 Sembolü · AGPL-3.0 / Ticari.">
+  <title>Citadel-Math v0.2.1 — Deterministik Fizik &amp; Boyut Doğrulama Motoru</title>
+  <meta name="description" content="Citadel-Math v0.2.1 (citadel_math_core + kmath-mcp): Saf Rust (#![forbid(unsafe_code)]) Z^7 boyutsal kalkan, checked_i64 cebirsel ispat çekirdeği, IEEE 1788-2015 Interval64 ve 15 araçlı çevrimdışı MCP sunucusu.">
+  <meta property="og:title" content="Citadel-Math v0.2.1 — Deterministik Matematik &amp; Fizik Doğrulama Motoru">
+  <meta property="og:description" content="LLM halüsinasyonuna karşı Saf Rust + Python/SymPy 15 araçlı MCP sunucusu · 217 Kanonik Yasa · 356 Z^7 Sembolü · AGPL-3.0 / Ticari.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://imza464-cmyk.github.io/citadel-math/">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23161b26'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-weight='700' font-size='14' fill='%2360a5fa'%3EZ7%3C/text%3E%3C/svg%3E">
@@ -25,14 +25,14 @@
       <a href="#overview" class="brand" data-nav="overview">
         <span class="brand-mark">Z⁷</span>
         <span>citadel-math</span>
-        <span class="version-pill">v0.2.0</span>
+        <span class="version-pill">v0.2.1</span>
       </a>
 
       <nav class="topnav" aria-label="Ana gezinme">
         <button class="nav-pill active" data-sec="overview">Genel Bakış</button>
         <button class="nav-pill" data-sec="sandbox">Z⁷ Motoru <span class="nav-count">CANLI</span></button>
-        <button class="nav-pill" data-sec="laws">Yasalar <span class="nav-count" id="tocLawCount">214</span></button>
-        <button class="nav-pill" data-sec="ontology">Ontoloji <span class="nav-count" id="tocOntCount">353</span></button>
+        <button class="nav-pill" data-sec="laws">Yasalar <span class="nav-count" id="tocLawCount">217</span></button>
+        <button class="nav-pill" data-sec="ontology">Ontoloji <span class="nav-count" id="tocOntCount">356</span></button>
         <button class="nav-pill" data-sec="codata">CODATA <span class="nav-count" id="tocNistCount">355</span></button>
         <button class="nav-pill" data-sec="materials">Malzemeler <span class="nav-count" id="tocMatCount">30</span></button>
         <button class="nav-pill" data-sec="mcp">MCP <span class="nav-count">15</span></button>
@@ -61,7 +61,7 @@
           <div>
             <div class="eyebrow-row">
               <span class="live-dot" aria-hidden="true"></span>
-              <span>v0.2.0 · Rust <code>#![forbid(unsafe_code)]</code> · AGPL-3.0 / Ticari</span>
+              <span>v0.2.1 · Rust <code>#![forbid(unsafe_code)]</code> · AGPL-3.0 / Ticari</span>
             </div>
 
             <h1 class="hero-title">
@@ -82,14 +82,14 @@
                 <span class="mono" style="font-size:0.69rem;color:var(--text-dim);">anonim · şifresiz</span>
               </div>
               <div class="quickrun-cmd">
-                <code id="heroQuickCmd">docker run -i --rm --read-only --cap-drop=ALL --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.0</code>
+                <code id="heroQuickCmd">docker run -i --rm --read-only --cap-drop=ALL --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.1</code>
                 <button id="heroCopyBtn" class="mini-btn">Kopyala</button>
               </div>
             </div>
 
             <div class="cta-row">
               <button class="btn primary" data-nav="sandbox">Z⁷ Motorunu Aç</button>
-              <a class="btn" href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.0" target="_blank" rel="noopener">v0.2.0 İndir</a>
+              <a class="btn" href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.1" target="_blank" rel="noopener">v0.2.1 İndir</a>
               <button class="btn" id="heroCmdBtn">967 Kayıtta Ara <kbd class="hide-mobile">Ctrl K</kbd></button>
             </div>
           </div>
@@ -137,7 +137,7 @@
             <div class="metric-sub">release · cargo clippy 0 uyarı</div>
           </div>
           <div class="metric-cell">
-            <div class="metric-val" id="kpiLawsSym">214 / 353</div>
+            <div class="metric-val" id="kpiLawsSym">217 / 356</div>
             <div class="metric-label">Kanonik Yasa &amp; Z⁷ Sembolü</div>
             <div class="metric-sub">27 disiplin · 18 rejim · 355 CODATA</div>
           </div>
@@ -179,8 +179,8 @@
       <div id="tab-install-docker" class="tab-panel active" role="tabpanel">
         <p>Host makinede Rust veya Python kurulu olmadan, non-root <code>UID 10001</code>, salt-okunur dosya sistemi ve sıfır ağ erişimiyle doğrudan GHCR'den çalıştırın (herkese açık, <code>docker login</code> gerekmez):</p>
         <div class="code-head">
-          <span>ghcr.io/imza464-cmyk/citadel-math:0.2.0 · 26/26 kapı sertleştirilmiş konteynerde doğrulandı</span>
-          <button class="mini-btn" data-copy="docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --pids-limit=128 --memory=512m --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.0">Kopyala</button>
+          <span>ghcr.io/imza464-cmyk/citadel-math:0.2.1 · 26/26 kapı sertleştirilmiş konteynerde doğrulandı</span>
+          <button class="mini-btn" data-copy="docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --pids-limit=128 --memory=512m --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.1">Kopyala</button>
         </div>
         <pre class="code-block">docker run -i --rm \
   --read-only \
@@ -190,16 +190,16 @@
   --pids-limit=128 \
   --memory=512m \
   --network=none \
-  ghcr.io/imza464-cmyk/citadel-math:0.2.0</pre>
+  ghcr.io/imza464-cmyk/citadel-math:0.2.1</pre>
       </div>
 
       <div id="tab-install-wheel" class="tab-panel" role="tabpanel">
-        <p>1) <a href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.0" target="_blank" rel="noopener">GitHub Releases v0.2.0</a> sayfasından platform ikilisini indirip <code>PATH</code>'e veya <code>KMATH_RUST_BIN</code> değişkenine koyun. 2) Wheel paketini tek komutla kurun (SSOT veritabanları wheel içine gömülüdür):</p>
+        <p>1) <a href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.1" target="_blank" rel="noopener">GitHub Releases v0.2.1</a> sayfasından platform ikilisini indirip <code>PATH</code>'e veya <code>KMATH_RUST_BIN</code> değişkenine koyun. 2) Wheel paketini tek komutla kurun (SSOT veritabanları wheel içine gömülüdür):</p>
         <div class="code-head">
-          <span>pip · doğrudan v0.2.0 wheel kurulumu (33.6 sn temiz venv doğrulandı)</span>
-          <button class="mini-btn" data-copy="pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl">Kopyala</button>
+          <span>pip · doğrudan v0.2.1 wheel kurulumu (33.6 sn temiz venv doğrulandı)</span>
+          <button class="mini-btn" data-copy="pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl">Kopyala</button>
         </div>
-        <pre class="code-block">pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl
+        <pre class="code-block">pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl
 kmath stats &amp;&amp; kmath audit &amp;&amp; kmath rust audit</pre>
       </div>
 
@@ -279,7 +279,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
     <!-- 3. KANONİK YASALAR -->
     <section id="sec-laws" class="section">
       <h1>Kanonik Yasalar Kataloğu (<code>canonical_laws.json</code>)</h1>
-      <p>27 fizik, havacılık, gerçek zamanlı sistemler ve biyomekanik disiplinini kapsayan 214 SSOT denklemi. Her kayıt <code>dim(LHS) == dim(RHS)</code> testinden geçmiştir.</p>
+      <p>27 fizik, havacılık, gerçek zamanlı sistemler ve biyomekanik disiplinini kapsayan 217 SSOT denklemi. Her kayıt <code>dim(LHS) == dim(RHS)</code> testinden geçmiştir.</p>
 
       <div class="controls-row">
         <input id="lawSearch" class="input grow" type="search" placeholder="Yasa adı, ID, denklem veya sembol ara (kısayol: / veya Ctrl+K)...">
@@ -296,7 +296,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
     <!-- 4. Z7 SEMBOL ONTOLOJİSİ -->
     <section id="sec-ontology" class="section">
       <h1>Z⁷ Sembol Ontolojisi (<code>ONTOLOGY.json</code>)</h1>
-      <p>Kanonik yasalarda kullanılan 353 tekil sembolün SI boyut vektörü <code>[M, L, T, I, Θ, N, J]</code> ve yasa grafı bağlantıları.</p>
+      <p>Kanonik yasalarda kullanılan 356 tekil sembolün SI boyut vektörü <code>[M, L, T, I, Θ, N, J]</code> ve yasa grafı bağlantıları.</p>
 
       <div class="controls-row">
         <input id="ontSearch" class="input grow" type="search" placeholder="Sembol, boyut adı veya yasa ID ara...">
@@ -424,7 +424,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
       <h2 id="mcp-config">İstemci Yapılandırması (Claude Desktop / Cursor / Windsurf)</h2>
       <div class="tab-bar" role="tablist" data-tab-group="mcpcfg">
         <button class="tab-btn active" role="tab" aria-selected="true" data-tab="mcp-docker">Docker / GHCR</button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="mcp-uvx">uvx (v0.2.0 Wheel)</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="mcp-uvx">uvx (v0.2.1 Wheel)</button>
         <button class="tab-btn" role="tab" aria-selected="false" data-tab="mcp-local">Yerel Python</button>
       </div>
 
@@ -443,7 +443,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
         "--cap-drop=ALL",
         "--security-opt=no-new-privileges:true",
         "--network=none",
-        "ghcr.io/imza464-cmyk/citadel-math:0.2.0"
+        "ghcr.io/imza464-cmyk/citadel-math:0.2.1"
       ]
     }
   }
@@ -452,7 +452,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
 
       <div id="tab-mcp-uvx" class="tab-panel" role="tabpanel">
         <div class="code-head">
-          <span>mcp_config.json · uvx + v0.2.0 Wheel + Hazır İkili</span>
+          <span>mcp_config.json · uvx + v0.2.1 Wheel + Hazır İkili</span>
           <button class="mini-btn" data-copy-target="mcpCfgUvx">Kopyala</button>
         </div>
         <pre id="mcpCfgUvx" class="code-block">{
@@ -461,7 +461,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
       "command": "uvx",
       "args": [
         "--from",
-        "https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl",
+        "https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl",
         "kmath-mcp"
       ],
       "env": {
@@ -494,9 +494,9 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
       </div>
     </section>
 
-    <!-- 8. DOĞRULAMA, HIZ, SORUN GİDERME & v0.2.0 İNDİRME -->
+    <!-- 8. DOĞRULAMA, HIZ, SORUN GİDERME & v0.2.1 İNDİRME -->
     <section id="sec-benchmarks" class="section">
-      <h1>Doğrulama, Performans, Sorun Giderme &amp; v0.2.0 İndirme</h1>
+      <h1>Doğrulama, Performans, Sorun Giderme &amp; v0.2.1 İndirme</h1>
 
       <div class="chart-card">
         <div class="chart-head">
@@ -546,29 +546,29 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
         </div>
 
         <div class="panel-card">
-          <h3>v0.2.0 Yayın Varlıkları (Anonim / Şifresiz)</h3>
+          <h3>v0.2.1 Yayın Varlıkları (Anonim / Şifresiz)</h3>
           <ul class="plain-list mono" style="font-size:0.79rem;margin-bottom:10px;">
-            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/citadel_math_core-windows-x86_64.exe" target="_blank" rel="noopener">citadel_math_core-windows-x86_64.exe</a> (1.14 MB)</li>
-            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/citadel_math_core-linux-x86_64" target="_blank" rel="noopener">citadel_math_core-linux-x86_64</a> (1.49 MB)</li>
-            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl" target="_blank" rel="noopener">kmath_mcp-0.2.0-py3-none-any.whl</a> (140.6 KB)</li>
-            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0.tar.gz" target="_blank" rel="noopener">kmath_mcp-0.2.0.tar.gz</a> (277.7 KB)</li>
-            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/SHA256SUMS.txt" target="_blank" rel="noopener">SHA256SUMS.txt</a> (388 B)</li>
+            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/citadel_math_core-windows-x86_64.exe" target="_blank" rel="noopener">citadel_math_core-windows-x86_64.exe</a> (1.14 MB)</li>
+            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/citadel_math_core-linux-x86_64" target="_blank" rel="noopener">citadel_math_core-linux-x86_64</a> (1.49 MB)</li>
+            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl" target="_blank" rel="noopener">kmath_mcp-0.2.1-py3-none-any.whl</a> (140.6 KB)</li>
+            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1.tar.gz" target="_blank" rel="noopener">kmath_mcp-0.2.1.tar.gz</a> (277.7 KB)</li>
+            <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/SHA256SUMS.txt" target="_blank" rel="noopener">SHA256SUMS.txt</a> (388 B)</li>
           </ul>
           <div class="code-head">
             <span>GHCR İmajı (HTTP 200 public)</span>
-            <button class="mini-btn" data-copy="docker pull ghcr.io/imza464-cmyk/citadel-math:0.2.0">Kopyala</button>
+            <button class="mini-btn" data-copy="docker pull ghcr.io/imza464-cmyk/citadel-math:0.2.1">Kopyala</button>
           </div>
-          <pre class="code-block" style="margin-bottom:0;">ghcr.io/imza464-cmyk/citadel-math:0.2.0</pre>
+          <pre class="code-block" style="margin-bottom:0;">ghcr.io/imza464-cmyk/citadel-math:0.2.1</pre>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
-    <div class="mono">Citadel-Math v0.2.0 · © 2026 Mekserina Karaosmanoğlu · GNU AGPL-3.0-only OR Commercial License</div>
+    <div class="mono">Citadel-Math v0.2.1 · © 2026 Mekserina Karaosmanoğlu · GNU AGPL-3.0-only OR Commercial License</div>
     <div class="footer-links">
       <a href="https://github.com/imza464-cmyk/citadel-math" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.0" target="_blank" rel="noopener">Releases</a>
+      <a href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.1" target="_blank" rel="noopener">Releases</a>
       <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING</a>
       <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/SECURITY.md" target="_blank" rel="noopener">SECURITY</a>
       <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/LICENSE" target="_blank" rel="noopener">AGPL-3.0</a>
@@ -580,7 +580,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
   <dialog id="cmdPalette" class="cmd-dialog" aria-label="SSOT Küresel Arama Paleti">
     <div class="cmd-input-row">
       <span class="mono" style="color:var(--accent);font-weight:700;">⌘</span>
-      <input id="cmdInput" class="cmd-input" type="search" placeholder="214 yasa, 353 sembol, 355 CODATA, 30 malzeme veya 15 MCP aracında ara…" autocomplete="off" spellcheck="false">
+      <input id="cmdInput" class="cmd-input" type="search" placeholder="217 yasa, 356 sembol, 355 CODATA, 30 malzeme veya 15 MCP aracında ara…" autocomplete="off" spellcheck="false">
       <kbd>ESC</kbd>
     </div>
     <div id="cmdResults" class="cmd-results" role="listbox"></div>
