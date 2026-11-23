@@ -63,12 +63,9 @@ Choose the workflow that fits your environment — **Rust is NOT required** if y
    ```
 
 ### Option B — Hardened Docker Container (Zero Host Rust/Python Dependencies)
-The multi-stage [`Dockerfile`](./Dockerfile) compiles `citadel_math_core`, strips it, and runs the Python MCP server as **non-root UID `10001`** with a Python-native `HEALTHCHECK` and exec-form `ENTRYPOINT`.
+Pre-built multi-stage images are published automatically to **GitHub Container Registry (GHCR)** (`ghcr.io/imza464-cmyk/citadel-math`), compiled from [`Dockerfile`](./Dockerfile) and verified under all 26 audit gates as **non-root UID `10001`** with a Python-native `HEALTHCHECK` and exec-form `ENTRYPOINT`.
 ```bash
-# Build once (or use docker compose build)
-docker build -t citadel-math:0.1.0 .
-
-# Run hardened stdio MCP server (read-only rootfs, zero capabilities, zero network)
+# Run directly from GHCR with zero local build (read-only rootfs, zero capabilities, zero network)
 docker run -i --rm \
   --read-only \
   --tmpfs /tmp:size=64M,noexec,nosuid \
@@ -77,7 +74,10 @@ docker run -i --rm \
   --pids-limit=128 \
   --memory=512m \
   --network=none \
-  citadel-math:0.1.0
+  ghcr.io/imza464-cmyk/citadel-math:0.2.0
+
+# Or build locally from source
+docker build -t citadel-math:0.2.0 .
 ```
 See [`docker-compose.yml`](./docker-compose.yml) for the declarative hardened service definition. To attach Docker directly in Claude Desktop / Cursor:
 ```json
@@ -91,7 +91,7 @@ See [`docker-compose.yml`](./docker-compose.yml) for the declarative hardened se
         "--cap-drop=ALL",
         "--security-opt=no-new-privileges:true",
         "--network=none",
-        "citadel-math:0.1.0"
+        "ghcr.io/imza464-cmyk/citadel-math:0.2.0"
       ]
     }
   }

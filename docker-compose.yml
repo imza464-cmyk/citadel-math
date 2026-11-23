@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: citadel-math:0.1.0
+    image: ghcr.io/imza464-cmyk/citadel-math:0.2.0
     stdin_open: true
     tty: false
     read_only: true

@@ -1,4 +1,4 @@
-name: Release Binaries
+name: Release Binaries, Python Wheel & GHCR Image
 
 on:
   push:
@@ -7,17 +7,17 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "Existing release tag to build and attach binaries to (e.g. v0.1.0)"
+        description: "Existing release tag to build and attach assets to (e.g. v0.2.0)"
         required: true
-        default: "v0.1.0"
+        default: "v0.2.0"
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  build:
-    name: Build (${{ matrix.target_name }})
+  build-binaries:
+    name: Build Rust Binary (${{ matrix.target_name }})
     strategy:
       fail-fast: false
       matrix:
@@ -41,22 +41,107 @@ jobs:
       - name: Build release binary
         run: cargo build --release --manifest-path citadel_math_core/Cargo.toml
 
+      - name: Smoke-test 16-gate Rust audit on release binary
+        shell: bash
+        run: ./"${{ matrix.bin_src }}" audit
+
       - name: Prepare release artifact
         shell: bash
         run: |
           mkdir -p dist
           cp "${{ matrix.bin_src }}" "dist/${{ matrix.asset_name }}"
 
-      - name: Upload artifact
+      - name: Upload binary artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.asset_name }}
           path: dist/${{ matrix.asset_name }}
 
-  publish:
-    name: Publish Release Assets & SHA256SUMS
-    needs: build
+  build-python:
+    name: Build & Verify Python Wheel / Sdist
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build wheel and sdist (pyproject.toml)
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build --outdir dist
+
+      - name: Verify built wheel in isolated install
+        run: |
+          python -m venv /tmp/wheel-venv
+          /tmp/wheel-venv/bin/pip install dist/*.whl
+          /tmp/wheel-venv/bin/kmath stats
+          /tmp/wheel-venv/bin/python -c "import json, kmath_mcp; r=json.loads(kmath_mcp.kmath_constant('c')); assert r['status']=='ok'"
+
+      - name: Upload Python distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/*
+
+  publish-ghcr:
+    name: Build, Harden-Test & Push GHCR Container
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build container image locally for hardened verification
+        run: docker buildx build --load -t citadel-math:smoke .
+
+      - name: Smoke-test 26 audit gates inside hardened UID 10001 read-only container
+        run: |
+          docker run --rm \
+            --read-only \
+            --tmpfs /tmp:size=64M,noexec,nosuid \
+            --cap-drop=ALL \
+            --security-opt=no-new-privileges:true \
+            --pids-limit=128 \
+            --memory=512m \
+            --network=none \
+            --entrypoint python \
+            citadel-math:smoke \
+            -c "import json, kmath_mcp; r=json.loads(kmath_mcp.kmath_audit()); assert r['status']=='ok', r; print('DOCKER_HARDENED_26_GATES_OK')"
+
+      - name: Tag and push verified image to GHCR
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          IMAGE="ghcr.io/$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')"
+          SEMVER="${RELEASE_TAG#v}"
+          docker tag citadel-math:smoke "${IMAGE}:${SEMVER}"
+          docker tag citadel-math:smoke "${IMAGE}:latest"
+          docker push "${IMAGE}:${SEMVER}"
+          docker push "${IMAGE}:latest"
+          echo "Published ${IMAGE}:${SEMVER} and ${IMAGE}:latest"
+
+  publish-release:
+    name: Publish GitHub Release & SHA256SUMS
+    needs: [build-binaries, build-python, publish-ghcr]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download all release artifacts
         uses: actions/download-artifact@v4
@@ -67,10 +152,10 @@ jobs:
       - name: Generate SHA256SUMS.txt
         working-directory: release-assets
         run: |
-          sha256sum citadel_math_core-* > SHA256SUMS.txt
+          sha256sum citadel_math_core-* kmath_mcp-* > SHA256SUMS.txt
           cat SHA256SUMS.txt
 
-      - name: Upload binaries and checksums to GitHub Release
+      - name: Upload binaries, Python wheel/sdist & checksums to GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
@@ -81,4 +166,23 @@ jobs:
           gh release upload "$RELEASE_TAG" --repo "${{ github.repository }}" --clobber \
             release-assets/citadel_math_core-linux-x86_64 \
             release-assets/citadel_math_core-windows-x86_64.exe \
+            release-assets/kmath_mcp-*.whl \
+            release-assets/kmath_mcp-*.tar.gz \
             release-assets/SHA256SUMS.txt
+
+  publish-pypi:
+    name: Publish to PyPI (OIDC Trusted Publisher — opt-in)
+    needs: [build-python, publish-release]
+    if: startsWith(github.ref, 'refs/tags/v') && vars.ENABLE_PYPI_PUBLISH == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download Python distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dist
+          path: dist
+
+      - name: Publish distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

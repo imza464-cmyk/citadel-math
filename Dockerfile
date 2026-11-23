@@ -3,7 +3,7 @@
 # Dual-licensed under GNU AGPL-3.0-only OR Commercial License.
 
 # ---------- Stage 1: Build Pure-Rust (#![forbid(unsafe_code)]) Core ----------
-FROM rust:1.85-slim-bookworm AS rust-builder
+FROM rust:1-slim-bookworm AS rust-builder
 
 WORKDIR /build
 COPY citadel_math_core ./citadel_math_core
@@ -18,6 +18,11 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 
 # ---------- Stage 2: Minimal Non-Root Python MCP Runtime ----------
 FROM python:3.12-slim-bookworm AS runtime
+
+LABEL org.opencontainers.image.title="Citadel-Math MCP Server" \
+      org.opencontainers.image.description="Deterministic Z^7 dimensional shield, checked-i64 proof kernel, IEEE 1788-2015 Interval64, and 15-tool offline MCP server" \
+      org.opencontainers.image.source="https://github.com/imza464-cmyk/citadel-math" \
+      org.opencontainers.image.licenses="AGPL-3.0-only"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
