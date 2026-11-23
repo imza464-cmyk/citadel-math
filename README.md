@@ -30,6 +30,23 @@ flowchart LR
 
 ---
 
+## Who Is Citadel-Math For? / Kimlerin İşine Yarar?
+
+Citadel-Math is positioned as an **offline, deterministic physics, unit, and interval guardrail (MCP)** — not a niche rocket toy. Here are the five concrete groups that get immediate engineering value from it:
+
+| Target Group / Hedef Kitle | Problem It Solves / Çözdüğü Gerçek Sorun | Core Tools / Öne Çıkan Araçlar |
+| :--- | :--- | :--- |
+| **1. AI Agent & Engineering Copilot Teams**<br>*Yapay Zekâ Ajanı & Mühendislik Copilot Ekipleri* | Stops LLMs (Claude, Cursor, Windsurf, internal agents) from silently leaking unit scale bugs (`kN` vs `N`), dropped singularities (`x != 1`), wrong physical regimes (`v > 0.1c`), or floating-point drift into generated code (~5 ms local check). | `kmath_dimension_check`, `kmath_prove_identity`, `kmath_interval_eval`, `kmath_regime_check`, `kmath_physical_bounds_check` |
+| **2. Aerospace, Defense, NewSpace & Student Rocket/UAV Teams**<br>*Havacılık, Savunma & Öğrenci Roket/İHA Takımları (TEKNOFEST / USLI)* | Runs Phase-A conceptual screening in milliseconds before opening heavy FEA/CFD suites: alloy selection, cylindrical shell buckling (NASA SP-8007), ablative PICA-X TPS sizing, RK4 ascent & Pareto trade studies. | `kmath_materials`, `kmath_stress_check`, `kmath_simulate_trajectory`, `kmath_inverse_design`, `kmath_pareto_front` |
+| **3. Embedded, Robotics & Autonomous Systems Engineers (Rust/C++)**<br>*Gömülü Sistem, Robotik & Otonom Araç Mühendisleri* | Computes mathematically guaranteed worst-case bounds over sensor/manufacturing tolerances (IEEE 1788-2015 outward-rounded intervals) and generates domain-guarded, zero-panic (`#![forbid(unsafe_code)]`) Rust functions. | `kmath_interval_eval`, `kmath_synthesize`, `kmath_solve_for`, `kmath_constant` |
+| **4. Physics / Engineering Researchers & Experimental Labs**<br>*Akademisyenler & Deneysel Araştırma Laboratuvarları* | Derives exact dimensionless similarity groups ($\Pi$-groups like Reynolds, Froude, Taylor-Sedov) from raw variables over exact $\mathbb{Z}^7$ integer nullspace, calibrates scaling constants from lab samples, and extracts exact Pareto knees. | `kmath_buckingham_pi`, `kmath_pareto_front`, `kmath_dimension_check`, `kmath_constant` |
+| **5. Air-Gapped & Regulated Enterprises**<br>*Gizlilik Zorunlu / İnternetsiz (Air-Gapped) Kurumlar* | Defense, aerospace, automotive, and energy organizations that cannot send proprietary formulas or designs to cloud solvers (Wolfram/cloud MATLAB). Runs 100% locally inside `--network=none --read-only` Docker with dual **AGPL-3.0 / Commercial** licensing. | Full 15-tool offline Docker / GHCR container (`kmath_audit` 26 gates) |
+
+> **Honest Boundary — Who It Is NOT For / Kimler İçin Değildir?**  
+> Citadel-Math is **not** a replacement for certified 3D FEA/CFD production sign-off tools (`ANSYS`, `Abaqus`, `OpenFOAM`, `GMAT`) or interactive formal theorem provers (`Lean 4`, `Coq`, `Mathematica`). It is the fast, deterministic **pre-screening filter and AI safety guardrail** that sits *in front* of them.
+
+---
+
 ## Quick Start / Hızlı Kurulum (3 Yol)
 
 Choose the workflow that fits your environment — **Rust is NOT required** if you use pre-built release binaries or Docker.

@@ -90,7 +90,7 @@
             <div class="cta-row">
               <button class="btn primary" data-nav="sandbox">Z⁷ Motorunu Aç</button>
               <a class="btn" href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.1" target="_blank" rel="noopener">v0.2.1 İndir</a>
-              <button class="btn" id="heroCmdBtn">967 Kayıtta Ara <kbd class="hide-mobile">Ctrl K</kbd></button>
+              <button class="btn" id="heroCmdBtn">973 Kayıtta Ara <kbd class="hide-mobile">Ctrl K</kbd></button>
             </div>
           </div>
 
@@ -156,6 +156,92 @@
             <div class="metric-label">Tekil Derlenmiş İkili (Win)</div>
             <div class="metric-sub">1.49 MB Linux · SSOT gömülü</div>
           </div>
+        </div>
+      </div>
+
+      <!-- WHO IS CITADEL-MATH FOR? (TARGET AUDIENCE MATRIX) -->
+      <div class="audience-section">
+        <div class="section-head-row">
+          <div>
+            <h2 id="ov-audience" style="margin-top:8px;">Kimlerin İşine Yarar?</h2>
+            <p style="margin-bottom:0;">Citadel-Math yalnızca bir uzay simülatörü değil; <strong>yapay zekâ ajanları ve mühendislik ekipleri için çevrimdışı, deterministik fizik, birim ve aralık güvenlik duvarıdır</strong>.</p>
+          </div>
+          <button class="mini-btn" data-nav="mcp">15 MCP Aracını İncele →</button>
+        </div>
+
+        <div class="audience-grid">
+          <article class="audience-card featured">
+            <div class="audience-top">
+              <span class="tag accent">01 · EN BÜYÜK PAZAR</span>
+              <span class="mono audience-latency">~5 ms çevrimdışı</span>
+            </div>
+            <h3>Yapay Zekâ Ajanı &amp; Mühendislik Copilot Ekipleri</h3>
+            <p>Claude, Cursor, Windsurf veya kurum içi AI ajanlarıyla mühendislik kodu ve hesabı üreten ekipler. LLM'lerin birim kayması (<code>kN</code> vs <code>N</code>), kayıp payda tekilliği (<code>x != 1</code>), rejim ihlali ve yuvarlama halüsinasyonlarını üretim öncesi deterministik olarak durdurur.</p>
+            <div class="audience-tools">
+              <code>kmath_dimension_check</code>
+              <code>kmath_prove_identity</code>
+              <code>kmath_interval_eval</code>
+              <code>kmath_regime_check</code>
+            </div>
+          </article>
+
+          <article class="audience-card">
+            <div class="audience-top">
+              <span class="tag ok">02 · FAZ-A ÖN ELEME</span>
+            </div>
+            <h3>Havacılık, Savunma, NewSpace &amp; Öğrenci Roket/İHA Takımları</h3>
+            <p>TEKNOFEST, Spaceport America Cup ve küçük uydu/fırlatıcı ekipleri. Ağır FEA/CFD yazılımlarını açmadan saniyeler içinde alaşım seçimi, NASA SP-8007 burkulma, PICA-X ısı kalkanı, RK4 yörünge ve Pareto ön elemesi yapar.</p>
+            <div class="audience-tools">
+              <code>kmath_materials</code>
+              <code>kmath_stress_check</code>
+              <code>kmath_simulate_trajectory</code>
+              <code>kmath_inverse_design</code>
+            </div>
+          </article>
+
+          <article class="audience-card">
+            <div class="audience-top">
+              <span class="tag">03 · GÖMÜLÜ RUST / C++</span>
+            </div>
+            <h3>Gömülü Sistem, Robotik &amp; Otonom Araç Mühendisleri</h3>
+            <p>Sensör ve üretim toleranslarının (<code>±%2 basınç</code>, <code>±0.1 mm cidar</code>) çıktıya en kötü durum (worst-case) etkisini IEEE 1788-2015 aralıklarıyla garantiye alır; boyut ve rejim bekçili sıfır-panik Rust fonksiyonu üretir.</p>
+            <div class="audience-tools">
+              <code>kmath_interval_eval</code>
+              <code>kmath_synthesize</code>
+              <code>kmath_solve_for</code>
+              <code>kmath_constant</code>
+            </div>
+          </article>
+
+          <article class="audience-card">
+            <div class="audience-top">
+              <span class="tag">04 · AKADEMİ &amp; AR-GE</span>
+            </div>
+            <h3>Fizik / Mühendislik Araştırmacıları &amp; Deney Laboratuvarları</h3>
+            <p>Akışkanlar, ısı transferi, plazma ve biyomekanik çalışan araştırmacılar. Tam tamsayı <strong>Z<sup>7</sup></strong> çekirdek uzayından boyutsuz <strong>Π-grupları</strong> (Reynolds, Taylor-Sedov vb.) çıkarır, deney verisiyle kalibre eder ve kesin Pareto diz noktasını bulur.</p>
+            <div class="audience-tools">
+              <code>kmath_buckingham_pi</code>
+              <code>kmath_pareto_front</code>
+              <code>kmath_dimension_check</code>
+            </div>
+          </article>
+
+          <article class="audience-card">
+            <div class="audience-top">
+              <span class="tag warn">05 · AIR-GAPPED / KURUMSAL</span>
+            </div>
+            <h3>Gizlilik Zorunlu Savunma, Otomotiv &amp; Enerji Kurumları</h3>
+            <p>Formül veya tasarımlarını bulut çözücülere (Wolfram/bulut MATLAB) gönderemeyen ekipler. <code>--network=none --read-only</code> Docker konteynerinde %100 yerel çalışır; kapalı kaynak entegrasyon için <strong>Ticari Çift Lisans</strong> sunar.</p>
+            <div class="audience-tools">
+              <code>docker --network=none</code>
+              <code>kmath_audit (26 kapı)</code>
+              <code>AGPL-3.0 / Commercial</code>
+            </div>
+          </article>
+        </div>
+
+        <div class="note-box audience-boundary">
+          <strong>Dürüst Kapsam Sınırı — Kimler İçin Değildir?</strong> Nihai uçuş/üretim sertifikasyonu yapan 3B FEA/CFD yazılımlarının (<code>ANSYS</code>, <code>Abaqus</code>, <code>OpenFOAM</code>, <code>GMAT</code>) veya tam teorem ispatlayıcıların (<code>Lean 4</code>, <code>Coq</code>) yerine geçmez; bunların <em>önündeki</em> milisaniye hızlı filtre ve yapay zekâ doğrulama kalkanıdır.
         </div>
       </div>
 
@@ -586,7 +672,7 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
     <div id="cmdResults" class="cmd-results" role="listbox"></div>
     <div class="cmd-foot">
       <span><kbd>↑</kbd> <kbd>↓</kbd> gezin · <kbd>Enter</kbd> git</span>
-      <span id="cmdCount">967 SSOT kaydı indekslendi</span>
+      <span id="cmdCount">973 SSOT kaydı indekslendi</span>
     </div>
   </dialog>
 
