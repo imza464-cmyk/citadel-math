@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Citadel-Math v0.2.0 — Teknik Referans ve SSOT Kataloğu</title>
+  <meta name="description" content="Citadel-Math v0.2.0 (citadel_math_core + kmath-mcp): Z^7 SI boyutsal kalkan, checked_i64 cebirsel eşdeğerlik çekirdeği, IEEE 1788-2015 Interval64, 214 kanonik fizik yasası ve 15 araçlı çevrimdışı MCP sunucusu.">
+  <meta property="og:title" content="Citadel-Math v0.2.0 — Deterministik Matematik ve Fizik Doğrulama Motoru">
+  <meta property="og:description" content="Saf Rust (#![forbid(unsafe_code)]) + Python/SymPy 15 araçlı MCP sunucusu · AGPL-3.0 + Commercial · GHCR Docker &amp; wheel/uvx kurulumu.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://imza464-cmyk.github.io/citadel-math/">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230d1117'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='monospace' font-weight='700' font-size='15' fill='%2358a6ff'%3EZ7%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">İçeriğe geç</a>
+
+  <div class="mobile-bar">
+    <strong>citadel-math v0.2.0</strong>
+    <button id="menuToggle" class="theme-btn" aria-expanded="false" aria-controls="sidebar">Menü</button>
+  </div>
+
+  <div class="layout">
+    <aside id="sidebar" class="sidebar" aria-label="İçindekiler">
+      <div class="sidebar-title">
+        <a href="#overview" data-nav="overview">citadel-math</a>
+        <div class="sidebar-sub">v0.2.0 · AGPL-3.0 / Commercial</div>
+      </div>
+
+      <div class="toc-heading">El Kitabı</div>
+      <ul class="toc-list">
+        <li><button class="toc-btn active" data-sec="overview"><span>1. Genel Bakış &amp; Kurulum</span></button></li>
+        <li><button class="toc-btn" data-sec="sandbox"><span>2. Z⁷ Boyut Önizleme</span><span class="toc-count">JS</span></button></li>
+      </ul>
+
+      <div class="toc-heading">SSOT Veritabanları</div>
+      <ul class="toc-list">
+        <li><button class="toc-btn" data-sec="laws"><span>3. Kanonik Yasalar</span><span class="toc-count" id="tocLawCount">214</span></button></li>
+        <li><button class="toc-btn" data-sec="ontology"><span>4. Z⁷ Sembol Ontolojisi</span><span class="toc-count" id="tocOntCount">353</span></button></li>
+        <li><button class="toc-btn" data-sec="codata"><span>5. NIST CODATA 2022</span><span class="toc-count" id="tocNistCount">355</span></button></li>
+        <li><button class="toc-btn" data-sec="materials"><span>6. Malzeme Tablosu</span><span class="toc-count" id="tocMatCount">30</span></button></li>
+      </ul>
+
+      <div class="toc-heading">Entegrasyon</div>
+      <ul class="toc-list">
+        <li><button class="toc-btn" data-sec="mcp"><span>7. MCP Sunucusu</span><span class="toc-count">15</span></button></li>
+        <li><button class="toc-btn" data-sec="benchmarks"><span>8. Doğrulama, Hız &amp; İndirme</span></button></li>
+      </ul>
+
+      <div class="sidebar-foot">
+        <div class="sidebar-links">
+          <a href="https://github.com/imza464-cmyk/citadel-math" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.0" target="_blank" rel="noopener">v0.2.0</a>
+          <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">PR Rehberi</a>
+          <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/SECURITY.md" target="_blank" rel="noopener">SECURITY</a>
+          <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/LICENSE" target="_blank" rel="noopener">AGPL-3.0</a>
+          <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/COMMERCIAL_LICENSE.md" target="_blank" rel="noopener">Ticari</a>
+        </div>
+        <button id="themeToggle" class="theme-btn">Koyu tema</button>
+      </div>
+    </aside>
+
+    <main id="mainContent" class="content" tabindex="-1">
+      <!-- 1. GENEL BAKIŞ -->
+      <section id="sec-overview" class="section active">
+        <h1>Citadel-Math Teknik Referans (<code>v0.2.0</code>)</h1>
+        <p class="lead">
+          <code>citadel_math_core</code> (saf Rust, <code>#![forbid(unsafe_code)]</code>) sayısal/cebirsel doğrulama çekirdeği ile çevrimdışı 15 araçlı Python/SymPy MCP sunucusunun (<code>kmath-mcp</code>) tekil kaynaklı (SSOT) referans el kitabı.
+        </p>
+
+        <table class="spec-table">
+          <tbody>
+            <tr>
+              <th>Çekirdek / MCP Katmanı</th>
+              <td><code>citadel_math_core</code> (Rust 2021, <code>#![forbid(unsafe_code)]</code>, 1.14–1.49 MB tekil ikili) + <code>kmath_mcp.py</code> (Python + SymPy, sıfır <code>eval</code>/<code>sympify</code>)</td>
+            </tr>
+            <tr>
+              <th>SSOT Kapsamı</th>
+              <td id="specCounts">214 kanonik yasa · 353 Z⁷ sembolü · 355 NIST CODATA 2022 sabiti · 30 yapısal/TPS malzemesi · 18 fiziksel rejim</td>
+            </tr>
+            <tr>
+              <th>Dağıtım Kanalları</th>
+              <td>GHCR sertleştirilmiş konteyner (<code>ghcr.io/imza464-cmyk/citadel-math:0.2.0</code>) · Python <code>.whl</code> / <code>uvx</code> · Linux &amp; Windows hazır ikililer + <code>SHA256SUMS.txt</code></td>
+            </tr>
+            <tr>
+              <th>CI &amp; Test Durumu</th>
+              <td>Linux &amp; Windows GitHub Actions · <code>cargo clippy -D warnings</code> (0 uyarı) · 33 Rust testi · 26 denetim kapısı · 10 MCP güvenlik/paket testi</td>
+            </tr>
+            <tr>
+              <th>Çift Lisans (Dual License)</th>
+              <td>
+                <strong>Açık Kaynak:</strong> <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/LICENSE" target="_blank" rel="noopener">GNU AGPL-3.0-only</a> (topluluk PR'ları serbest, bkz. <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md</a>) ·
+                <strong>Kapalı Kaynak / Ticari SaaS:</strong> <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/COMMERCIAL_LICENSE.md" target="_blank" rel="noopener">Commercial License</a>.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 id="ov-install">1.1. Hızlı Kurulum (3 Yol — Rust Derleyicisi Şart Değil)</h2>
+        <div class="tab-bar" role="tablist" data-tab-group="install">
+          <button class="tab-btn active" role="tab" aria-selected="true" data-tab="install-docker">Docker / GHCR (1 Komut)</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-tab="install-wheel">Wheel / uvx (Rust &amp; Git Yok)</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-tab="install-source">Kaynaktan Derleme</button>
+        </div>
+
+        <div id="tab-install-docker" class="tab-panel active" role="tabpanel">
+          <p>Host makinede Rust veya Python kurulu olmadan, non-root <code>UID 10001</code>, salt-okunur dosya sistemi ve sıfır ağ erişimiyle doğrudan GHCR'den çalıştırın (herkese açık, <code>docker login</code> gerekmez):</p>
+          <div class="code-head">
+            <span>bash / powershell · ghcr.io/imza464-cmyk/citadel-math:0.2.0</span>
+            <button class="mini-btn" data-copy="docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --pids-limit=128 --memory=512m --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.0">Kopyala</button>
+          </div>
+          <pre class="code-block">docker run -i --rm \
+  --read-only \
+  --tmpfs /tmp:size=64M,noexec,nosuid \
+  --cap-drop=ALL \
+  --security-opt=no-new-privileges:true \
+  --pids-limit=128 \
+  --memory=512m \
+  --network=none \
+  ghcr.io/imza464-cmyk/citadel-math:0.2.0</pre>
+        </div>
+
+        <div id="tab-install-wheel" class="tab-panel" role="tabpanel">
+          <p>1) <a href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.0" target="_blank" rel="noopener">GitHub Releases v0.2.0</a> sayfasından platform ikilisini (<code>citadel_math_core-windows-x86_64.exe</code> veya <code>citadel_math_core-linux-x86_64</code>) indirip <code>PATH</code>'e (veya <code>KMATH_RUST_BIN</code> değişkenine) koyun.<br>2) Wheel paketini tek komutla kurun (<code>database/</code>, <code>data/</code> ve <code>AGENTS.md</code> wheel içine gömülüdür):</p>
+          <div class="code-head">
+            <span>pip · doğrudan v0.2.0 wheel kurulumu</span>
+            <button class="mini-btn" data-copy="pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl">Kopyala</button>
+          </div>
+          <pre class="code-block">pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl
+kmath stats
+kmath audit
+kmath rust audit</pre>
+        </div>
+
+        <div id="tab-install-source" class="tab-panel" role="tabpanel">
+          <p>Katkıcılar ve yerel geliştirme için kaynaktan derleme ve tüm 26 kapı + güvenlik test paketi:</p>
+          <div class="code-head">
+            <span>cargo + pip editable install</span>
+            <button class="mini-btn" data-copy="git clone https://github.com/imza464-cmyk/citadel-math.git &amp;&amp; cd citadel-math &amp;&amp; cargo build --release --manifest-path citadel_math_core/Cargo.toml &amp;&amp; pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit">Kopyala</button>
+          </div>
+          <pre class="code-block">git clone https://github.com/imza464-cmyk/citadel-math.git
+cd citadel-math
+cargo test --manifest-path citadel_math_core/Cargo.toml
+cargo build --release --manifest-path citadel_math_core/Cargo.toml
+pip install -e .
+kmath audit &amp;&amp; kmath rust audit &amp;&amp; python -m unittest discover -s tests -v</pre>
+        </div>
+
+        <h2 id="ov-arch">1.2. Mimari ve Veri Akışı</h2>
+        <pre class="code-block">LLM / MCP İstemcisi (Claude, Cursor, Windsurf, Antigravity)
+       │  JSON-RPC (stdio, çevrimdışı)
+       ▼
+kmath_mcp.py (Python + SymPy · OPENBLAS_NUM_THREADS=1)
+  ├── safe_parse_math_expr(): ast.parse(mode="eval") beyaz-listesi (0 eval / 0 sympify)
+  ├── _resolve_data_file(): repo yolu -&gt; wheel engine/_ssot_data/ otomatik geri-düşüm
+  └── resolve_rust_bin(): KMATH_RUST_BIN -&gt; target/release -&gt; target/debug -&gt; bin/ -&gt; PATH (abspath)
+       │
+       ├──► database/ &amp; data/ (Salt-okunur SSOT JSON: 214 yasa, 353 sembol, 355 CODATA)
+       └──► citadel_math_core (Pure Rust · #![forbid(unsafe_code)] · shell=False alt süreç)
+              ├── dimensions.rs      Z^7 SI boyut kafesi &amp; ScaledUnit
+              ├── proof_kernel.rs    checked_i64 PolyZ / MultiPolyZ + GuardedPoly
+              ├── interval.rs        IEEE 1788-2015 0/1-ULP Interval64 + Dual64
+              ├── buckingham.rs      Rat128 Gauss-Jordan Z^7 çekirdek uzayı
+              ├── simulator.rs       RK4 / Dormand-Prince RK4(5) + USSA-1976
+              ├── astrodynamics.rs   WGS84 J2 seküler presesyon &amp; Lambert çözücüsü
+              └── materials.rs / cad.rs  NASA SP-8007 burkulma, PICA-X TPS &amp; DXF/SVG</pre>
+
+        <h2 id="ov-scenario">1.3. Uçtan Uca 5 Adımlı Ajan Senaryosu (Canlı Doğrulanmış)</h2>
+        <p>Bir yapay zekâ ajanının <strong>Phase-A Kriyojenik Al-Li 2195 LOX Tankını</strong> (<code>45 t</code>, <code>4.5 G</code>, <code>q_max = 35 kPa</code>, <code>r = 1.8 m</code>, <code>L = 14 m</code>, <code>t = 5.0 mm</code>, <code>P = 4.0 bar</code>, <code>v = 2400 m/s</code>) 5 aracı zincirleyerek denetlemesi — tüm JSON çıktıları canlı <code>kmath_mcp.py</code> + <code>citadel_math_core</code> çalıştırılarak kaydedilmiştir:</p>
+
+        <div id="scenarioStepper" class="stepper-bar" role="tablist" aria-label="5 Adımlı Ajan Senaryosu"></div>
+        <div id="scenarioCard" class="step-card"></div>
+
+        <h3>Tekil Örnek — Payda tekilliğini yutan sadeleştirmenin reddedilmesi</h3>
+        <pre class="code-block">&gt; kmath_prove_identity("(x^2 - 1) / (x - 1)", "x + 1")
+
+{
+  "lhs_domain_guards": ["(x - 1) != 0"],
+  "rhs_domain_guards": [],
+  "proven_identical": false,
+  "reason": "Tanım kümesi (yan koşul) eşitsizliği! Yan koşul yutan sadeleştirme reddedildi.",
+  "status": "ok"
+}</pre>
+
+        <h2 id="ov-scope">1.4. Kapsam ve Bilinen Sınırlar</h2>
+        <ul class="plain-list">
+          <li><strong>Konumlandırma:</strong> LLM destekli mühendislik akışlarında birim, payda tekilliği ve yuvarlama hatası yakalayan deterministik yardımcı doğrulama katmanıdır. <code>SymPy</code>, <code>SciPy</code>, <code>nalgebra</code>, <code>uom</code>, <code>GMAT</code> veya sertifikalı 3B FEA/CFD yazılımlarının yerini alma iddiası taşımaz.</li>
+          <li><strong>Cebirsel Eşdeğerlik (<code>PolyZ</code> / <code>MultiPolyZ</code>):</strong> Taşma korumalı <code>checked_i64</code> tamsayı polinom halkasında çalışır; Lean veya Coq gibi genel bir teorem ispatlayıcı değildir.</li>
+          <li><strong>Yörünge ve Yapısal Analiz:</strong> 2B noktasal kütle RK4/RK4(5), 7 katmanlı USSA-1976, WGS84 J<sub>2</sub> / Lambert ve NASA SP-8007 kavramsal ön-boyutlandırma (Phase-A) filtresidir; 6-DoF CFD veya tam N-cisim JPL efemeris çözücüsü değildir.</li>
+        </ul>
+      </section>
+
+      <!-- 2. Z7 BOYUT ÖNİZLEME -->
+      <section id="sec-sandbox" class="section">
+        <h1>2. Z⁷ SI Boyut Kalkanı (Tarayıcı Önizlemesi)</h1>
+        <div class="note-box">
+          <strong>Şeffaflık Notu:</strong> Bu sayfadaki denetleyici <code>engine/dimensions.py</code> kurallarının ve sıfır-<code>eval</code> AST güvenlik duvarının istemci tarafı JavaScript kopyasıdır (Rust/WASM çalıştırmaz). Tam <code>PolyZ</code>, <code>Interval64</code> ve <code>RK4(5)</code> doğrulaması için yerel <code>citadel_math_core</code> ikilisini veya GHCR konteynerini kullanın.
+        </div>
+
+        <div class="preset-strip" id="sandboxPresets">
+          <button class="preset-btn" data-lhs="F" data-rhs="m * a">F = m * a</button>
+          <button class="preset-btn" data-lhs="kN" data-rhs="kg * m / s^2">kN vs kg*m/s^2 (1000x)</button>
+          <button class="preset-btn" data-lhs="P * r / t" data-rhs="Pa">P*r/t vs Pa (Sembol Çakışması)</button>
+          <button class="preset-btn" data-lhs="E" data-rhs="m * v^2 / 2">E = m*v^2/2</button>
+          <button class="preset-btn" data-lhs="delta_v" data-rhs="v_e * ln(m_0 / m_f)">Tsiolkovsky</button>
+          <button class="preset-btn" data-lhs="F" data-rhs="m + a">F = m + a (Hata)</button>
+          <button class="preset-btn sec" data-lhs="__import__('os').system('calc')" data-rhs="m">RCE / Injection Testi</button>
+        </div>
+
+        <div class="sandbox-form">
+          <div class="field">
+            <label for="lhsInput">LHS (Sol Taraf)</label>
+            <input id="lhsInput" class="input" type="text" value="kN" spellcheck="false" autocomplete="off">
+          </div>
+          <div class="eq-op">=</div>
+          <div class="field">
+            <label for="rhsInput">RHS (Sağ Taraf)</label>
+            <input id="rhsInput" class="input" type="text" value="kg * m / s^2" spellcheck="false" autocomplete="off">
+          </div>
+          <button id="runSandboxBtn" class="btn primary">Denetle</button>
+        </div>
+
+        <div id="sandboxOutput"></div>
+      </section>
+
+      <!-- 3. KANONİK YASALAR -->
+      <section id="sec-laws" class="section">
+        <h1>3. Kanonik Yasalar Kataloğu (<code>canonical_laws.json</code>)</h1>
+        <p class="lead">27 fizik, havacılık, gerçek zamanlı sistemler ve biyomekanik disiplinini kapsayan 214 SSOT denklemi. Her kayıt <code>dim(LHS) == dim(RHS)</code> testinden geçmiştir.</p>
+
+        <div class="controls-row">
+          <input id="lawSearch" class="input grow" type="search" placeholder="Yasa adı, ID, denklem veya sembol ara (kısayol: /)...">
+          <select id="lawDomain" class="select"><option value="">Tüm disiplinler</option></select>
+          <select id="lawRegime" class="select"><option value="">Tüm rejimler</option></select>
+          <button id="lawReset" class="btn">Sıfırla</button>
+        </div>
+
+        <div id="lawCountLabel" class="status-line"></div>
+        <div id="lawsList"></div>
+        <div id="lawsPager" class="pager"></div>
+      </section>
+
+      <!-- 4. ONTOLOJİ -->
+      <section id="sec-ontology" class="section">
+        <h1>4. Z⁷ Sembol Ontolojisi (<code>ONTOLOGY.json</code>)</h1>
+        <p class="lead">Kanonik yasalarda kullanılan 353 tekil sembolün SI boyut vektörü <code>[M, L, T, I, Θ, N, J]</code> ve yasa grafı bağlantıları.</p>
+
+        <div class="controls-row">
+          <input id="ontSearch" class="input grow" type="search" placeholder="Sembol, boyut adı veya yasa ID ara...">
+          <select id="ontDimFilter" class="select"><option value="">Tüm boyut kategorileri</option></select>
+          <button id="ontReset" class="btn">Sıfırla</button>
+        </div>
+
+        <div id="ontCountLabel" class="status-line"></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Sembol</th>
+                <th>Boyut</th>
+                <th>SI İfadesi</th>
+                <th>Z⁷ Vektörü</th>
+                <th>Bağlı Yasalar (Tıkla → Yasaya Git)</th>
+              </tr>
+            </thead>
+            <tbody id="ontTableBody"></tbody>
+          </table>
+        </div>
+        <div id="ontPager" class="pager"></div>
+      </section>
+
+      <!-- 5. NIST CODATA 2022 -->
+      <section id="sec-codata" class="section">
+        <h1>5. NIST CODATA 2022 Sabitleri (<code>nist_constants.json</code>)</h1>
+        <p class="lead">355 temel fiziksel sabit. Her denetim kapısında 2019 SI tam ilişkileri ve Maxwell vakum özdeşliği (μ₀·ε₀·c² = 1) sınanır.</p>
+
+        <div class="controls-row">
+          <input id="nistSearch" class="input grow" type="search" placeholder="Sabit ara (örn. speed of light, Planck, Boltzmann, electron)...">
+          <button id="nistReset" class="btn">Sıfırla</button>
+        </div>
+
+        <div id="nistCountLabel" class="status-line"></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Sabit Adı (NIST)</th>
+                <th>Değer</th>
+                <th>Birim</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="nistTableBody"></tbody>
+          </table>
+        </div>
+        <div id="nistPager" class="pager"></div>
+      </section>
+
+      <!-- 6. MALZEMELER -->
+      <section id="sec-materials" class="section">
+        <h1>6. Yapısal &amp; Termal Koruma Malzemeleri (<code>materials.json</code>)</h1>
+        <p class="lead">30 havacılık, kriyojenik, UHTC ve ablatif TPS malzemesi. Kopma uzunluğu L<sub>b</sub> = σ<sub>u</sub> / (ρ · g<sub>0</sub>) formülüyle hesaplanır.</p>
+
+        <div class="controls-row">
+          <input id="matSearch" class="input grow" type="search" placeholder="Malzeme ara (örn. PICA-X, Al-Li, Inconel, T1000G, SiC)...">
+          <select id="matCategory" class="select"><option value="">Tüm kategoriler</option></select>
+          <select id="matSort" class="select">
+            <option value="breaking_desc">Sırala: Kopma uzunluğu (km ↓)</option>
+            <option value="temp_desc">Sırala: Azami sıcaklık (K ↓)</option>
+            <option value="yield_desc">Sırala: Akma dayanımı (MPa ↓)</option>
+            <option value="modulus_desc">Sırala: Young modülü (GPa ↓)</option>
+            <option value="density_asc">Sırala: Yoğunluk (kg/m³ ↑)</option>
+          </select>
+          <button id="matReset" class="btn">Sıfırla</button>
+        </div>
+
+        <div id="matCountLabel" class="status-line"></div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Malzeme</th>
+                <th>Kategori</th>
+                <th>ρ (kg/m³)</th>
+                <th>Akma / Çekme (MPa)</th>
+                <th>E (GPa)</th>
+                <th>T_max</th>
+                <th>L_b (km)</th>
+              </tr>
+            </thead>
+            <tbody id="matTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 7. MCP SUNUCUSU -->
+      <section id="sec-mcp" class="section">
+        <h1>7. Model Context Protocol Sunucusu (<code>kmath-mcp</code>)</h1>
+        <p class="lead">Çevrimdışı çalışan 15 deterministik MCP aracı. Dış ağ isteği yapmaz; tüm giriş dizeleri sıfır-<code>eval</code> AST beyaz-listesinden geçer.</p>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Araç Adı</th>
+                <th>Yürütme Katmanı</th>
+                <th>İşlev</th>
+              </tr>
+            </thead>
+            <tbody id="mcpToolsBody"></tbody>
+          </table>
+        </div>
+
+        <h2 id="mcp-config">7.1. İstemci Yapılandırması (Claude Desktop / Cursor / Windsurf)</h2>
+        <div class="tab-bar" role="tablist" data-tab-group="mcpcfg">
+          <button class="tab-btn active" role="tab" aria-selected="true" data-tab="mcp-docker">Docker / GHCR</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-tab="mcp-uvx">uvx (v0.2.0 Wheel)</button>
+          <button class="tab-btn" role="tab" aria-selected="false" data-tab="mcp-local">Yerel Python</button>
+        </div>
+
+        <div id="tab-mcp-docker" class="tab-panel active" role="tabpanel">
+          <div class="code-head">
+            <span>mcp_config.json · Docker + GHCR (sıfır host bağımlılığı)</span>
+            <button class="mini-btn" data-copy-target="mcpCfgDocker">Kopyala</button>
+          </div>
+          <pre id="mcpCfgDocker" class="code-block">{
+  "mcpServers": {
+    "kmath": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm", "--read-only",
+        "--tmpfs", "/tmp:size=64M,noexec,nosuid",
+        "--cap-drop=ALL",
+        "--security-opt=no-new-privileges:true",
+        "--network=none",
+        "ghcr.io/imza464-cmyk/citadel-math:0.2.0"
+      ]
+    }
+  }
+}</pre>
+        </div>
+
+        <div id="tab-mcp-uvx" class="tab-panel" role="tabpanel">
+          <div class="code-head">
+            <span>mcp_config.json · uvx + v0.2.0 Wheel + Hazır İkili</span>
+            <button class="mini-btn" data-copy-target="mcpCfgUvx">Kopyala</button>
+          </div>
+          <pre id="mcpCfgUvx" class="code-block">{
+  "mcpServers": {
+    "kmath": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl",
+        "kmath-mcp"
+      ],
+      "env": {
+        "KMATH_RUST_BIN": "/ABSOLUTE/PATH/TO/citadel_math_core",
+        "OPENBLAS_NUM_THREADS": "1",
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}</pre>
+        </div>
+
+        <div id="tab-mcp-local" class="tab-panel" role="tabpanel">
+          <div class="code-head">
+            <span>mcp_config.example.json · Yerel Kaynak Kurulumu</span>
+            <button class="mini-btn" data-copy-target="mcpCfgLocal">Kopyala</button>
+          </div>
+          <pre id="mcpCfgLocal" class="code-block">{
+  "mcpServers": {
+    "kmath": {
+      "command": "python",
+      "args": ["/ABSOLUTE/PATH/TO/citadel-math/kmath_mcp.py"],
+      "env": {
+        "OPENBLAS_NUM_THREADS": "1",
+        "PYTHONUNBUFFERED": "1"
+      }
+    }
+  }
+}</pre>
+        </div>
+      </section>
+
+      <!-- 8. DOĞRULAMA, PERFORMANS, SORUN GİDERME & İNDİRME -->
+      <section id="sec-benchmarks" class="section">
+        <h1>8. Doğrulama, Performans, Sorun Giderme &amp; v0.2.0 İndirme</h1>
+
+        <h2 id="bench-table">8.1. Standart / Literatür Kıyaslama Tablosu</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Standart / Referans</th>
+                <th>Beklenen Değer</th>
+                <th>Modül</th>
+                <th>Doğrulanan Sonuç</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>NIST CODATA 2022 (μ₀·ε₀·c²)</td>
+                <td class="mono">1.0</td>
+                <td class="mono">constants.rs / kmath.py</td>
+                <td><span class="tag ok">&lt; 2e-10 PASS</span></td>
+              </tr>
+              <tr>
+                <td>USSA-1976 (0 / 11 / 47 km)</td>
+                <td class="mono">288.15 / 216.65 / 270.65 K</td>
+                <td class="mono">AtmosphereModel::state_at</td>
+                <td><span class="tag ok">&lt; 1e-3 K · a₀=340.294 m/s</span></td>
+              </tr>
+              <tr>
+                <td>WGS84 J₂ Kritik Molniya Eğimi</td>
+                <td class="mono">63.4349488° (dω/dt = 0)</td>
+                <td class="mono">J2OrbitalModel</td>
+                <td><span class="tag ok">|dω/dt| &lt; 1e-16 rad/s</span></td>
+              </tr>
+              <tr>
+                <td>WGS84 ISS LEO RAAN Drift</td>
+                <td class="mono">~ -4.998°/gün (NORAD)</td>
+                <td class="mono">J2OrbitalModel</td>
+                <td><span class="tag ok">-4.9979°/gün PASS</span></td>
+              </tr>
+              <tr>
+                <td>Lambert Transferi (90° LEO)</td>
+                <td class="mono">Vis-viva &amp; h korunumu</td>
+                <td class="mono">LambertSolver::solve</td>
+                <td><span class="tag ok">Bağıl hata &lt; 1e-9</span></td>
+              </tr>
+              <tr>
+                <td>IEEE 1788-2015 Interval64</td>
+                <td class="mono">1.0 ∈ (1/3)·3, 0 ∈ payda reddi</td>
+                <td class="mono">Interval64::div / mul</td>
+                <td><span class="tag ok">0/1-ULP tightest PASS</span></td>
+              </tr>
+              <tr>
+                <td>MCP Güvenlik &amp; Paketleme</td>
+                <td class="mono">11 RCE vektörü + ikili/wheel çözümü</td>
+                <td class="mono">tests/test_mcp_security.py</td>
+                <td><span class="tag ok">10/10 Test · 0 eval()</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="bench-perf">8.2. Ölçülmüş Performans &amp; Bellek Kıyaslaması (Subprocess Overhead)</h2>
+        <p>Windows 11 x86_64, Python 3.14, <code>OPENBLAS_NUM_THREADS=1</code> ve yerel <code>citadel_math_core</code> release ikilisi üzerinde canlı ölçülmüştür:</p>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>İşlem / MCP Aracı</th>
+                <th>Yürütme Yolu</th>
+                <th>p50</th>
+                <th>p95</th>
+                <th>Not</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">import kmath_mcp</td>
+                <td>Soğuk başlangıç (tek sefer)</td>
+                <td class="mono">876.3 ms</td>
+                <td class="mono">—</td>
+                <td>109.95 MB Working Set (97.18 MB Private)</td>
+              </tr>
+              <tr>
+                <td class="mono">kmath_constant("c")</td>
+                <td>Süreç-içi Python JSON</td>
+                <td class="mono">0.28 ms</td>
+                <td class="mono">0.33 ms</td>
+                <td>CODATA 2022 sorgusu</td>
+              </tr>
+              <tr>
+                <td class="mono">kmath_dimension_check</td>
+                <td>Süreç-içi Zero-Eval AST</td>
+                <td class="mono">3.60 ms</td>
+                <td class="mono">4.81 ms</td>
+                <td>Z⁷ sembolik boyut + SI ölçek kontrolü</td>
+              </tr>
+              <tr>
+                <td class="mono">kmath_prove_identity</td>
+                <td>Python → Rust subprocess</td>
+                <td class="mono">5.30 ms</td>
+                <td class="mono">5.68 ms</td>
+                <td>OS süreç başlatma + JSON IPC dahil</td>
+              </tr>
+              <tr>
+                <td class="mono">kmath_interval_eval</td>
+                <td>Python → Rust subprocess</td>
+                <td class="mono">5.45 ms</td>
+                <td class="mono">5.72 ms</td>
+                <td>IEEE 1788-2015 Interval64 + Dual64</td>
+              </tr>
+              <tr>
+                <td class="mono">kmath_stress_check</td>
+                <td>Python + Rust subprocess</td>
+                <td class="mono">5.56 ms</td>
+                <td class="mono">5.84 ms</td>
+                <td>Von Mises + NASA SP-8007 + PICA-X TPS</td>
+              </tr>
+              <tr>
+                <td class="mono">kmath_audit (26 kapı)</td>
+                <td>10 Python + 16 Rust kapısı</td>
+                <td class="mono">45.65 ms</td>
+                <td class="mono">47.73 ms</td>
+                <td>Saf Rust 16 kapı: ~12–17 ms · Kararlı bellek: 113.16 MB</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="bench-troubleshoot">8.3. Sorun Giderme (<code>resolve_rust_bin()</code> &amp; <code>rc=127</code>)</h2>
+        <p>Her Rust destekli MCP aracı derlenmiş çekirdek ikilisini şu deterministik 5 adımlı öncelik sırasıyla arar ve mutlak yola (<code>os.path.abspath</code>) çevirir:</p>
+        <ol class="plain-list">
+          <li><code>KMATH_RUST_BIN</code> ortam değişkeni (tanımlıysa tek yetkili geçersiz kılmadır; dosya yoksa sessizce başka ikiliye düşmez, <code>rc=127</code> döner).</li>
+          <li><code>&lt;repo&gt;/citadel_math_core/target/release/citadel_math_core(.exe)</code></li>
+          <li><code>&lt;repo&gt;/citadel_math_core/target/debug/citadel_math_core(.exe)</code></li>
+          <li><code>&lt;repo&gt;/bin/citadel_math_core(.exe)</code></li>
+          <li>Sistem <code>PATH</code>'i (<code>citadel_math_core</code>, <code>citadel_math_core-windows-x86_64.exe</code>, <code>citadel_math_core-linux-x86_64</code>).</li>
+        </ol>
+        <div class="note-box">
+          <strong>İkili Eksikse Ne Olur?</strong> Saf Python araçları (<code>kmath_dimension_check</code>, <code>kmath_constant</code>, <code>kmath_materials</code>, <code>kmath_simulate_trajectory</code>) çalışmaya devam eder; Rust destekli araçlar aranan tüm yolları, <code>cargo build --release</code> komutunu ve GitHub Releases + <code>KMATH_RUST_BIN</code> çözümünü içeren yapısal JSON hata (<code>rc=127</code>) döndürür.
+        </div>
+
+        <h2 id="bench-bin">8.4. v0.2.0 Yayın Varlıkları &amp; GHCR Konteyneri (Anonim / Herkese Açık)</h2>
+        <ul class="plain-list mono" style="font-size:0.84rem;">
+          <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/citadel_math_core-windows-x86_64.exe" target="_blank" rel="noopener">citadel_math_core-windows-x86_64.exe</a> (1,200,128 bayt · 1.14 MB)</li>
+          <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/citadel_math_core-linux-x86_64" target="_blank" rel="noopener">citadel_math_core-linux-x86_64</a> (1,563,688 bayt · 1.49 MB)</li>
+          <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0-py3-none-any.whl" target="_blank" rel="noopener">kmath_mcp-0.2.0-py3-none-any.whl</a> (143,978 bayt · 140.6 KB)</li>
+          <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/kmath_mcp-0.2.0.tar.gz" target="_blank" rel="noopener">kmath_mcp-0.2.0.tar.gz</a> (284,349 bayt · 277.7 KB)</li>
+          <li><a href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/SHA256SUMS.txt" target="_blank" rel="noopener">SHA256SUMS.txt</a> (388 bayt)</li>
+          <li>GHCR İmajı: <code>ghcr.io/imza464-cmyk/citadel-math:0.2.0</code> (ve <code>:latest</code> · anonim <code>docker pull</code> açık)</li>
+        </ul>
+      </section>
+
+      <footer class="footer-note">
+        Citadel-Math v0.2.0 · Copyright © 2026 Mekserina Karaosmanoğlu · Dual-licensed under <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/LICENSE" target="_blank" rel="noopener">GNU AGPL-3.0-only</a> OR <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/COMMERCIAL_LICENSE.md" target="_blank" rel="noopener">Commercial License</a>
+      </footer>
+    </main>
+
+    <aside class="rail" aria-label="Bağlam ve Hızlı Referans">
+      <div class="rail-block">
+        <div class="rail-heading" id="railContextTitle">Bu Bölümde</div>
+        <ul class="rail-list" id="railContextList"></ul>
+      </div>
+
+      <div class="rail-block">
+        <div class="rail-heading">SSOT Özeti</div>
+        <dl class="rail-kv">
+          <dt>Sürüm</dt><dd>v0.2.0</dd>
+          <dt>Lisans</dt><dd>AGPL-3.0 / Ticari</dd>
+          <dt>Çekirdek</dt><dd>Rust · 0 unsafe</dd>
+          <dt>Yasalar</dt><dd id="railLawCount">214</dd>
+          <dt>Semboller</dt><dd id="railOntCount">353</dd>
+          <dt>CODATA</dt><dd id="railNistCount">355 (2022)</dd>
+          <dt>Malzemeler</dt><dd id="railMatCount">30</dd>
+          <dt>MCP Araçları</dt><dd>15 (çevrimdışı)</dd>
+          <dt>CI + GHCR</dt><dd>Linux + Win PASS</dd>
+        </dl>
+      </div>
+
+      <div class="rail-block">
+        <div class="rail-heading">Hızlı Kurulum &amp; Denetim</div>
+        <div class="rail-cmd">
+          <code>docker run -i --rm --read-only --cap-drop=ALL --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.0</code>
+          <button class="mini-btn" data-copy="docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.0">Kopyala</button>
+        </div>
+        <div class="rail-cmd">
+          <code>kmath audit &amp;&amp; kmath rust audit</code>
+          <button class="mini-btn" data-copy="kmath audit &amp;&amp; kmath rust audit">Kopyala</button>
+        </div>
+      </div>
+
+      <div class="rail-block">
+        <div class="rail-heading">Kısayollar &amp; Bağlantılar</div>
+        <div class="rail-kbd">
+          <div><kbd>/</kbd> Kanonik yasalarda ara</div>
+          <div><kbd>Enter</kbd> Z⁷ önizlemeyi çalıştır</div>
+        </div>
+        <ul class="rail-list" style="margin-top:8px;">
+          <li><a class="rail-link" href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.0" target="_blank" rel="noopener">GitHub Releases v0.2.0</a></li>
+          <li><a class="rail-link" href="https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.0/SHA256SUMS.txt" target="_blank" rel="noopener">SHA256SUMS.txt (v0.2.0)</a></li>
+          <li><a class="rail-link" href="https://github.com/imza464-cmyk/citadel-math/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">CONTRIBUTING.md (PR Rehberi)</a></li>
+          <li><a class="rail-link" href="https://github.com/imza464-cmyk/citadel-math/blob/main/CHANGELOG.md" target="_blank" rel="noopener">CHANGELOG.md</a></li>
+          <li><a class="rail-link" href="https://github.com/imza464-cmyk/citadel-math/issues/new/choose" target="_blank" rel="noopener">Hata / Bilimsel Bildirim</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script src="./data/ssot_bundle.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

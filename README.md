@@ -1,6 +1,7 @@
 # Citadel-Math (`citadel_math_core` / `kmath-mcp`)
 
 [![CI](https://github.com/imza464-cmyk/citadel-math/actions/workflows/ci.yml/badge.svg)](https://github.com/imza464-cmyk/citadel-math/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/Docs-GitHub_Pages-2563eb.svg)](https://imza464-cmyk.github.io/citadel-math/)
 [![Release](https://img.shields.io/github/v/release/imza464-cmyk/citadel-math?color=0ea5e9)](https://github.com/imza464-cmyk/citadel-math/releases)
 [![License: AGPL-3.0 | Commercial](https://img.shields.io/badge/License-AGPL--3.0_%7C_Commercial-blue.svg)](./LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-forbid%28unsafe__code%29-orange.svg)](./citadel_math_core/src/lib.rs)
@@ -176,7 +177,9 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 │   ├── ISSUE_TEMPLATE/             # Bug report & mathematical/physical soundness issue templates
 │   └── workflows/
 │       ├── ci.yml                  # Cross-platform CI (Linux/Windows): clippy, tests, wheel build & MCP security
-│       └── release.yml             # Automated Linux/Windows release binary & SHA256SUMS publishing
+│       ├── pages.yml               # Automated SSOT build & GitHub Pages handbook deployment
+│       └── release.yml             # Automated binaries, wheel/sdist, hardened GHCR image & SHA256SUMS publishing
+├── site/                           # Interactive SSOT Technical Handbook & Z^7 Browser Preview (GitHub Pages)
 ├── AGENTS.md                       # Engineering invariants (dimensional homogeneity & SSOT rules)
 ├── CHANGELOG.md                    # Versioned release history (Keep a Changelog)
 ├── COMMERCIAL_LICENSE.md           # Commercial dual-license terms for proprietary / closed-SaaS use
