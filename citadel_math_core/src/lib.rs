@@ -18,6 +18,7 @@ pub mod designer;
 pub mod codegen;
 pub mod astrodynamics;
 pub mod cad;
+pub mod epistemic_audit;
 
 pub use dimensions::{Dimension, ScaledUnit, check_dimensional_consistency};
 pub use constants::PhysicalConstants;

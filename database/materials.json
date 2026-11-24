@@ -9,7 +9,18 @@
     "youngs_modulus_gpa": 1000.0,
     "max_temperature_k": 1200.0,
     "thermal_conductivity_w_mk": 3000.0,
-    "description": "Uzay asansörü ve Skyhook kablosu yapabilecek teorik özgül mukavemete sahip tek malzeme."
+    "description": "Uzay asansörü ve Skyhook kablosu yapabilecek teorik özgül mukavemete sahip tek malzeme.",
+    "condition": "Theoretical SWCNT Aligned Yarn",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      20000.0,
+      63000.0
+    ],
+    "sources": [
+      "Yu et al. (Science 2000, 287:637): Strength and Breaking Mechanism of Multiwalled CNTs",
+      "NASA/NIAC Space Elevator & CNT Tether Feasibility Study (Edwards)",
+      "ASM Handbook / Callister Materials Science (Carbon Nanotubes)"
+    ]
   },
   {
     "id": "mat_graphene",
@@ -21,7 +32,18 @@
     "youngs_modulus_gpa": 1050.0,
     "max_temperature_k": 800.0,
     "thermal_conductivity_w_mk": 4000.0,
-    "description": "Bilinen en yüksek çekme dayanımına sahip 2D atomik kristal kafes."
+    "description": "Bilinen en yüksek çekme dayanımına sahip 2D atomik kristal kafes.",
+    "condition": "Pristine Monolayer 2D Crystal",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      100000.0,
+      130000.0
+    ],
+    "sources": [
+      "Lee et al. (Science 2008, 321:385): Measurement of the Elastic Properties and Intrinsic Strength of Monolayer Graphene",
+      "NIST / Balandin (Nature Materials 2011): Thermal Properties of Graphene",
+      "CRC Handbook of Chemistry and Physics — 2D Carbon Nanomaterials"
+    ]
   },
   {
     "id": "mat_zylon_pbo",
@@ -33,7 +55,18 @@
     "youngs_modulus_gpa": 270.0,
     "max_temperature_k": 923.0,
     "thermal_conductivity_w_mk": 0.8,
-    "description": "Mars süpersonik paraşüt kordonları ve yüksek mukavemetli uzay balon/tether dokuması."
+    "description": "Mars süpersonik paraşüt kordonları ve yüksek mukavemetli uzay balon/tether dokuması.",
+    "condition": "HM High-Modulus Filament Composite",
+    "failure_mode": "composite_laminate",
+    "yield_strength_range_mpa": [
+      4500.0,
+      5800.0
+    ],
+    "sources": [
+      "Toyobo Zylon (PBO Fiber) Technical Information Datasheet",
+      "NASA JPL Mars 2020 / MSL Supersonic Parachute Materials Study",
+      "MatWeb / ASM Engineered Materials Handbook (Aramid & PBO Fibers)"
+    ]
   },
   {
     "id": "mat_carbon_fiber_t1000g",
@@ -45,7 +78,18 @@
     "youngs_modulus_gpa": 294.0,
     "max_temperature_k": 450.0,
     "thermal_conductivity_w_mk": 5.0,
-    "description": "Modern roket COPV basınç tankları ve hafif fırlatma araçlarında kullanılan üst seviye karbon fiber."
+    "description": "Modern roket COPV basınç tankları ve hafif fırlatma araçlarında kullanılan üst seviye karbon fiber.",
+    "condition": "Unidirectional Epoxy Laminate (60% Vf)",
+    "failure_mode": "composite_laminate",
+    "yield_strength_range_mpa": [
+      2100.0,
+      3200.0
+    ],
+    "sources": [
+      "Toray Composite Materials America T1000G Technical Data Sheet",
+      "CMH-17 / MIL-HDBK-17 Composite Materials Handbook",
+      "NASA COPV Pressure Vessel Standards (AIAA S-081)"
+    ]
   },
   {
     "id": "mat_im7_8552_cfrp",
@@ -57,7 +101,18 @@
     "youngs_modulus_gpa": 164.0,
     "max_temperature_k": 450.0,
     "thermal_conductivity_w_mk": 5.4,
-    "description": "MMPDS sertifikalı birincil roket kademe arası (interstage) ve faydalı yük kaportası kompoziti."
+    "description": "MMPDS sertifikalı birincil roket kademe arası (interstage) ve faydalı yük kaportası kompoziti.",
+    "condition": "Autoclave Cured Prepreg Laminate (UD)",
+    "failure_mode": "composite_laminate",
+    "yield_strength_range_mpa": [
+      2000.0,
+      2720.0
+    ],
+    "sources": [
+      "Hexcel HexPly 8552 / IM7 Product Data Sheet",
+      "NCAMP / MMPDS Qualified Aerospace Composite Database (IM7/8552)",
+      "NASA/TM-2011-217179 Composite Crew Module Material Characterization"
+    ]
   },
   {
     "id": "mat_kevlar_49_epoxy",
@@ -69,7 +124,18 @@
     "youngs_modulus_gpa": 76.0,
     "max_temperature_k": 473.0,
     "thermal_conductivity_w_mk": 0.04,
-    "description": "Whipple yörünge enkazı/mikrometeorit kalkanları ve darbe sönümleyici kabuk katmanı."
+    "description": "Whipple yörünge enkazı/mikrometeorit kalkanları ve darbe sönümleyici kabuk katmanı.",
+    "condition": "Aramid/Epoxy Unidirectional Laminate",
+    "failure_mode": "composite_laminate",
+    "yield_strength_range_mpa": [
+      1050.0,
+      1450.0
+    ],
+    "sources": [
+      "DuPont Kevlar 49 Aramid Fiber Technical Guide",
+      "NASA Handbook for Designing MMOD Protection (NASA/TM-2009-214785)",
+      "CMH-17 / MatWeb Kevlar 49-Epoxy Properties"
+    ]
   },
   {
     "id": "mat_titanium_ti6al4v",
@@ -81,7 +147,18 @@
     "youngs_modulus_gpa": 114.0,
     "max_temperature_k": 670.0,
     "thermal_conductivity_w_mk": 6.7,
-    "description": "Hafiflik, korozyon direnci ve yüksek mukavemet sunan standart uzay yapı/ızgara kanat malzemesi."
+    "description": "Hafiflik, korozyon direnci ve yüksek mukavemet sunan standart uzay yapı/ızgara kanat malzemesi.",
+    "condition": "Grade 5 Annealed Wrought",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      825.0,
+      950.0
+    ],
+    "sources": [
+      "ASM Handbook Vol. 2: Titanium and Titanium Alloys (Ti-6Al-4V)",
+      "MMPDS-14 / AMS 4911 (Ti-6Al-4V Grade 5 Annealed)",
+      "MatWeb / SpaceMatDB Aerospace Titanium Datasheet"
+    ]
   },
   {
     "id": "mat_ti_6al_2sn_4zr_2mo",
@@ -93,7 +170,18 @@
     "youngs_modulus_gpa": 114.0,
     "max_temperature_k": 810.0,
     "thermal_conductivity_w_mk": 7.1,
-    "description": "540 °C'ye kadar sürünme direnci koruyan süpersonik/hipersonik gövde ve kompresör titanyumu."
+    "description": "540 °C'ye kadar sürünme direnci koruyan süpersonik/hipersonik gövde ve kompresör titanyumu.",
+    "condition": "Duplex Annealed (Ti-6242S)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      830.0,
+      990.0
+    ],
+    "sources": [
+      "ASM Aerospace Specification Metals (Ti-6Al-2Sn-4Zr-2Mo)",
+      "MMPDS-14 / AMS 4976 High-Temperature Titanium Forgings",
+      "MatWeb / TIMET Ti-6242S Technical Datasheet"
+    ]
   },
   {
     "id": "mat_alli_2195",
@@ -105,7 +193,18 @@
     "youngs_modulus_gpa": 76.0,
     "max_temperature_k": 420.0,
     "thermal_conductivity_w_mk": 130.0,
-    "description": "SpaceX Falcon 9 ve NASA SLS kriyojenik sıvı oksijen/hidrojen tank ana malzemesi."
+    "description": "SpaceX Falcon 9 ve NASA SLS kriyojenik sıvı oksijen/hidrojen tank ana malzemesi.",
+    "condition": "T8 Solution Treated, Cold Worked & Aged",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      490.0,
+      580.0
+    ],
+    "sources": [
+      "NASA/TM-1998-208538: Al-Li 2195 Super Lightweight Tank Characterization",
+      "MMPDS-14 / AMS 4472 (Aluminum-Lithium 2195-T8)",
+      "ASM Handbook Vol. 2 / Constellium Airware 2195 Datasheet"
+    ]
   },
   {
     "id": "mat_al_7075_t6",
@@ -117,7 +216,18 @@
     "youngs_modulus_gpa": 71.7,
     "max_temperature_k": 395.0,
     "thermal_conductivity_w_mk": 130.0,
-    "description": "Yüksek akma dayanımlı uçak kanat kirişi ve uydu birincil mekanik şasi alaşımı."
+    "description": "Yüksek akma dayanımlı uçak kanat kirişi ve uydu birincil mekanik şasi alaşımı.",
+    "condition": "T6 Precipitation Heat Treated",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      460.0,
+      530.0
+    ],
+    "sources": [
+      "ASM Handbook Vol. 2: Nonferrous Alloys (AA 7075-T6)",
+      "MMPDS-14 / AMS-QQ-A-250/12 (7075-T6)",
+      "MatWeb / Aerospace Specification Metals (UNS A97075)"
+    ]
   },
   {
     "id": "mat_al_2219_t87",
@@ -129,7 +239,18 @@
     "youngs_modulus_gpa": 73.1,
     "max_temperature_k": 520.0,
     "thermal_conductivity_w_mk": 121.0,
-    "description": "20 K sıvı hidrojende tokluğunu yitirmeyen Saturn V, Apollo ve ISS basınçlı modül alaşımı."
+    "description": "20 K sıvı hidrojende tokluğunu yitirmeyen Saturn V, Apollo ve ISS basınçlı modül alaşımı.",
+    "condition": "T87 Solution Treated, Cold Worked 7% & Aged",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      350.0,
+      420.0
+    ],
+    "sources": [
+      "NASA Cryogenic Materials Handbook (Al 2219-T87 Saturn V / SLS)",
+      "MMPDS-14 / AMS 4031 (Aluminum 2219-T87)",
+      "ASM Handbook Vol. 2 / MatWeb (UNS A92219)"
+    ]
   },
   {
     "id": "mat_al_6061_t6",
@@ -141,7 +262,18 @@
     "youngs_modulus_gpa": 68.9,
     "max_temperature_k": 420.0,
     "thermal_conductivity_w_mk": 167.0,
-    "description": "CubeSat/uydu aviyonik kutuları, valf blokları ve ısı dağıtıcı plakalar için işlenebilir alaşım."
+    "description": "CubeSat/uydu aviyonik kutuları, valf blokları ve ısı dağıtıcı plakalar için işlenebilir alaşım.",
+    "condition": "T6 Solution Treated & Artificially Aged",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      240.0,
+      290.0
+    ],
+    "sources": [
+      "ASM Handbook Vol. 2: Aluminum Alloys (AA 6061-T6)",
+      "MMPDS-14 / AMS 4027 (6061-T6 Plate/Sheet)",
+      "MatWeb / NIST Cryogenic Material Properties (6061-T6)"
+    ]
   },
   {
     "id": "mat_ss_304l_cryo",
@@ -153,7 +285,18 @@
     "youngs_modulus_gpa": 193.0,
     "max_temperature_k": 1080.0,
     "thermal_conductivity_w_mk": 16.2,
-    "description": "Kriyojenik sıcaklıklarda mukavemeti artan ve 800 °C'ye kadar yeniden girişe dayanan Starship gövde çeliği."
+    "description": "Kriyojenik sıcaklıklarda mukavemeti artan ve 800 °C'ye kadar yeniden girişe dayanan Starship gövde çeliği.",
+    "condition": "Full-Hard Cold-Rolled Sheet",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      850.0,
+      1100.0
+    ],
+    "sources": [
+      "ASM Specialty Handbook: Stainless Steels (304L Cold-Worked)",
+      "NIST Cryogenic Materials Database (AISI 304L Mechanical Properties)",
+      "ASTM A666 Cold-Worked Austenitic Stainless Steel Sheet"
+    ]
   },
   {
     "id": "mat_ss_17_4ph_h900",
@@ -165,7 +308,18 @@
     "youngs_modulus_gpa": 197.0,
     "max_temperature_k": 600.0,
     "thermal_conductivity_w_mk": 18.3,
-    "description": "Motor gimbal mafsalları, ayırma mekanizmaları ve kriyojenik valf milleri için yüksek dayanımlı çelik."
+    "description": "Motor gimbal mafsalları, ayırma mekanizmaları ve kriyojenik valf milleri için yüksek dayanımlı çelik.",
+    "condition": "H900 Precipitation Hardened (482 °C)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      1070.0,
+      1250.0
+    ],
+    "sources": [
+      "AK Steel / Special Metals 17-4 PH Technical Data Bulletin",
+      "MMPDS-14 / AMS 5643 (17-4 PH Condition H900)",
+      "ASM Handbook Vol. 1 / MatWeb (UNS S17400)"
+    ]
   },
   {
     "id": "mat_maraging_300",
@@ -177,7 +331,18 @@
     "youngs_modulus_gpa": 190.0,
     "max_temperature_k": 700.0,
     "thermal_conductivity_w_mk": 25.0,
-    "description": "Ultra yüksek akma sınırı ve kırılma tokluğu sunan katı yakıtlı roket motor zarfı ve santrifüj çeliği."
+    "description": "Ultra yüksek akma sınırı ve kırılma tokluğu sunan katı yakıtlı roket motor zarfı ve santrifüj çeliği.",
+    "condition": "Aged 482 °C (18Ni300 / C-300)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      1860.0,
+      2070.0
+    ],
+    "sources": [
+      "ATI / Vascomax C-300 Maraging Steel Technical Data Sheet",
+      "MMPDS-14 / AMS 6514 (18Ni Maraging 300)",
+      "ASM Handbook Vol. 1: Ultrahigh-Strength Steels"
+    ]
   },
   {
     "id": "mat_beryllium_s200f",
@@ -189,7 +354,18 @@
     "youngs_modulus_gpa": 303.0,
     "max_temperature_k": 1070.0,
     "thermal_conductivity_w_mk": 200.0,
-    "description": "Alüminyumdan %32 hafif olup çelikten %50 daha rijit (E=303 GPa) olan JWST ayna ve ataletsel platform malzemesi."
+    "description": "Alüminyumdan %32 hafif olup çelikten %50 daha rijit (E=303 GPa) olan JWST ayna ve ataletsel platform malzemesi.",
+    "condition": "Vacuum Hot-Pressed Structural Grade S-200F",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      240.0,
+      345.0
+    ],
+    "sources": [
+      "Materion Brush Beryllium S-200F Structural Grade Datasheet",
+      "NASA JWST Beryllium Mirror & Optical Bench Qualification Reports",
+      "AMS 7906 / MatWeb Structural Beryllium S-200F"
+    ]
   },
   {
     "id": "mat_inconel_718",
@@ -201,7 +377,18 @@
     "youngs_modulus_gpa": 205.0,
     "max_temperature_k": 970.0,
     "thermal_conductivity_w_mk": 11.4,
-    "description": "Roket manifoldları, türbopompa çarkları ve aşırı dinamik basınç kalkanı."
+    "description": "Roket manifoldları, türbopompa çarkları ve aşırı dinamik basınç kalkanı.",
+    "condition": "Precipitation Hardened (AMS 5662/5663)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      1030.0,
+      1200.0
+    ],
+    "sources": [
+      "Special Metals Publication SMC-045: INCONEL alloy 718",
+      "MMPDS-14 / AMS 5663 (Inconel 718 Aged)",
+      "NASA/MSFC Liquid Rocket Propulsion Materials Database"
+    ]
   },
   {
     "id": "mat_inconel_625",
@@ -213,7 +400,18 @@
     "youngs_modulus_gpa": 207.0,
     "max_temperature_k": 1255.0,
     "thermal_conductivity_w_mk": 9.8,
-    "description": "Kriyojenik esnek körükler (bellows), egzoz ısı kalkanları ve sıcak gaz boru hatları."
+    "description": "Kriyojenik esnek körükler (bellows), egzoz ısı kalkanları ve sıcak gaz boru hatları.",
+    "condition": "Annealed Grade 1 (UNS N06625)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      414.0,
+      620.0
+    ],
+    "sources": [
+      "Special Metals Publication SMC-063: INCONEL alloy 625",
+      "MMPDS-14 / AMS 5599 (Inconel 625 Annealed)",
+      "ASM Handbook Vol. 2 / MatWeb (UNS N06625)"
+    ]
   },
   {
     "id": "mat_haynes_282",
@@ -225,7 +423,18 @@
     "youngs_modulus_gpa": 217.0,
     "max_temperature_k": 1190.0,
     "thermal_conductivity_w_mk": 12.6,
-    "description": "Oksijence zengin ön-yakıcılar (preburner) ve hipersonik sıcak yapılar için kaynaklanabilir süperalaşım."
+    "description": "Oksijence zengin ön-yakıcılar (preburner) ve hipersonik sıcak yapılar için kaynaklanabilir süperalaşım.",
+    "condition": "Standard Two-Step Age Hardened",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      650.0,
+      780.0
+    ],
+    "sources": [
+      "Haynes International Brochure H-3173: HAYNES 282 Alloy",
+      "AMS 5951 / UNS N07208 Specification",
+      "NASA/TM-2016-219129 Superalloy Evaluation for Propulsion"
+    ]
   },
   {
     "id": "mat_rene_41",
@@ -237,7 +446,18 @@
     "youngs_modulus_gpa": 218.0,
     "max_temperature_k": 1250.0,
     "thermal_conductivity_w_mk": 11.5,
-    "description": "Mercury kapsülü dış kiremitlerinde ve yüksek basınçlı gaz türbini kanatlarında kullanılan nikel süperalaşım."
+    "description": "Mercury kapsülü dış kiremitlerinde ve yüksek basınçlı gaz türbini kanatlarında kullanılan nikel süperalaşım.",
+    "condition": "Solution Treated & Aged (AMS 5545)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      930.0,
+      1150.0
+    ],
+    "sources": [
+      "Special Metals / Haynes René 41 Alloy Technical Data",
+      "MMPDS-14 / AMS 5545 (René 41 Sheet)",
+      "NASA Project Mercury Thermal Shingle Materials Report"
+    ]
   },
   {
     "id": "mat_grcop_42",
@@ -249,7 +469,18 @@
     "youngs_modulus_gpa": 132.0,
     "max_temperature_k": 1073.0,
     "thermal_conductivity_w_mk": 310.0,
-    "description": "L-PBF 3D baskı ile üretilen, yüksek ısıl iletkenlik ve sürünme dirençli roket yanma odası gömleği."
+    "description": "L-PBF 3D baskı ile üretilen, yüksek ısıl iletkenlik ve sürünme dirençli roket yanma odası gömleği.",
+    "condition": "L-PBF Additive Manufactured & HIP",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      260.0,
+      420.0
+    ],
+    "sources": [
+      "NASA/TM-2019-220195 (Gradl et al.): GRCop-42 Additive Manufacturing",
+      "NASA Glenn Research Center GRCop-42 Property Summary",
+      "AIAA Propulsion & Energy — GRCop-42 Combustion Chambers"
+    ]
   },
   {
     "id": "mat_molybdenum_tzm",
@@ -261,7 +492,18 @@
     "youngs_modulus_gpa": 325.0,
     "max_temperature_k": 1920.0,
     "thermal_conductivity_w_mk": 126.0,
-    "description": "Radyatif soğutmalı vakum itici nozulları ve nükleer termal reaktör yapısal destek elemanı."
+    "description": "Radyatif soğutmalı vakum itici nozulları ve nükleer termal reaktör yapısal destek elemanı.",
+    "condition": "Stress-Relieved Wrought (ASTM B387)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      620.0,
+      820.0
+    ],
+    "sources": [
+      "Plansee TZM Molybdenum Alloy Material Datasheet",
+      "ASTM B387 / AMS 7819 Molybdenum-0.5Ti-0.08Zr",
+      "ASM Handbook Vol. 2 / MatWeb (TZM Alloy)"
+    ]
   },
   {
     "id": "mat_tungsten",
@@ -273,7 +515,18 @@
     "youngs_modulus_gpa": 411.0,
     "max_temperature_k": 3695.0,
     "thermal_conductivity_w_mk": 173.0,
-    "description": "3.695 K erime noktası ile lazer itki ısı değiştiricileri ve plazma nozul boğazı zırhı."
+    "description": "3.695 K erime noktası ile lazer itki ısı değiştiricileri ve plazma nozul boğazı zırhı.",
+    "condition": "Stress-Relieved Wrought Bar/Sheet",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      750.0,
+      1400.0
+    ],
+    "sources": [
+      "Plansee Pure Tungsten Material Properties Reference",
+      "ASM Handbook Vol. 2: Refractory Metals (Tungsten)",
+      "NIST / CRC Handbook of Chemistry and Physics (Element W)"
+    ]
   },
   {
     "id": "mat_sic_cmc",
@@ -285,7 +538,18 @@
     "youngs_modulus_gpa": 280.0,
     "max_temperature_k": 1923.0,
     "thermal_conductivity_w_mk": 18.5,
-    "description": "1650 °C'ye kadar yapısal bütünlüğünü koruyan nozul uzantısı ve hipersonik kontrol yüzeyi malzemesi."
+    "description": "1650 °C'ye kadar yapısal bütünlüğünü koruyan nozul uzantısı ve hipersonik kontrol yüzeyi malzemesi.",
+    "condition": "2D Woven CVI SiC/SiC Composite",
+    "failure_mode": "composite_laminate",
+    "yield_strength_range_mpa": [
+      250.0,
+      450.0
+    ],
+    "sources": [
+      "NASA Glenn Research Center SiC/SiC CMC Durability Reports",
+      "ASM Engineered Materials Handbook Vol. 4: Ceramic Matrix Composites",
+      "Bansal & Lamon (Wiley): Ceramic Matrix Composites"
+    ]
   },
   {
     "id": "mat_rcc_carbon_carbon",
@@ -297,7 +561,18 @@
     "youngs_modulus_gpa": 110.0,
     "max_temperature_k": 2250.0,
     "thermal_conductivity_w_mk": 40.0,
-    "description": "Uzay Mekiği burun konisi/kanat hücum kenarları ve katı yakıt nozul boğazlarında kullanılan karbon kompozit."
+    "description": "Uzay Mekiği burun konisi/kanat hücum kenarları ve katı yakıt nozul boğazlarında kullanılan karbon kompozit.",
+    "condition": "SiC-Coated Reinforced Carbon-Carbon (2D)",
+    "failure_mode": "composite_laminate",
+    "yield_strength_range_mpa": [
+      180.0,
+      320.0
+    ],
+    "sources": [
+      "NASA SP-2011-3409: Space Shuttle Thermal Protection System (RCC)",
+      "ASM Engineered Materials Handbook Vol. 1: Carbon-Carbon Composites",
+      "CAIB / NASA Langley RCC Structural Property Database"
+    ]
   },
   {
     "id": "mat_zrb2_sic_uhtc",
@@ -309,7 +584,18 @@
     "youngs_modulus_gpa": 480.0,
     "max_temperature_k": 2500.0,
     "thermal_conductivity_w_mk": 68.0,
-    "description": "Keskin hipersonik süzülme aracı (HGV) burun ve kanat hücum kenarları için oksidasyon dirençli ultra-yüksek sıcaklık seramiği."
+    "description": "Keskin hipersonik süzülme aracı (HGV) burun ve kanat hücum kenarları için oksidasyon dirençli ultra-yüksek sıcaklık seramiği.",
+    "condition": "Hot-Pressed ZrB2-20vol%SiC Sintered",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      350.0,
+      560.0
+    ],
+    "sources": [
+      "NASA Ames Research Center UHTC Sharp Leading Edge Reports (Opeka/Gasch)",
+      "Fahrenholtz et al. (J. Am. Ceram. Soc. 2007): Refractory Diborides of Zr and Hf",
+      "NIST / ASM Ultra-High Temperature Ceramics Review"
+    ]
   },
   {
     "id": "mat_hafnium_carbide_hfc",
@@ -321,7 +607,18 @@
     "youngs_modulus_gpa": 430.0,
     "max_temperature_k": 4160.0,
     "thermal_conductivity_w_mk": 22.0,
-    "description": "~4.160 K erime sınırı ile bilinen en yüksek refrakterliğe sahip ikili karbür ısı ve erozyon kalkanı."
+    "description": "~4.160 K erime sınırı ile bilinen en yüksek refrakterliğe sahip ikili karbür ısı ve erozyon kalkanı.",
+    "condition": "Spark-Plasma Sintered Monolithic HfC",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      250.0,
+      420.0
+    ],
+    "sources": [
+      "Cedillos-Barraza et al. (Sci. Rep. 2016): Melting Temperature of HfC/TaC",
+      "NASA / Air Force Research Lab UHTC Carbide Property Reviews",
+      "CRC Handbook / ASM Ceramics Reference (Hafnium Carbide)"
+    ]
   },
   {
     "id": "mat_pica_x",
@@ -333,7 +630,18 @@
     "youngs_modulus_gpa": 0.35,
     "max_temperature_k": 3273.0,
     "thermal_conductivity_w_mk": 0.065,
-    "description": "Gezegenler arası atmosferik giriş ve hipersonik şok kalkanları için ultra-hafif pirolitik ablatör."
+    "description": "Gezegenler arası atmosferik giriş ve hipersonik şok kalkanları için ultra-hafif pirolitik ablatör.",
+    "condition": "Low-Density Phenolic-Carbon Ablator",
+    "failure_mode": "ablative",
+    "yield_strength_range_mpa": [
+      0.5,
+      1.5
+    ],
+    "sources": [
+      "NASA Ames PICA (Phenolic Impregnated Carbon Ablator) TPS Datasheet (Tran et al.)",
+      "NASA/TM-2009-215377: PICA-X SpaceX Dragon Heatshield Development",
+      "AIAA Thermophysics — Stardust & MSL PICA Material Characterization"
+    ]
   },
   {
     "id": "mat_avcoat_5026",
@@ -345,7 +653,18 @@
     "youngs_modulus_gpa": 1.8,
     "max_temperature_k": 3050.0,
     "thermal_conductivity_w_mk": 0.14,
-    "description": "11 km/s Ay dönüşü ısı akılarına karşı NASA Apollo ve Orion kapsüllerini koruyan yüksek mekanik dayanımlı ablatör."
+    "description": "11 km/s Ay dönüşü ısı akılarına karşı NASA Apollo ve Orion kapsüllerini koruyan yüksek mekanik dayanımlı ablatör.",
+    "condition": "Fiberglass-Phenolic Honeycomb Filled Ablator",
+    "failure_mode": "ablative",
+    "yield_strength_range_mpa": [
+      4.5,
+      9.0
+    ],
+    "sources": [
+      "NASA TN D-7564: Apollo Avcoat 5026-39/HC-G Thermophysical Properties",
+      "NASA Orion Multi-Purpose Crew Vehicle Avcoat TPS Qualification",
+      "Textron Systems / NASA Langley Entry Systems TPS Database"
+    ]
   },
   {
     "id": "mat_silica_aerogel",
@@ -357,7 +676,18 @@
     "youngs_modulus_gpa": 0.001,
     "max_temperature_k": 1473.0,
     "thermal_conductivity_w_mk": 0.015,
-    "description": "Mars gezginlerinde ve LH2 tanklarında kullanılan ultra-düşük iletkenlikli nanoporöz yalıtım malzemesi."
+    "description": "Mars gezginlerinde ve LH2 tanklarında kullanılan ultra-düşük iletkenlikli nanoporöz yalıtım malzemesi.",
+    "condition": "Supercritically Dried Nanoporous Monolith",
+    "failure_mode": "foam_insulator",
+    "yield_strength_range_mpa": [
+      0.008,
+      0.03
+    ],
+    "sources": [
+      "NASA JPL Mars Exploration Rover Silica Aerogel Thermal Insulation Papers",
+      "NIST / Lawrence Berkeley Lab Aerogel Thermal Conductivity Reference",
+      "Hüsing & Schubert (Angew. Chem. 1998): Aerogels — Airy Materials"
+    ]
   },
   {
     "id": "mat_al_2024_t3",
@@ -374,6 +704,12 @@
       "ASM Handbook Vol. 2: Properties and Selection: Nonferrous Alloys (Al 2024-T3)",
       "MMPDS-14 / MIL-HDBK-5 (Aluminum 2024-T3 Sheet/Plate)",
       "MatWeb / Aerospace Metals Material Datasheet (UNS A92024)"
+    ],
+    "condition": "T3 Solution Treated & Cold Worked",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      310.0,
+      380.0
     ]
   },
   {
@@ -391,6 +727,12 @@
       "ASM International Alloy Digest (Al 7050-T7451)",
       "MMPDS-14 / AMS 4050 (Al 7050-T7451 Plate)",
       "MatWeb / Aerospace Specification Metals (UNS A97050)"
+    ],
+    "condition": "T7451 Overaged Stress-Relieved Plate",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      430.0,
+      505.0
     ]
   },
   {
@@ -408,6 +750,12 @@
       "ASM Handbook Vol. 1: Properties and Selection: Irons, Steels (AISI 4130)",
       "MMPDS-14 / AMS 6370 (MIL-S-6758 4130 Alloy Steel)",
       "MatWeb / AZoM Technical Datasheet (UNS G41300)"
+    ],
+    "condition": "Quenched & Tempered (~540 °C)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      680.0,
+      860.0
     ]
   },
   {
@@ -425,6 +773,12 @@
       "ASM Handbook Vol. 1: Irons, Steels and High-Performance Alloys (AISI 4340)",
       "MMPDS-14 / AMS 6415 (4340 Quenched & Tempered)",
       "MatWeb / AZoM Material Properties (UNS G43400)"
+    ],
+    "condition": "Quenched & Tempered (~540 °C)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      860.0,
+      1100.0
     ]
   },
   {
@@ -442,6 +796,12 @@
       "ASM Specialty Handbook: Stainless Steels (Type 316L)",
       "ASTM A240 / UNS S31603 Standard Specification",
       "MatWeb / SpaceMatDB & Aerospace Metals (316L Annealed)"
+    ],
+    "condition": "Annealed Wrought (ASTM A240)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      205.0,
+      310.0
     ]
   },
   {
@@ -459,6 +819,12 @@
       "Carpenter Technology Invar 36 Alloy Technical Datasheet",
       "ASM Handbook Vol. 2: Low-Expansion Alloys (UNS K93600)",
       "AZoM / SpaceMatDB Invar 36 Mechanical & Thermal Properties"
+    ],
+    "condition": "Annealed Low-Expansion Alloy",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      230.0,
+      310.0
     ]
   },
   {
@@ -476,6 +842,12 @@
       "ASM Handbook Vol. 2: Magnesium and Magnesium Alloys (AZ31B-H24)",
       "ASTM B90 / AMS 4377 Magnesium Sheet & Plate Standard",
       "MatWeb / AZoM Material Datasheet (UNS M11311)"
+    ],
+    "condition": "H24 Strain-Hardened & Partially Annealed",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      180.0,
+      250.0
     ]
   },
   {
@@ -493,6 +865,12 @@
       "ATI Specialty Alloys Zircaloy-4 Technical Data Sheet (UNS R60804)",
       "IAEA TECDOC-1496: Thermophysical Properties of Materials for Nuclear Engineering",
       "AZoM / MatWeb Zircaloy-4 Properties"
+    ],
+    "condition": "Recrystallized Annealed Cladding",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      320.0,
+      440.0
     ]
   },
   {
@@ -510,6 +888,12 @@
       "Special Metals Publication SMC-055: MONEL alloy K-500",
       "ASM Handbook Vol. 2: Nickel-Copper Alloys (UNS N05500)",
       "MatWeb / Elgiloy Specialty Metals Datasheet"
+    ],
+    "condition": "Age-Hardened Wrought (AMS 4676)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      650.0,
+      820.0
     ]
   },
   {
@@ -527,6 +911,12 @@
       "Haynes International Technical Brochure H-3009: HASTELLOY X Alloy",
       "AMS 5536 / UNS N06002 Aerospace Material Specification",
       "ASM Handbook / AZoM Hastelloy X Properties"
+    ],
+    "condition": "Solution Heat-Treated Sheet (1177 °C)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      340.0,
+      445.0
     ]
   },
   {
@@ -544,6 +934,12 @@
       "Special Metals Publication SMC-067: INCONEL alloy X-750",
       "AMS 5667 / UNS N07750 Specification",
       "ASM International / High Temp Metals Datasheet"
+    ],
+    "condition": "Precipitation Age-Hardened (AMS 5667)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      690.0,
+      880.0
     ]
   },
   {
@@ -561,6 +957,12 @@
       "Cannon-Muskegon CMSX-4 Single-Crystal Superalloy Specification",
       "NASA/TM-2004-213070: Mechanical Properties of Single-Crystal Superalloys",
       "ASM International: Superalloys II (Sims, Stoloff & Hagel)"
+    ],
+    "condition": "Single-Crystal Cast & Two-Step Aged",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      950.0,
+      1120.0
     ]
   },
   {
@@ -578,6 +980,12 @@
       "NASA/TM-2005-213566 (D. L. Ellis): GRCop-84 A High-Temperature Copper Alloy",
       "NASA Glenn Research Center GRCop-84 Additive Manufacturing Datasheet",
       "ASM Materials & Processes for Spacecraft and High-Temp Propulsion"
+    ],
+    "condition": "L-PBF / HIP Dispersion-Strengthened",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      230.0,
+      380.0
     ]
   },
   {
@@ -595,6 +1003,12 @@
       "Copper Development Association (CDA) Datasheet UNS C10100",
       "NIST Cryogenic Material Properties Database (OFHC Copper)",
       "ASM Handbook Vol. 2: Copper and Copper Alloys"
+    ],
+    "condition": "Half-Hard Wrought (H02)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      160.0,
+      240.0
     ]
   },
   {
@@ -612,6 +1026,12 @@
       "ATI Wah Chang / H.C. Starck C-103 Niobium Alloy Technical Datasheet",
       "AMS 7852 / ASTM B654 Columbium-10Hf-1Ti Specification",
       "NASA SP-8087 / Liquid Rocket Engine Nozzles Design Criteria"
+    ],
+    "condition": "Recrystallized Annealed Sheet (AMS 7852)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      240.0,
+      310.0
     ]
   },
   {
@@ -629,6 +1049,12 @@
       "ASTM B365 / H.C. Starck Ta-10W Technical Specification",
       "Tantalum-Niobium International Study Center (T.I.C.) Property Database",
       "ASM Handbook Vol. 2: Refractory Metals and Alloys"
+    ],
+    "condition": "Stress-Relieved / Annealed Sheet",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      450.0,
+      580.0
     ]
   },
   {
@@ -646,6 +1072,12 @@
       "NASA/CR-1998-206972: Iridium-Coated Rhenium Thruster Technology",
       "ASM Handbook Vol. 2: Rhenium Properties & Applications",
       "AZoM / ESPI Metals Pure Rhenium Technical Reference"
+    ],
+    "condition": "Annealed Powder-Metallurgy Sheet",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      260.0,
+      370.0
     ]
   },
   {
@@ -663,6 +1095,12 @@
       "CoorsTek / Saint-Gobain Hexoloy SA Sintered SiC Datasheet",
       "NIST Structural Ceramics Database (Sintered alpha-SiC)",
       "ASM Engineered Materials Handbook Vol. 4: Ceramics and Glasses"
+    ],
+    "condition": "Pressureless Sintered Alpha-SiC (Flexural Eq.)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      300.0,
+      420.0
     ]
   },
   {
@@ -680,6 +1118,12 @@
       "NIST Structural Ceramics Database (Silicon Nitride Si3N4)",
       "CoorsTek / Kyocera SN-282 Silicon Nitride Datasheet",
       "ASM Engineered Materials Handbook Vol. 4: Technical Ceramics"
+    ],
+    "condition": "Gas-Pressure Sintered (Flexural Eq.)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      550.0,
+      850.0
     ]
   },
   {
@@ -697,6 +1141,12 @@
       "CoorsTek AD-995 Alumina Technical Datasheet",
       "NIST Ceramics WebBook (99.5% Al2O3)",
       "ASM Engineered Materials Handbook Vol. 4"
+    ],
+    "condition": "Sintered 99.5% High-Purity (Flexural Eq.)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      220.0,
+      340.0
     ]
   },
   {
@@ -714,6 +1164,12 @@
       "Tosoh TZ-3Y / CoorsTek ZDY Zirconia Technical Datasheet",
       "NIST Structural Ceramics Database (Y-TZP Zirconia)",
       "ASM Engineered Materials Handbook Vol. 4"
+    ],
+    "condition": "Sintered 3 mol% Y2O3-ZrO2 (Flexural Eq.)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      750.0,
+      1050.0
     ]
   },
   {
@@ -731,6 +1187,12 @@
       "NIST Structural Ceramics Database (Boron Carbide B4C)",
       "Saint-Gobain Norbide / AZoM Boron Carbide Properties",
       "ASM Engineered Materials Handbook Vol. 4"
+    ],
+    "condition": "Hot-Pressed Monolithic (Flexural Eq.)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      280.0,
+      400.0
     ]
   },
   {
@@ -748,6 +1210,12 @@
       "Materion Thermalox 995 Beryllium Oxide Datasheet",
       "Goodfellow / AZoM Beryllia Ceramic Properties",
       "ASM Engineered Materials Handbook Vol. 4"
+    ],
+    "condition": "Sintered 99.5% Thermalox (Flexural Eq.)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      110.0,
+      210.0
     ]
   },
   {
@@ -765,6 +1233,12 @@
       "Corning HPFS 7980 Fused Silica Optical Material Datasheet",
       "Crystran / Accuratus Fused Silica Reference Properties",
       "NIST Optical & Thermal Properties of Vitreous Silica"
+    ],
+    "condition": "Vitreous Optical Grade 7980 (Fracture)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      40.0,
+      60.0
     ]
   },
   {
@@ -782,6 +1256,12 @@
       "Crystran Synthetic Sapphire (Al2O3) Optical Datasheet",
       "NASA / SPIE Handbook of Optical Materials (Sapphire)",
       "Kyocera / ASM Single-Crystal Sapphire Properties"
+    ],
+    "condition": "Single-Crystal C-Plane Optical (Flexural)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      280.0,
+      450.0
     ]
   },
   {
@@ -799,6 +1279,12 @@
       "Ioffe Physical-Technical Institute Semiconductor Database (Silicon)",
       "Hopcroft, Nix & Kenny (IEEE JMEMS 2010): What is the Young's Modulus of Silicon?",
       "NIST / ASM Electronic Materials Handbook (Monocrystalline Si)"
+    ],
+    "condition": "Czochralski <100> Wafer (Fracture)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      120.0,
+      250.0
     ]
   },
   {
@@ -816,6 +1302,12 @@
       "AGY High-Strength S-2 Glass Fiber Technical Paper",
       "CMH-17 / MIL-HDBK-17 Composite Materials Handbook",
       "MatWeb S-2 Glass / Epoxy Unidirectional Laminate Data"
+    ],
+    "condition": "Unidirectional Epoxy Laminate (60% Vf)",
+    "failure_mode": "composite_laminate",
+    "yield_strength_range_mpa": [
+      1200.0,
+      1750.0
     ]
   },
   {
@@ -833,6 +1325,12 @@
       "Victrex PEEK 450G Material Properties Guide",
       "NASA Outgassing Database / MatWeb (Unfilled PEEK)",
       "ASM Engineered Materials Handbook Vol. 2: Engineering Plastics"
+    ],
+    "condition": "Unfilled Injection/Extruded 450G",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      85.0,
+      110.0
     ]
   },
   {
@@ -850,6 +1348,12 @@
       "SABIC / Stratasys ULTEM 9085 Resin Technical Data Sheet",
       "FAA FAR 25.853 FST Aerospace Qualification Reference",
       "MatWeb / Materialise ULTEM 9085 Mechanical Properties"
+    ],
+    "condition": "FDM Aerospace PEI (XZ Flat)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      45.0,
+      75.0
     ]
   },
   {
@@ -867,6 +1371,12 @@
       "DuPont Kapton HN Technical Bulletin H-38479",
       "NIST Cryogenic Materials Properties (Polyimide / Kapton)",
       "NASA GSFC Spacecraft Thermal Control Handbook (MLI Films)"
+    ],
+    "condition": "25 um Polyimide Film @ 23 °C",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      55.0,
+      85.0
     ]
   }
 ]

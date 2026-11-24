@@ -30,6 +30,9 @@ class Material:
         self.max_temperature = float(data.get("max_temperature_k", 500.0)) # K
         self.thermal_conductivity = float(data.get("thermal_conductivity_w_mk", 10.0)) # W/(m*K)
         self.description = data.get("description", "")
+        self.condition = data.get("condition", "")
+        self.failure_mode = data.get("failure_mode", "")
+        self.yield_strength_range_mpa = data.get("yield_strength_range_mpa")
         self.sources: List[str] = list(data.get("sources", []))
 
     @property
@@ -56,6 +59,9 @@ class Material:
             "max_temperature_C": round(self.max_temperature - 273.15, 2),
             "specific_strength_kN_m_kg": round(self.specific_strength / 1000.0, 2),
             "breaking_length_km": round(self.breaking_length_km, 1),
+            "condition": self.condition,
+            "failure_mode": self.failure_mode,
+            "yield_strength_range_mpa": self.yield_strength_range_mpa,
             "description": self.description,
             "sources": self.sources,
         }

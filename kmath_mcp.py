@@ -472,7 +472,7 @@ def _resolve_expression_dimension(
 
 @_async_mcp_tool
 def kmath_audit() -> str:
-    """Matematik Çekirdeğinin hem 10 katmanlı Python SSOT denetimini hem de 16 katmanlı saf-Rust Citadel-Math kanıt denetimini koşturur."""
+    """Matematik Çekirdeğinin hem 13 katmanlı Python SSOT denetimini hem de 20 katmanlı saf-Rust Citadel-Math kanıt ve 4-katmanlı epistemik öz-doğrulama denetimini (toplam 33 kapı) koşturur."""
     if not os.path.exists(DB_PATH):
         return json.dumps(
             {"status": "error", "message": f"canonical_laws.json bulunamadı: {DB_PATH}"},

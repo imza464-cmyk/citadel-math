@@ -338,9 +338,29 @@ fn run_audit() {
         beam_rep.yield_safety_factor
     );
 
+    // 17–20. 4-Katmanlı Epistemik Öz-Doğrulama Kalkanı (Altın Sayısal Çapalar, Çapraz-Yasa Kapanışları, Limit/Monotonluk & Ashby Malzeme Zarfları)
+    let ep_rep = citadel_math_core::epistemic_audit::run_full_epistemic_audit(&kg, &mat_db_cad)
+        .expect("Epistemik öz-doğrulama kalkanı (Kapı 17-20) ihlali!");
+    println!(
+        "[PASS] 17. Altın Sayısal Referans Çapaları: {} bağımsız NIST/literatür test vektörü boyutsuz katsayı kaymasına karşı doğrulandı.",
+        ep_rep.reference_anchors_checked
+    );
+    println!(
+        "[PASS] 18. Çapraz-Yasa Cebirsel Kapanış İspatları: {} fiziksel özdeşlik (Kara Delik 1. Yasa, Elastisite, Maxwell, Carnot, Planck, Akışkanlar) mühürlendi.",
+        ep_rep.cross_law_closures_checked
+    );
+    println!(
+        "[PASS] 19. Asimptotik Klasik Limit & Dual64 Monotonluk: {} sınır yakınsaması ve kısmi türev işareti doğrulandı.",
+        ep_rep.asymptotic_and_monotonicity_checked
+    );
+    println!(
+        "[PASS] 20. Malzeme Ashby Fiziksel Zarfları & 3-Kaynak Uzlaşması: {} malzeme (durum/kırılma modu, aralık, >=3 kaynak) doğrulandı.",
+        ep_rep.materials_ashby_checked
+    );
+
     let elapsed = t0.elapsed();
     println!("{}", "=".repeat(72));
-    println!("🏆 RUST ÇEKİRDEĞİ TÜM 16 MATEMATİKSEL VE FİZİKSEL DENETİMDEN GEÇTİ (0 HATA).");
+    println!("🏆 RUST ÇEKİRDEĞİ TÜM 20 MATEMATİKSEL VE FİZİKSEL DENETİMDEN GEÇTİ (0 HATA).");
     println!("⚡ Toplam Denetim Süresi: {:.2?}", elapsed);
     println!("{}", "=".repeat(72));
 }

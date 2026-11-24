@@ -1017,7 +1017,7 @@ ${esc(cur.json)}</pre>
           <span class="mono" style="font-size:0.72rem;color:var(--text-muted);">${esc(mat.category)}</span>
         </div>
         <div style="font-weight:650;font-size:0.9rem;color:var(--text);line-height:1.3;">${esc(mat.name)}</div>
-        <div class="mono" style="font-size:0.7rem;color:var(--text-dim);margin-top:3px;">${esc(mat.id)}</div>
+        <div class="mono" style="font-size:0.7rem;color:var(--text-dim);margin-top:3px;">${esc(mat.id)}${mat.condition ? ` · ${esc(mat.condition)}` : ""}${mat.failure_mode ? ` · ${esc(mat.failure_mode)}` : ""}</div>
         <p style="font-size:0.78rem;margin:8px 0 0;line-height:1.45;">${esc(mat.description || "")}</p>
         ${srcHtml}
       </div>

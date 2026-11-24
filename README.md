@@ -226,6 +226,7 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 │       ├── cad.rs                  # 2D parametric CAD, Steiner/moment of inertia, Euler buckling & DXF/SVG
 │       ├── designer.rs             # Closed-loop parametric preliminary sizing engine
 │       ├── codegen.rs              # Verified zero-panic Result<f64, &'static str> Rust function generator
+│       ├── epistemic_audit.rs      # 4-layer epistemic shield (45 anchors, 14 closures, limits/Dual64, Ashby)
 │       └── physical_bounds.rs      # Thermodynamics 1st/2nd law (Carnot), v < c causality & momentum pruning
 ├── engine/                         # Python symbolic AST, SymPy parity, harvester, RK4 & knowledge graph
 ├── database/
@@ -242,7 +243,7 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 
 | Tool | Function |
 | :--- | :--- |
-| `kmath_audit` | Runs the Python (10-gate) & Rust (16-gate) engineering verification audits. |
+| `kmath_audit` | Runs the Python (13-gate) & Rust (20-gate) engineering + epistemic self-verification audits (33 gates total). |
 | `kmath_dimension_check` | Verifies $\mathbb{Z}^7$ SI dimensional homogeneity (`dim(LHS) == dim(RHS)`) for expressions. |
 | `kmath_prove_identity` | Proves polynomial/rational algebraic equivalence (`GuardedPoly`) with domain guards & overflow rejection. |
 | `kmath_interval_eval` | Evaluates expressions using IEEE 1788-2015 outward-rounded `Interval64` + `Dual64` sensitivity. |

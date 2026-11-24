@@ -22,6 +22,14 @@ struct RawMaterialJson {
     max_temperature_k: f64,
     thermal_conductivity_w_mk: f64,
     description: String,
+    #[serde(default)]
+    condition: String,
+    #[serde(default)]
+    failure_mode: String,
+    #[serde(default)]
+    yield_strength_range_mpa: Option<[f64; 2]>,
+    #[serde(default)]
+    sources: Vec<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -36,6 +44,10 @@ pub struct Material {
     pub max_temperature_k: f64,    // K
     pub thermal_conductivity: f64, // W/(m*K)
     pub description: String,
+    pub condition: String,
+    pub failure_mode: String,
+    pub yield_strength_range_mpa: Option<[f64; 2]>,
+    pub sources: Vec<String>,
 }
 
 impl Material {
@@ -107,6 +119,10 @@ impl MaterialsDatabase {
                 max_temperature_k: r.max_temperature_k,
                 thermal_conductivity: r.thermal_conductivity_w_mk,
                 description: r.description,
+                condition: r.condition,
+                failure_mode: r.failure_mode,
+                yield_strength_range_mpa: r.yield_strength_range_mpa,
+                sources: r.sources,
             })
             .collect();
         Self { list }

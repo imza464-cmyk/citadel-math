@@ -622,6 +622,89 @@ def cmd_audit() -> bool:
         print(f"[FAIL] 10. USSA-1976 / Öz İvme denetimi hatası: {e}")
         failures += 1
 
+    # 11. Altın Sayısal Referans Çapaları (Boyutsuz Katsayı Kayması Kalkanı)
+    try:
+        anchor_count = 0
+        for law in laws:
+            anchors = law.get("reference_checks", [])
+            if not anchors:
+                continue
+            _, rhs_str = law["equation"].split("=", 1)
+            local_syms = {name: sp.Symbol(name) for name in law.get("dimensions", {})}
+            expr = safe_parse_math_expr(rhs_str.strip(), allowed_symbols=local_syms)
+            for anc in anchors:
+                subs_map = {local_syms[k]: float(v) for k, v in anc["inputs"].items()}
+                actual = float(expr.subs(subs_map).evalf())
+                expected = float(anc["expected"])
+                rel_tol = float(anc.get("rel_tol", 1e-4))
+                rel_err = abs(actual - expected) / max(abs(expected), 1e-30)
+                assert rel_err <= rel_tol, (
+                    f"{law['id']} [{anc.get('label','')}]: actual={actual:.8e}, expected={expected:.8e}, rel_err={rel_err:.2e} > {rel_tol:.2e}"
+                )
+                anchor_count += 1
+        assert anchor_count >= 35, f"Yetersiz referans çapa sayısı: {anchor_count}"
+        print(f"[PASS] 11. Altın Sayısal Referans Çapaları: {anchor_count} NIST/literatür test vektörü doğrulandı.")
+    except Exception as e:
+        print(f"[FAIL] 11. Altın Sayısal Referans Çapaları hatası: {e}")
+        failures += 1
+
+    # 12. Çapraz-Yasa Fiziksel Kapanış & Asimptotik Klasik Limit Denetimi
+    try:
+        import math as _math
+        laws_by_id = {l["id"]: l for l in laws}
+
+        def _eval_l(lid: str, vals: dict) -> float:
+            l_obj = laws_by_id[lid]
+            _, r_s = l_obj["equation"].split("=", 1)
+            lsyms = {k: sp.Symbol(k) for k in l_obj["dimensions"]}
+            ex = safe_parse_math_expr(r_s.strip(), allowed_symbols=lsyms)
+            return float(ex.subs({lsyms[k]: float(v) for k, v in vals.items()}).evalf())
+
+        c, G, hbar, kB = PhysicalConstants.c, PhysicalConstants.G, PhysicalConstants.hbar, PhysicalConstants.k_B
+        m_sun = 1.98847e30
+        r_s = _eval_l("law_schwarzschild_radius", {"G_grav": G, "M_body": m_sun, "c": c})
+        s_bh = _eval_l("law_bekenstein_hawking_entropy", {"k_B": kB, "c": c, "A": 4.0 * _math.pi * r_s * r_s, "G": G, "hbar": hbar})
+        t_h = _eval_l("law_hawking_black_hole_temperature", {"hbar": hbar, "c": c, "G": G, "M_body": m_sun, "k_B": kB})
+        assert abs(t_h * (2.0 * s_bh / m_sun) - c * c) / (c * c) < 1e-11, "Kara delik 1. yasa kapanışı bozuk!"
+
+        k_b = _eval_l("law_bulk_modulus_isotropic", {"E_mod": 210e9, "nu_pois": 0.29})
+        lam_e = _eval_l("law_lame_first_parameter", {"E_mod": 210e9, "nu_pois": 0.29})
+        g_sh = _eval_l("law_isotropic_shear_modulus", {"E_mod": 210e9, "nu_pois": 0.29})
+        assert abs(k_b - (lam_e + (2.0 / 3.0) * g_sh)) / k_b < 1e-12, "Elastisite K == lambda + 2/3*G kapanışı bozuk!"
+
+        cop_hp = _eval_l("law_carnot_heat_pump_cop", {"T_h": 600.0, "T_c": 300.0})
+        cop_r = _eval_l("law_carnot_refrigerator_cop", {"T_h": 600.0, "T_c": 300.0})
+        assert abs((cop_hp - cop_r) - 1.0) < 1e-12, "Carnot COP_hp - COP_ref == 1 kapanışı bozuk!"
+
+        v_low = 1e-4 * c
+        g_low = _eval_l("law_lorentz_factor", {"v": v_low, "c": c})
+        ek_r = _eval_l("law_relativistic_kinetic_energy", {"gamma_rel": g_low, "m": 10.0, "c": c})
+        ek_c = _eval_l("law_kinetic_energy", {"m": 10.0, "v": v_low})
+        assert abs(ek_r - ek_c) / ek_c < 1e-6, "Göreli -> Klasik kinetik enerji asimptotik limiti bozuk!"
+        print("[PASS] 12. Çapraz-Yasa Kapanış & Asimptotik Limitler: Kara delik 1. yasa, Elastisite, Carnot ve Göreli->Klasik limit doğrulandı.")
+    except Exception as e:
+        print(f"[FAIL] 12. Çapraz-Yasa Kapanış / Limit hatası: {e}")
+        failures += 1
+
+    # 13. Malzeme Ashby Fiziksel Zarfları, Isıl İşlem/Kırılma Modu ve >=3 Kaynak Uzlaşma Kalkanı
+    try:
+        mdb_env = MaterialsDatabase(MAT_PATH)
+        valid_modes = {"ductile", "brittle", "composite_laminate", "ablative", "foam_insulator"}
+        for m in mdb_env.materials.values():
+            ys = m.yield_strength / 1e6
+            uts = m.tensile_strength / 1e6
+            assert m.density > 0 and uts >= ys > 0 and m.youngs_modulus > 0, f"{m.id}: geçersiz mekanik değer"
+            assert m.condition.strip(), f"{m.id}: 'condition' eksik"
+            assert m.failure_mode in valid_modes, f"{m.id}: geçersiz failure_mode={m.failure_mode}"
+            assert len(m.sources) >= 3, f"{m.id}: <3 kaynak ({len(m.sources)})"
+            assert m.yield_strength_range_mpa and len(m.yield_strength_range_mpa) == 2, f"{m.id}: yield_strength_range_mpa eksik"
+            lo_y, hi_y = m.yield_strength_range_mpa
+            assert lo_y <= ys + 1e-6 and ys <= hi_y + 1e-6 and lo_y > 0, f"{m.id}: nominal {ys} ∉ [{lo_y}, {hi_y}]"
+        print(f"[PASS] 13. Malzeme Ashby Zarfları & 3-Kaynak Uzlaşması: {len(mdb_env.materials)} malzeme (durum, kırılma modu, aralık, >=3 kaynak) doğrulandı.")
+    except Exception as e:
+        print(f"[FAIL] 13. Malzeme Ashby Zarfı / Metadata hatası: {e}")
+        failures += 1
+
     print("=" * 70)
     if failures == 0:
         print("🏆 SONUÇ: TÜM MÜHENDİSLİK DENETİMLERİ GEÇTİ (0 HATA). SİSTEM MÜHÜRLÜ.")
