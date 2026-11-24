@@ -20,9 +20,10 @@ RUN --mount=type=cache,target=/usr/local/cargo/registry \
 FROM python:3.12-slim-bookworm AS runtime
 
 LABEL org.opencontainers.image.title="Citadel-Math MCP Server" \
-      org.opencontainers.image.description="Deterministic Z^7 dimensional shield, checked-i64 proof kernel, IEEE 1788-2015 Interval64, and 15-tool offline MCP server" \
+      org.opencontainers.image.description="Deterministic Z^7 dimensional shield, checked-i64 algebraic identity checker, IEEE 1788-2015 Interval64, and 15-tool offline MCP server" \
       org.opencontainers.image.source="https://github.com/imza464-cmyk/citadel-math" \
-      org.opencontainers.image.licenses="AGPL-3.0-only"
+      org.opencontainers.image.licenses="AGPL-3.0-only" \
+      io.modelcontextprotocol.server.name="io.github.imza464-cmyk/citadel-math"
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

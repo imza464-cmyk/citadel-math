@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.imza464-cmyk/citadel-math",
+  "title": "Citadel-Math (kmath-mcp)",
+  "description": "Offline deterministic Z^7 SI dimensional shield, checked-i64 algebraic identity checker, IEEE 1788-2015 outward-rounded Interval64 engine, and 15-tool physics/engineering MCP server.",
+  "version": "0.2.1",
+  "repository": {
+    "url": "https://github.com/imza464-cmyk/citadel-math",
+    "source": "github"
+  },
+  "websiteUrl": "https://imza464-cmyk.github.io/citadel-math/",
+  "packages": [
+    {
+      "registryType": "oci",
+      "identifier": "ghcr.io/imza464-cmyk/citadel-math:0.2.1",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}

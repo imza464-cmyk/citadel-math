@@ -1,3 +1,4 @@
+<!-- mcp-name: io.github.imza464-cmyk/citadel-math -->
 # Citadel-Math (`citadel_math_core` / `kmath-mcp`)
 
 [![CI](https://github.com/imza464-cmyk/citadel-math/actions/workflows/ci.yml/badge.svg)](https://github.com/imza464-cmyk/citadel-math/actions/workflows/ci.yml)
@@ -9,6 +10,20 @@
 
 **$\mathbb{Z}^7$ Dimensional Analysis Shield, Checked-`i64` Algebraic Equivalence Checker, and Interval/Physics Verification Engine (Pure-Rust Core + Python/SymPy MCP Server).**  
 *$\mathbb{Z}^7$ Boyut Analizi Kalkanı, Taşma Korumalı `i64` Cebirsel Eşdeğerlik Denetleyicisi ve Aralık/Fizik Doğrulama Motoru (Saf-Rust Çekirdek + Python/SymPy MCP Sunucusu).*
+
+---
+
+## What It Catches in ~5 ms (Before / After)
+
+![Citadel-Math Live Guardrail Demo](./docs/demo_guardrail.svg)
+
+| Failure Mode | Without Citadel-Math (LLM Alone) | With Citadel-Math (`kmath-mcp`, ~5 ms offline) |
+| :--- | :--- | :--- |
+| **1000× SI Scale Bug** (`kN` vs `kg·m/s²`) | *"Dimensions match — both are force!"* (silent 1000× Mars-Climate-Orbiter bug) | Flags `DIMENSIONALLY_HOMOGENEOUS_BUT_UNIT_SCALE_MISMATCH` (`scale_ratio: 1000.0`) |
+| **Dropped Singularity** (`(x²-1)/(x-1) == x+1`) | *"Yes, identically equal."* (panics / divides by zero at `x = 1`) | Rejects unconditional equality; emits required domain guard **`x != 1`** |
+| **Floating-Point Drift** (`P·r/t` tolerances & `1000^(2+5e-13)`) | Returns a single optimistic `f64` midpoint that hides rounding & worst-case margins | Returns IEEE 1788-2015 outward-rounded enclosure (`0/1-ULP` tightest, verified by **25,000+ exact `BigInt` dyadic** + **80-digit `Decimal`** oracles) |
+| **Dimensionless Factor Bug** (`4·f_darcy·L/D` vs `f_darcy·L/D`) | Passes dimensional checks (since `4` is dimensionless) and leaks a 400% error | Blocked by **367/367 golden numerical anchors**, **1,031 `Dual64` Jacobian checks**, and **25 cross-law closures** |
+| **Prompt Injection via Math Input** (`__import__('os')...`) | `sympy.sympify()` executes arbitrary Python via `eval()` | Zero-`eval` AST whitelist blocks **11/11** RCE vectors (`0` `eval()` / `sympify()` calls) |
 
 ---
 

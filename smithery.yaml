@@ -1,0 +1,22 @@
+# Smithery configuration for Citadel-Math (kmath-mcp)
+# 100% offline deterministic Rust + Python MCP server — zero API keys required.
+runtime: "container"
+build:
+  dockerfile: "Dockerfile"
+  dockerBuildPath: "."
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |-
+    () => ({
+      command: "python",
+      args: ["/app/kmath_mcp.py"],
+      env: {
+        OPENBLAS_NUM_THREADS: "1",
+        PYTHONUNBUFFERED: "1"
+      }
+    })
+  exampleConfig: {}
