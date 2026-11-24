@@ -622,12 +622,14 @@ def cmd_audit() -> bool:
         print(f"[FAIL] 10. USSA-1976 / Öz İvme denetimi hatası: {e}")
         failures += 1
 
-    # 11. Altın Sayısal Referans Çapaları (Boyutsuz Katsayı Kayması Kalkanı)
+    # 11. Altın Sayısal Referans Çapaları (%100 Kapsam — Boyutsuz Katsayı Kayması Kalkanı)
     try:
         anchor_count = 0
+        missing_anchors = []
         for law in laws:
             anchors = law.get("reference_checks", [])
             if not anchors:
+                missing_anchors.append(law["id"])
                 continue
             _, rhs_str = law["equation"].split("=", 1)
             local_syms = {name: sp.Symbol(name) for name in law.get("dimensions", {})}
@@ -637,13 +639,13 @@ def cmd_audit() -> bool:
                 actual = float(expr.subs(subs_map).evalf())
                 expected = float(anc["expected"])
                 rel_tol = float(anc.get("rel_tol", 1e-4))
-                rel_err = abs(actual - expected) / max(abs(expected), 1e-30)
+                rel_err = abs(actual - expected) / max(abs(expected), 1e-300)
                 assert rel_err <= rel_tol, (
                     f"{law['id']} [{anc.get('label','')}]: actual={actual:.8e}, expected={expected:.8e}, rel_err={rel_err:.2e} > {rel_tol:.2e}"
                 )
                 anchor_count += 1
-        assert anchor_count >= 35, f"Yetersiz referans çapa sayısı: {anchor_count}"
-        print(f"[PASS] 11. Altın Sayısal Referans Çapaları: {anchor_count} NIST/literatür test vektörü doğrulandı.")
+        assert not missing_anchors, f"%100 çapa kapsamı ihlali — {len(missing_anchors)} yasada reference_checks eksik: {missing_anchors[:5]}"
+        print(f"[PASS] 11. Altın Sayısal Referans Çapaları (%100 Kapsam): {anchor_count}/{len(laws)} yasa test vektörü doğrulandı.")
     except Exception as e:
         print(f"[FAIL] 11. Altın Sayısal Referans Çapaları hatası: {e}")
         failures += 1
@@ -681,7 +683,12 @@ def cmd_audit() -> bool:
         ek_r = _eval_l("law_relativistic_kinetic_energy", {"gamma_rel": g_low, "m": 10.0, "c": c})
         ek_c = _eval_l("law_kinetic_energy", {"m": 10.0, "v": v_low})
         assert abs(ek_r - ek_c) / ek_c < 1e-6, "Göreli -> Klasik kinetik enerji asimptotik limiti bozuk!"
-        print("[PASS] 12. Çapraz-Yasa Kapanış & Asimptotik Limitler: Kara delik 1. yasa, Elastisite, Carnot ve Göreli->Klasik limit doğrulandı.")
+
+        fanno_v = _eval_l("law_fanno_friction_parameter", {"f_darcy": 0.02, "L": 10.0, "D_pipe": 0.1})
+        dp_dw = _eval_l("law_darcy_weisbach_pressure_drop", {"f_darcy": 0.02, "L": 10.0, "D_pipe": 0.1, "rho": 1000.0, "v": 2.0})
+        q_dyn = _eval_l("law_dynamic_pressure", {"rho": 1000.0, "v": 2.0})
+        assert abs(fanno_v - (dp_dw / q_dyn)) / fanno_v < 1e-12, "Fanno Darcy == dP_dw / q_dyn kapanışı bozuk!"
+        print("[PASS] 12. Çapraz-Yasa Kapanış & Asimptotik Limitler: Kara delik 1. yasa, Elastisite, Carnot, Fanno-Darcy ve Göreli->Klasik limit doğrulandı.")
     except Exception as e:
         print(f"[FAIL] 12. Çapraz-Yasa Kapanış / Limit hatası: {e}")
         failures += 1

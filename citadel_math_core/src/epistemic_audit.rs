@@ -61,8 +61,10 @@ pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<usize, String> {
         .map_err(|e| format!("reference_checks JSON ayrıştırma hatası: {}", e))?;
 
     let mut checked = 0usize;
+    let mut missing_anchor_laws = Vec::new();
     for item in &raw_laws {
         if item.reference_checks.is_empty() {
+            missing_anchor_laws.push(item.id.clone());
             continue;
         }
         let law = kg
@@ -81,7 +83,7 @@ pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<usize, String> {
                     item.id, anchor.label, e
                 )
             })?;
-            let denom = anchor.expected.abs().max(1e-30);
+            let denom = anchor.expected.abs().max(1e-300);
             let rel_err = (actual - anchor.expected).abs() / denom;
             if !actual.is_finite() || rel_err > anchor.rel_tol {
                 return Err(format!(
@@ -93,10 +95,18 @@ pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<usize, String> {
         }
     }
 
-    if checked < 35 {
+    if !missing_anchor_laws.is_empty() {
         return Err(format!(
-            "Yetersiz altın referans çapa kapsamı: {} (en az 35 bekleniyor)",
-            checked
+            "%100 altın referans çapa zorunluluğu ihlali: {} yasada reference_checks eksik (ilkler: {:?})",
+            missing_anchor_laws.len(),
+            &missing_anchor_laws[..missing_anchor_laws.len().min(5)]
+        ));
+    }
+    if checked < kg.laws.len() {
+        return Err(format!(
+            "Yetersiz altın referans çapa kapsamı: {} < {} yasa",
+            checked,
+            kg.laws.len()
         ));
     }
     Ok(checked)
@@ -114,7 +124,7 @@ fn eval_law(kg: &KnowledgeGraph, id: &str, pairs: &[(&str, f64)]) -> Result<f64,
 }
 
 fn check_rel(name: &str, lhs: f64, rhs: f64, tol: f64) -> Result<(), String> {
-    let denom = rhs.abs().max(lhs.abs()).max(1e-30);
+    let denom = rhs.abs().max(lhs.abs()).max(1e-300);
     let err = (lhs - rhs).abs() / denom;
     if !lhs.is_finite() || !rhs.is_finite() || err > tol {
         return Err(format!(
@@ -125,7 +135,7 @@ fn check_rel(name: &str, lhs: f64, rhs: f64, tol: f64) -> Result<(), String> {
     Ok(())
 }
 
-/// Kapı 18: 14 bağımsız fiziksel çapraz-yasa cebirsel kapanış özdeşliğini doğrular.
+/// Kapı 18: 15 bağımsız fiziksel çapraz-yasa cebirsel kapanış özdeşliğini doğrular.
 /// Tek bir yasada boyutsuz katsayı (örn. 8π, 1/4, 1/3, 1/48, 2/3, 4/3) bozulursa kapanış anında kırılır.
 pub fn verify_cross_law_closures(kg: &KnowledgeGraph) -> Result<usize, String> {
     let c = PhysicalConstants::C;
@@ -287,7 +297,16 @@ pub fn verify_cross_law_closures(kg: &KnowledgeGraph) -> Result<usize, String> {
     let p_ph = eval_law(kg, "law_photon_momentum", &[("h", h), ("lambda_em", lam_ph)])?;
     check_rel("Photon_E==p*c", e_ph, p_ph * c, 1e-12)?;
 
-    Ok(14)
+    // 15. Fanno vs Darcy-Weisbach Darcy/Fanning Tutarlılık Kapanışı: fanno_param == delta_P_dw / q_dyn
+    let f_param = eval_law(
+        kg,
+        "law_fanno_friction_parameter",
+        &[("f_darcy", 0.02), ("L", 50.0), ("D_pipe", 0.1)],
+    )?;
+    let q_pipe = eval_law(kg, "law_dynamic_pressure", &[("rho", rho_f), ("v", v_f)])?;
+    check_rel("Fanno_Darcy==dP_dw/q_dyn", f_param, dp_dw / q_pipe, 1e-12)?;
+
+    Ok(15)
 }
 
 /// Kapı 19: Asimptotik klasik limit yakınsaması (5 limit) ve Dual64 kısmi türev işaret/monotonluk (12 işaret) denetimi.
@@ -600,8 +619,8 @@ mod tests {
         let kg = KnowledgeGraph::new();
         let mdb = MaterialsDatabase::load_canonical();
         let rep = run_full_epistemic_audit(&kg, &mdb).expect("4-katmanlı epistemik denetim geçmeli!");
-        assert!(rep.reference_anchors_checked >= 40);
-        assert_eq!(rep.cross_law_closures_checked, 14);
+        assert!(rep.reference_anchors_checked >= 307);
+        assert_eq!(rep.cross_law_closures_checked, 15);
         assert_eq!(rep.asymptotic_and_monotonicity_checked, 17);
         assert_eq!(rep.materials_ashby_checked, 60);
     }

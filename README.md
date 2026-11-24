@@ -207,7 +207,7 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 ├── LICENSE                         # Official verbatim GNU Affero General Public License v3.0 (AGPL-3.0-only)
 ├── pyproject.toml                  # PEP 621 / Hatchling package (`kmath-mcp` + `kmath` CLI, bundled SSOT)
 ├── SECURITY.md                     # Threat model, zero-eval parser policy & vulnerability disclosure
-├── kmath.py                        # Verification cockpit CLI (10 Python SSOT + 16 Rust audit gates)
+├── kmath.py                        # Verification cockpit CLI (13 Python SSOT + 20 Rust audit gates)
 ├── kmath_mcp.py                    # 15-Tool Model Context Protocol (MCP) Server (zero-eval AST input parser)
 ├── mcp_config.example.json         # Portable local MCP client configuration example
 ├── tests/
@@ -226,7 +226,7 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 │       ├── cad.rs                  # 2D parametric CAD, Steiner/moment of inertia, Euler buckling & DXF/SVG
 │       ├── designer.rs             # Closed-loop parametric preliminary sizing engine
 │       ├── codegen.rs              # Verified zero-panic Result<f64, &'static str> Rust function generator
-│       ├── epistemic_audit.rs      # 4-layer epistemic shield (45 anchors, 14 closures, limits/Dual64, Ashby)
+│       ├── epistemic_audit.rs      # 4-layer epistemic shield (307/307 anchors [100%], 15 closures, limits/Dual64, Ashby)
 │       └── physical_bounds.rs      # Thermodynamics 1st/2nd law (Carnot), v < c causality & momentum pruning
 ├── engine/                         # Python symbolic AST, SymPy parity, harvester, RK4 & knowledge graph
 ├── database/
