@@ -783,3 +783,43 @@ impl KnowledgeGraph {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_regime_compatibility_guards() {
+        assert!(are_regimes_compatible("universal", "hypersonic_continuum"));
+        assert!(are_regimes_compatible("keplerian", "keplerian"));
+        assert!(!are_regimes_compatible("incompressible_subsonic", "supersonic"));
+        assert!(!are_regimes_compatible("incompressible_subsonic", "hypersonic_continuum"));
+        assert!(!are_regimes_compatible("supersonic", "hypersonic_continuum"));
+    }
+
+    #[test]
+    fn test_var_bound_intersection_and_empty_rejection() {
+        let a = VarBound { min: Some(0.0), max: Some(10.0), min_inclusive: true, max_inclusive: true, note: String::new() };
+        let b = VarBound { min: Some(5.0), max: Some(20.0), min_inclusive: false, max_inclusive: true, note: String::new() };
+        let inter = a.intersect(&b, "x").unwrap();
+        assert_eq!(inter.min, Some(5.0));
+        assert!(!inter.min_inclusive);
+        assert_eq!(inter.max, Some(10.0));
+        assert!(inter.check_value("x", 5.0).is_err());
+        assert!(inter.check_value("x", 7.5).is_ok());
+
+        let disjoint = VarBound { min: Some(15.0), max: Some(25.0), min_inclusive: true, max_inclusive: true, note: String::new() };
+        assert!(a.intersect(&disjoint, "x").is_err(), "Ayrık aralıkların kesişimi boş küme olarak reddedilmeli!");
+    }
+
+    #[test]
+    fn test_hypergraph_loads_367_laws_and_synthesizes_kinematic_chain() {
+        let mut kg = KnowledgeGraph::new();
+        assert_eq!(kg.law_order.len(), 367);
+        kg.register_algebraic_inversions();
+        let inputs: HashSet<&str> = ["F", "m", "t"].into_iter().collect();
+        let results = kg.synthesize_formulas(&inputs, "E_k", 3);
+        assert!(!results.is_empty(), "F, m, t girdilerinden E_k sentezlenebilmeli!");
+        assert_eq!(results[0].inferred_dimension, Dimension::energy());
+    }
+}

@@ -467,3 +467,103 @@ impl ParetoSynthesizer {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_dominates_strict_partial_order_axioms() {
+        let a = [1.0, 2.0];
+        let b = [2.0, 2.0];
+        let c = [2.0, 3.0];
+        // Yansımasızlık
+        assert!(!ParetoSynthesizer::dominates_canonical(&a, &a));
+        // Asimetri
+        assert!(ParetoSynthesizer::dominates_canonical(&a, &b));
+        assert!(!ParetoSynthesizer::dominates_canonical(&b, &a));
+        // Geçişlilik
+        assert!(ParetoSynthesizer::dominates_canonical(&b, &c));
+        assert!(ParetoSynthesizer::dominates_canonical(&a, &c));
+        // NaN reddi
+        assert!(!ParetoSynthesizer::dominates_canonical(&[f64::NAN, 1.0], &b));
+    }
+
+    #[test]
+    fn test_exact_2d_hypervolume_and_multifront_ranking() {
+        // Min f1, Min f2:
+        // F0: (1, 4), (2, 2), (4, 1) -> Nadir = (4, 4).
+        // Analitik alan (hiperhacim): [1,2]x[0,0]? Hayır, nadir=(4,4):
+        //   (1,4): (4-1)*(4-4) = 0
+        //   (2,2): (4-2)*(4-2) = 4
+        //   (4,1): (4-4)*(4-1) = 0
+        // Birleşim alanı (ref=(4,4)): dikdörtgenler [1,4]x[4,4]=0, [2,4]x[2,4]=4, [4,4]x[1,4]=0 => 4.0!
+        // Daha zengin test: F0 = (1, 5), (2, 3), (4, 2), (5, 1) -> nadir=(5,5):
+        //   x in [1,2]: y_top=5 -> (5-5)=0
+        //   x in [2,4]: y_top=3 -> 2*(5-3)=4
+        //   x in [4,5]: y_top=2 -> 1*(5-2)=3  => toplam raw HV = 7.0!
+        let specs = vec![
+            ObjectiveSpec::minimize("cost", "$"),
+            ObjectiveSpec::minimize("mass", "kg"),
+        ];
+        let matrix = vec![
+            vec![1.0, 5.0], // 0 -> F0
+            vec![2.0, 3.0], // 1 -> F0
+            vec![4.0, 2.0], // 2 -> F0
+            vec![5.0, 1.0], // 3 -> F0
+            vec![3.0, 4.0], // 4 -> F1 (dominated by 1)
+            vec![6.0, 6.0], // 5 -> F2 (dominated by all)
+        ];
+        let rep = ParetoSynthesizer::analyze(&specs, &matrix).unwrap();
+        ParetoSynthesizer::verify_skyline_invariants(&specs, &matrix, &rep).unwrap();
+        let mut sorted_sky = rep.skyline_indices.clone();
+        sorted_sky.sort();
+        assert_eq!(sorted_sky, vec![0, 1, 2, 3]);
+        assert_eq!(rep.num_fronts, 3);
+        assert_eq!(rep.fronts[1], vec![4]);
+        assert_eq!(rep.fronts[2], vec![5]);
+        // Doğrudan nadir (5,5) referansına karşı analitik alan = 7.0;
+        // analyze() %10 marjlı nadir (5.4, 5.4) kullandığından raw HV = 7.0 + 0.4*4.4 + 0.4*4.0 = 10.36 tam!
+        let exact_nadir_hv = ParetoSynthesizer::exact_hypervolume_2d(
+            &[(1.0, 5.0), (2.0, 3.0), (4.0, 2.0), (5.0, 1.0)],
+            (5.0, 5.0),
+        );
+        assert!((exact_nadir_hv - 7.0).abs() < 1e-12, "Nadir (5,5) analitik HV 7.0 olmalıydı, bulunan: {}", exact_nadir_hv);
+        let hv = rep.raw_hypervolume_2d.unwrap();
+        assert!((hv - 10.36).abs() < 1e-12, "%10 marjlı (5.4, 5.4) analitik HV 10.36 olmalıydı, bulunan: {}", hv);
+        let norm_hv = rep.normalized_hypervolume_2d.unwrap();
+        assert!((norm_hv - (10.36 / (4.4 * 4.4))).abs() < 1e-12);
+    }
+
+    #[test]
+    fn test_mixed_minimize_maximize_and_knee_selection() {
+        let specs = vec![
+            ObjectiveSpec::minimize("mass", "kg"),
+            ObjectiveSpec::maximize("payload", "kg"),
+        ];
+        let matrix = vec![
+            vec![100.0, 10.0], // ucuz ama düşük yük
+            vec![120.0, 80.0], // açık diz noktası (knee)
+            vec![200.0, 90.0], // ağır, az ek yük
+            vec![150.0, 50.0], // baskılanmış (120, 80 tarafından)
+        ];
+        let rep = ParetoSynthesizer::analyze(&specs, &matrix).unwrap();
+        ParetoSynthesizer::verify_skyline_invariants(&specs, &matrix, &rep).unwrap();
+        assert_eq!(rep.skyline_count, 3);
+        assert_eq!(rep.knee_candidate_index, Some(1));
+        // Sınır noktalarının kalabalık mesafesi sonsuz olmalıdır
+        assert!(rep.point_metrics[0].crowding_distance.is_infinite());
+        assert!(rep.point_metrics[2].crowding_distance.is_infinite());
+        assert!(rep.point_metrics[1].crowding_distance.is_finite());
+    }
+
+    #[test]
+    fn test_pareto_edge_cases_and_validation() {
+        let specs = vec![ObjectiveSpec::minimize("x", "")];
+        let empty = ParetoSynthesizer::analyze(&specs, &[]).unwrap();
+        assert_eq!(empty.total_feasible, 0);
+        assert!(ParetoSynthesizer::analyze(&[], &[vec![1.0]]).is_err());
+        assert!(ParetoSynthesizer::analyze(&specs, &[vec![1.0, 2.0]]).is_err());
+        assert!(ParetoSynthesizer::analyze(&specs, &[vec![f64::NAN]]).is_err());
+    }
+}

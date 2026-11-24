@@ -1055,3 +1055,99 @@ fn solve_linear_f64(mut aug: Vec<Vec<f64>>) -> Option<Vec<f64>> {
     }
     Some(aug.into_iter().map(|row| row[n]).collect())
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_reynolds_number_exact_nullspace_discovery() {
+        let vars = vec![
+            ("rho".to_string(), Dimension::density()),
+            ("v".to_string(), Dimension::velocity()),
+            ("L".to_string(), Dimension::length()),
+            ("mu_dyn".to_string(), Dimension::dynamic_viscosity()),
+        ];
+        let rep = BuckinghamPiSolver::discover(&vars, None, &["rho", "v", "L"], &[]).unwrap();
+        assert_eq!(rep.dimensional_rank, 3);
+        assert_eq!(rep.num_pi_groups, 1);
+        let pi = &rep.pi_groups[0];
+        assert!(
+            pi.recognized_number.as_deref().unwrap_or("").contains("Reynolds"),
+            "Reynolds sayısı tanınmalıydı: {:?}", pi.recognized_number
+        );
+        // Tüm üsler Reynolds (rho*v*L/mu veya tersi) oranında olmalı
+        let map: HashMap<&str, i64> = pi.exponents.iter().map(|(k, v)| (k.as_str(), *v)).collect();
+        assert_eq!(map["rho"], map["v"]);
+        assert_eq!(map["v"], map["L"]);
+        assert_eq!(map["mu_dyn"], -map["rho"]);
+    }
+
+    #[test]
+    fn test_taylor_sedov_blast_wave_exact_fifth_root_scaling() {
+        // G. I. Taylor (1950): R ~ (E * t^2 / rho)^(1/5) => Pi = R^5 * rho / (E * t^2)
+        let vars = vec![
+            ("E".to_string(), Dimension::energy()),
+            ("rho".to_string(), Dimension::density()),
+            ("t".to_string(), Dimension::time()),
+            ("R".to_string(), Dimension::length()),
+        ];
+        let rep = BuckinghamPiSolver::discover(&vars, Some("R"), &["E", "rho", "t"], &[]).unwrap();
+        assert_eq!(rep.dimensional_rank, 3);
+        assert_eq!(rep.num_pi_groups, 1);
+        assert!(rep.target_identifiable);
+        let map: HashMap<&str, i64> = rep.pi_groups[0].exponents.iter().map(|(k, v)| (k.as_str(), *v)).collect();
+        assert_eq!(map["R"].abs(), 5);
+        assert_eq!(map["t"], -2 * (map["R"] / 5));
+        assert_eq!(map["E"], -(map["R"] / 5));
+        assert_eq!(map["rho"], map["R"] / 5);
+    }
+
+    #[test]
+    fn test_pendulum_period_mass_drops_out_automatically() {
+        // Sarkaç periyodu T(m, L, g): kütle m hiçbir boyutsuz grupta yer alamaz (üs = 0)!
+        let vars = vec![
+            ("m".to_string(), Dimension::mass()),
+            ("L".to_string(), Dimension::length()),
+            ("g".to_string(), Dimension::acceleration()),
+            ("T".to_string(), Dimension::time()),
+        ];
+        let rep = BuckinghamPiSolver::discover(&vars, Some("T"), &["L", "g"], &[]).unwrap();
+        assert_eq!(rep.dimensional_rank, 3);
+        assert_eq!(rep.num_pi_groups, 1);
+        let has_mass = rep.pi_groups[0].exponents.iter().any(|(k, e)| k == "m" && *e != 0);
+        assert!(!has_mass, "Sarkaç periyodunda kütle elenmeli!");
+    }
+
+    #[test]
+    fn test_empirical_power_law_calibration_recovers_exact_prefactor() {
+        // T = 2*pi * sqrt(L / g) sentetik verisinden C_pi ≈ 2*pi = 6.2831853 geri kazanılmalı!
+        let vars = vec![
+            ("L".to_string(), Dimension::length()),
+            ("g".to_string(), Dimension::acceleration()),
+            ("T".to_string(), Dimension::time()),
+        ];
+        let mut samples = Vec::new();
+        for &(l, g) in &[(0.5_f64, 9.81_f64), (1.0, 9.81), (2.5, 9.81), (1.0, 1.62), (4.0, 3.71)] {
+            let mut s = HashMap::new();
+            s.insert("L".to_string(), l);
+            s.insert("g".to_string(), g);
+            s.insert("T".to_string(), 2.0 * std::f64::consts::PI * (l / g).sqrt());
+            samples.push(s);
+        }
+        let rep = BuckinghamPiSolver::discover(&vars, Some("T"), &["L", "g"], &samples).unwrap();
+        let fit = rep.empirical_fit.expect("Ampirik kalibrasyon üretilmeli!");
+        assert!((fit.coefficient_c_pi - 2.0 * std::f64::consts::PI).abs() < 1e-6);
+        assert!(fit.r_squared > 0.999999);
+    }
+
+    #[test]
+    fn test_parse_variable_specs_json_and_csv_and_errors() {
+        let parsed = BuckinghamPiSolver::parse_variable_specs("F:force, rho:density, v:velocity, L:length").unwrap();
+        assert_eq!(parsed.len(), 4);
+        let parsed_json = BuckinghamPiSolver::parse_variable_specs(r#"{"r":"length","E":"energy"}"#).unwrap();
+        assert_eq!(parsed_json.len(), 2);
+        assert!(BuckinghamPiSolver::parse_variable_specs("").is_err());
+        assert!(BuckinghamPiSolver::parse_variable_specs("x:not_a_real_dim").is_err());
+    }
+}

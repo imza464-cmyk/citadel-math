@@ -1461,3 +1461,72 @@ impl fmt::Display for Expr {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parser_operator_precedence_and_errors() {
+        let e1 = Expr::parse_str("2 + 3 * 4^2").unwrap();
+        assert!((e1.evaluate(&HashMap::new()).unwrap() - 50.0).abs() < 1e-12);
+
+        let e2 = Expr::parse_str("-(3^2) + (-3)^2").unwrap();
+        assert!(e2.evaluate(&HashMap::new()).unwrap().abs() < 1e-12);
+
+        assert!(Expr::parse_str("").is_err());
+        assert!(Expr::parse_str("(1 + 2").is_err());
+        assert!(Expr::parse_str("1 + * 2").is_err());
+        assert!(Expr::parse_str("system(1)").is_err());
+    }
+
+    #[test]
+    fn test_infer_dimension_rejects_heterogeneous_add_and_dimensional_transcendentals() {
+        let mut dims = HashMap::new();
+        dims.insert("L".to_string(), Dimension::length());
+        dims.insert("t".to_string(), Dimension::time());
+        dims.insert("v".to_string(), Dimension::velocity());
+
+        let ok = Expr::parse_str("L / t + v").unwrap();
+        assert_eq!(ok.infer_dimension(&dims).unwrap(), Dimension::velocity());
+
+        let bad_add = Expr::parse_str("L + t").unwrap();
+        assert!(bad_add.infer_dimension(&dims).is_err(), "L + t reddedilmeli!");
+
+        let bad_exp = Expr::parse_str("exp(L)").unwrap();
+        assert!(bad_exp.infer_dimension(&dims).is_err(), "exp(L) boyutsuz argüman zorunluluğu!");
+
+        let bad_ln = Expr::parse_str("ln(v)").unwrap();
+        assert!(bad_ln.infer_dimension(&dims).is_err(), "ln(v) reddedilmeli!");
+    }
+
+    #[test]
+    fn test_interval_mean_value_tightening_reduces_dependency_overestimation() {
+        // f(x) = x - x^2 on [0.4, 0.6]: exact range is [0.24, 0.25].
+        // Naive interval gives [0.4,0.6] - [0.16,0.36] = [0.04, 0.44] (width 0.40).
+        // Mean-Value / Taylor form dramatically tightens the enclosure while remaining sound!
+        let expr = Expr::parse_str("x - x^2").unwrap();
+        let mut env = HashMap::new();
+        env.insert("x", Interval64::new(0.4, 0.6).unwrap());
+        let naive = expr.eval_interval(&env).unwrap();
+        let tight = expr.eval_taylor_interval(&env).unwrap();
+        assert!(tight.contains(0.24) && tight.contains(0.25));
+        assert!(tight.width() < naive.width(), "Mean-Value daraltması naif aralıktan dar olmalı!");
+    }
+
+    #[test]
+    fn test_symbolic_differentiation_and_solve_for_roundtrip() {
+        let expr = Expr::parse_str("v_e * ln(m_0 / m_f)").unwrap();
+        let deriv = expr.differentiate("m_0").unwrap();
+        let mut pt = HashMap::new();
+        pt.insert("v_e", 3000.0);
+        pt.insert("m_0", 10.0);
+        pt.insert("m_f", 2.0);
+        // d(v_e * ln(m_0 / m_f))/d(m_0) = v_e / m_0 = 300.0
+        assert!((deriv.evaluate(&pt).unwrap() - 300.0).abs() < 1e-11);
+
+        let (inv_m0, _) = Expr::solve_for(&Expr::Variable("dv".to_string()), &expr, "m_0").unwrap();
+        pt.insert("dv", expr.evaluate(&pt).unwrap());
+        assert!((inv_m0.evaluate(&pt).unwrap() - 10.0).abs() < 1e-10);
+    }
+}

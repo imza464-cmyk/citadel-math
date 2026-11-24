@@ -26,3 +26,28 @@ impl PhysicalConstants {
     pub const V_ORBIT_LEO: f64 = 7_800.0;                 // LEO Yörünge Hızı (m/s)
     pub const V_ESCAPE_EARTH: f64 = 11_186.0;             // Kaçış Hızı (m/s)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::f64::consts::PI;
+
+    #[test]
+    fn test_2019_si_exact_definitions_and_codata_2022_identities() {
+        // hbar == h / (2*pi)
+        assert!((PhysicalConstants::HBAR - PhysicalConstants::H / (2.0 * PI)).abs() < 1e-49);
+        // R_gas == N_A * k_B (2019 SI exact)
+        assert!((PhysicalConstants::R_GAS - PhysicalConstants::N_A * PhysicalConstants::K_B).abs() < 1e-14);
+        // Stefan-Boltzmann exact 2019 SI identity: pi^2 * k_B^4 / (60 * hbar^3 * c^2)
+        let sigma_exact = (PI.powi(2) * PhysicalConstants::K_B.powi(4))
+            / (60.0 * PhysicalConstants::HBAR.powi(3) * PhysicalConstants::C.powi(2));
+        assert!((PhysicalConstants::SIGMA_SB - sigma_exact).abs() / sigma_exact < 1e-15);
+        // Maxwell vacuum identity: mu_0 * eps_0 * c^2 == 1
+        let maxwell = PhysicalConstants::MU_0 * PhysicalConstants::EPS_0 * PhysicalConstants::C.powi(2);
+        assert!((maxwell - 1.0).abs() < 2e-10);
+        // QED fine-structure identity: 2 * alpha * h / (mu_0 * c * e^2) == 1
+        let qed = (2.0 * PhysicalConstants::ALPHA * PhysicalConstants::H)
+            / (PhysicalConstants::MU_0 * PhysicalConstants::C * PhysicalConstants::E.powi(2));
+        assert!((qed - 1.0).abs() < 2e-10);
+    }
+}

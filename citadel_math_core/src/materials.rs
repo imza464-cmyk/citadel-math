@@ -500,3 +500,73 @@ impl StructuralStressChecker {
         )
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_canonical_database_loads_80_materials_across_categories() {
+        let db = MaterialsDatabase::load_canonical();
+        assert_eq!(db.list.len(), 80);
+        for id in ["mat_alli_2195", "mat_pica_x", "mat_steel_s355", "mat_viton_fkm", "mat_cocrmo_f75", "mat_silver_pure_ag"] {
+            assert!(db.get(id).is_some(), "Beklenen malzeme eksik: {}", id);
+        }
+        let ranked = db.rank_by_breaking_length();
+        assert!(ranked[0].breaking_length_km() >= ranked[1].breaking_length_km());
+        assert!(ranked.last().unwrap().specific_strength() > 0.0);
+    }
+
+    #[test]
+    fn test_thermal_derating_monotonicity_and_melting_cutoff() {
+        let db = MaterialsDatabase::load_canonical();
+        let alli = db.get("mat_alli_2195").unwrap();
+        let (y_300, e_300) = alli.derated_properties_at_temp_k(300.0);
+        assert_eq!(y_300, alli.yield_strength);
+        assert_eq!(e_300, alli.youngs_modulus);
+
+        let t_mid = 0.5 * (300.0 + alli.max_temperature_k);
+        let (y_mid, e_mid) = alli.derated_properties_at_temp_k(t_mid);
+        assert!(y_mid < y_300 && y_mid >= 0.65 * y_300);
+        assert!(e_mid < e_300 && e_mid >= 0.75 * e_300);
+
+        let (y_over, e_over) = alli.derated_properties_at_temp_k(alli.max_temperature_k + 1.0);
+        assert_eq!(y_over, 0.0);
+        assert_eq!(e_over, 0.0);
+    }
+
+    #[test]
+    fn test_thin_wall_cylinder_biaxial_von_mises_analytical_match() {
+        let db = MaterialsDatabase::load_canonical();
+        let alli = db.get("mat_alli_2195").unwrap();
+        // m=45000 kg, g=4.5, q=35000 Pa, r=1.8 m, t=5.0 mm, P=4.0 bar
+        let (vm, sf, ok) = StructuralStressChecker::check_hull_at_temp_with_pressure(
+            alli, 45_000.0, 4.5, 35_000.0, 1.8, 5.0, 293.15, 4.0,
+        );
+        let r = 1.8_f64;
+        let t = 0.005_f64;
+        let f_ax = 45_000.0 * 4.5 * PhysicalConstants::G0 + 35_000.0 * 0.30 * PI * r * r;
+        let sz = -f_ax / (2.0 * PI * r * t);
+        let st = (400_000.0 * r) / t;
+        let expected_vm = (sz * sz - sz * st + st * st).sqrt();
+        assert!((vm - expected_vm).abs() / expected_vm < 1e-12);
+        assert!((sf - alli.yield_strength / expected_vm).abs() < 1e-9);
+        assert!(ok);
+    }
+
+    #[test]
+    fn test_buckling_slenderness_limit_and_hypersonic_tps_sizing() {
+        let db = MaterialsDatabase::load_canonical();
+        let alli = db.get("mat_alli_2195").unwrap();
+        // L / D = 40 / 2 = 20 > 18.0 -> narinlik reddi
+        let (_, _, slender_ok) = StructuralStressChecker::check_cylinder_buckling(
+            alli, 10_000.0, 3.0, 20_000.0, 1.0, 40.0, 5.0,
+        );
+        assert!(!slender_ok, "L/D > 18 narinlik sınırı reddedilmeli!");
+
+        // Hipersonik ısı akısı altında otomatik PICA-X TPS devreye girmeli ve bağ hattını korumalı
+        let tps = StructuralStressChecker::size_ablative_tps(alli, 3000.0, 1.8, 60.0);
+        assert!(tps.tps_required && tps.tps_thickness_mm > 0.0 && tps.tps_mass_kg > 0.0);
+        assert!(tps.protected_bondline_temp_k <= alli.max_temperature_k);
+    }
+}

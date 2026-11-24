@@ -243,3 +243,99 @@ impl PhysicalBoundsShield {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_subluminal_lorentz_exact_and_causality_rejection() {
+        let g06 = PhysicalBoundsShield::check_subluminal_velocity(0.6 * PhysicalConstants::C).unwrap();
+        assert!((g06 - 1.25).abs() < 1e-12);
+        let g08 = PhysicalBoundsShield::check_subluminal_velocity(0.8 * PhysicalConstants::C).unwrap();
+        assert!((g08 - (5.0 / 3.0)).abs() < 1e-12);
+        assert!(matches!(
+            PhysicalBoundsShield::check_subluminal_velocity(PhysicalConstants::C),
+            Err(PhysicalLawViolation::SuperluminalCausalityViolation { .. })
+        ));
+        assert!(matches!(
+            PhysicalBoundsShield::check_subluminal_velocity(f64::NAN),
+            Err(PhysicalLawViolation::NonPhysicalState(_))
+        ));
+    }
+
+    #[test]
+    fn test_carnot_bound_and_first_law_enforcement() {
+        let ok_engine = PhysicalSystemCandidate {
+            temp_hot_k: Some(600.0),
+            temp_cold_k: Some(300.0),
+            efficiency: Some(0.49),
+            power_in_w: Some(1000.0),
+            power_out_w: Some(490.0),
+            ..Default::default()
+        };
+        assert!(PhysicalBoundsShield::verify_candidate(&ok_engine).is_ok());
+
+        let bad_carnot = PhysicalSystemCandidate {
+            temp_hot_k: Some(600.0),
+            temp_cold_k: Some(300.0),
+            efficiency: Some(0.55), // > 0.50 Carnot
+            ..Default::default()
+        };
+        assert!(matches!(
+            PhysicalBoundsShield::verify_candidate(&bad_carnot),
+            Err(PhysicalLawViolation::CarnotBoundViolation { .. })
+        ));
+
+        let perpetual = PhysicalSystemCandidate {
+            power_in_w: Some(1000.0),
+            power_out_w: Some(1200.0),
+            ..Default::default()
+        };
+        assert!(matches!(
+            PhysicalBoundsShield::verify_candidate(&perpetual),
+            Err(PhysicalLawViolation::FirstLawEnergyViolation { .. })
+        ));
+    }
+
+    #[test]
+    fn test_reactionless_drive_rejected_but_ideal_photon_mirror_passes() {
+        let p_in = 1.0e6; // 1 MW
+        let f_photon_max = (2.0 * p_in) / PhysicalConstants::C;
+        let photon_sail = PhysicalSystemCandidate {
+            mass_flow_kg_s: Some(0.0),
+            power_in_w: Some(p_in),
+            thrust_n: Some(f_photon_max * 0.99),
+            ..Default::default()
+        };
+        assert!(PhysicalBoundsShield::verify_candidate(&photon_sail).is_ok());
+
+        let emdrive = PhysicalSystemCandidate {
+            mass_flow_kg_s: Some(0.0),
+            power_in_w: Some(p_in),
+            thrust_n: Some(1.0), // 1 N >> 6.67 mN photon limit!
+            ..Default::default()
+        };
+        assert!(matches!(
+            PhysicalBoundsShield::verify_candidate(&emdrive),
+            Err(PhysicalLawViolation::ReactionlessMomentumViolation { .. })
+        ));
+    }
+
+    #[test]
+    fn test_collect_violations_reports_all_simultaneous_breaches() {
+        let impossible = PhysicalSystemCandidate {
+            mass_kg: Some(10.0),
+            velocity_ms: Some(1.2 * PhysicalConstants::C),
+            entropy_delta_j_k: Some(-5.0),
+            temp_hot_k: Some(600.0),
+            temp_cold_k: Some(300.0),
+            efficiency: Some(0.80),
+            power_in_w: Some(100.0),
+            power_out_w: Some(500.0),
+            ..Default::default()
+        };
+        let v = PhysicalBoundsShield::collect_violations(&impossible);
+        assert_eq!(v.len(), 4, "Tüm 4 eşzamanlı doğa yasası ihlali toplanmalıydı: {:?}", v);
+    }
+}

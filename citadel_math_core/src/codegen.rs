@@ -294,3 +294,66 @@ impl VerifiedCodegen {
         md
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::dimensions::Dimension;
+    use crate::graph::VarBound;
+    use std::collections::HashMap;
+
+    #[test]
+    fn test_expr_to_rust_code_emits_valid_rust_methods() {
+        let e = Expr::parse_str("sqrt(2 * mu / r) + exp(-x^2) + ln(y)").unwrap();
+        let rust = VerifiedCodegen::expr_to_rust_code(&e);
+        assert!(rust.contains(".sqrt()"));
+        assert!(rust.contains(".exp()"));
+        assert!(rust.contains(".ln()"));
+        assert!(rust.contains(".powi(2)"));
+        assert!(!rust.contains("unwrap("));
+        assert!(!rust.contains("unsafe"));
+    }
+
+    #[test]
+    fn test_emit_safe_rust_fn_unverified_dimension_never_stamps_dimensionless() {
+        let mut bounds = HashMap::new();
+        bounds.insert("x".to_string(), VarBound { min: Some(0.0), max: None, min_inclusive: false, max_inclusive: true, note: String::new() });
+        let f = SynthesizedFormula {
+            target: "y".to_string(),
+            chain_ids: vec!["custom_solve".to_string()],
+            chain_names: vec!["Custom".to_string()],
+            regimes: vec!["universal".to_string()],
+            symbolic_expr: Expr::parse_str("sqrt(x)").unwrap(),
+            inferred_dimension: Dimension::dimensionless(),
+            free_variables: vec!["x".to_string()],
+            domain_guards: vec!["x >= 0".to_string()],
+            effective_bounds: bounds,
+        };
+        let code = VerifiedCodegen::emit_safe_rust_fn_with_meta(&f, false, Some("Pozitif kök dalı (+sqrt)"));
+        assert!(code.contains("Doğrulanmadı"), "Doğrulanmamış boyut dürüstçe işaretlenmeli!");
+        assert!(!code.contains("Z^7 Boyut İspatı: `[1 (Boyutsuz)]`"), "Sahte boyutsuz damgası yasak!");
+        assert!(code.contains("Pozitif kök dalı"), "Dal uyarısı eklenmeli!");
+        assert!(code.contains("is_finite()"), "NaN/Inf bekçisi zorunlu!");
+        assert!(code.contains("<= 0.0_f64"), "Alt sınır bekçisi üretilmeli!");
+        assert!(!code.contains("unsafe") && !code.contains("unwrap("));
+    }
+
+    #[test]
+    fn test_emit_safe_rust_fn_verified_includes_z7_proof() {
+        let f = SynthesizedFormula {
+            target: "v_esc".to_string(),
+            chain_ids: vec!["law_escape_velocity".to_string()],
+            chain_names: vec!["Escape".to_string()],
+            regimes: vec!["keplerian".to_string()],
+            symbolic_expr: Expr::parse_str("sqrt(2 * mu / r)").unwrap(),
+            inferred_dimension: Dimension::velocity(),
+            free_variables: vec!["mu".to_string(), "r".to_string()],
+            domain_guards: vec!["r != 0".to_string()],
+            effective_bounds: HashMap::new(),
+        };
+        let code = VerifiedCodegen::emit_safe_rust_fn(&f);
+        assert!(code.contains("pub fn compute_v_esc(mu: f64, r: f64) -> Result<f64, &'static str>"));
+        assert!(code.contains("[L T^-1]"));
+        assert!(code.contains("keplerian"));
+    }
+}

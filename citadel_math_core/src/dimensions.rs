@@ -396,3 +396,75 @@ pub fn check_dimensional_consistency(lhs: Dimension, rhs: Dimension) -> Result<(
         Err(format!("Boyut Uyuşmazlığı: Sol [{}] != Sağ [{}]", lhs, rhs))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_z7_abelian_group_axioms_across_all_seven_si_axes() {
+        let axes = [
+            Dimension::mass(),
+            Dimension::length(),
+            Dimension::time(),
+            Dimension::current(),
+            Dimension::temperature(),
+            Dimension::amount(),
+            Dimension::luminous(),
+        ];
+        let id = Dimension::dimensionless();
+        for a in axes {
+            assert_eq!(a.mul_dim(&id), a);
+            assert_eq!(a.div_dim(&a), id);
+            assert!(!a.is_dimensionless());
+        }
+        // Birleşmelilik ve değişmelilik: (F * L) / T == P (Güç)
+        let power_via_fl = Dimension::force().mul_dim(&Dimension::length()).div_dim(&Dimension::time());
+        let power_via_vi = Dimension::voltage().mul_dim(&Dimension::current());
+        assert_eq!(power_via_fl, Dimension::power());
+        assert_eq!(power_via_vi, Dimension::power());
+        // 7. SI ekseni (kandela J): illuminance * area == luminous
+        assert_eq!(Dimension::illuminance().mul_dim(&Dimension::area()), Dimension::luminous());
+        assert_eq!(Dimension::luminous_efficacy().mul_dim(&Dimension::power()), Dimension::luminous());
+    }
+
+    #[test]
+    fn test_rational_power_divisibility_and_rejection() {
+        let v_sq = Dimension::velocity().pow_dim(2);
+        assert_eq!(v_sq.rational_pow(1, 2).unwrap(), Dimension::velocity());
+        assert_eq!(Dimension::volume().rational_pow(1, 3).unwrap(), Dimension::length());
+        assert!(Dimension::length().rational_pow(1, 2).is_err(), "sqrt(L) Z^7 kafesinde yasak!");
+        assert!(Dimension::area().rational_pow(1, 3).is_err(), "cbrt(L^2) Z^7 kafesinde yasak!");
+        assert!(Dimension::length().rational_pow(1, 0).is_err(), "q=0 reddedilmeli!");
+    }
+
+    #[test]
+    fn test_checked_overflow_protection() {
+        let huge = Dimension::new(100, 0, 0, 0, 0, 0, 0);
+        assert!(huge.checked_mul_dim(&huge).is_err(), "i8 taşması reddedilmeli!");
+        assert!(huge.rational_pow(2, 1).is_err(), "i8 üs taşması reddedilmeli!");
+        assert!(Dimension::new(-100, 0, 0, 0, 0, 0, 0).checked_div_dim(&huge).is_err());
+    }
+
+    #[test]
+    fn test_scaled_unit_conversions_and_from_name_lookup() {
+        let (n, dim_f) = ScaledUnit::from_unit_str("kN").unwrap().to_si(2.5);
+        assert!((n - 2500.0).abs() < 1e-12 && dim_f == Dimension::force());
+        let (ms, dim_v) = ScaledUnit::from_unit_str("km/h").unwrap().to_si(36.0);
+        assert!((ms - 10.0).abs() < 1e-12 && dim_v == Dimension::velocity());
+        let (pa, dim_p) = ScaledUnit::from_unit_str("GPa").unwrap().to_si(210.0);
+        assert!((pa - 210.0e9).abs() < 1.0 && dim_p == Dimension::pressure());
+        assert!(ScaledUnit::from_unit_str("furlong").is_none());
+
+        assert_eq!(Dimension::from_name("illuminance"), Some(Dimension::illuminance()));
+        assert_eq!(Dimension::from_name("triple_product"), Some(Dimension::triple_product()));
+        assert_eq!(Dimension::from_name("stress_intensity_sq"), Some(Dimension::stress_intensity_sq()));
+        assert_eq!(Dimension::from_name("nonexistent_dim"), None);
+    }
+
+    #[test]
+    fn test_dimensional_consistency_verdict() {
+        assert!(check_dimensional_consistency(Dimension::energy(), Dimension::torque()).is_ok());
+        assert!(check_dimensional_consistency(Dimension::force(), Dimension::energy()).is_err());
+    }
+}
