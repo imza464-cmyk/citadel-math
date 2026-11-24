@@ -34,19 +34,23 @@ struct LawWithAnchors {
     id: String,
     #[serde(default)]
     reference_checks: Vec<ReferenceAnchor>,
+    #[serde(default)]
+    sources: Vec<String>,
 }
 
 #[derive(Debug, Clone)]
 pub struct EpistemicAuditReport {
     pub reference_anchors_checked: usize,
+    pub jacobian_partials_checked: usize,
     pub cross_law_closures_checked: usize,
     pub asymptotic_and_monotonicity_checked: usize,
     pub materials_ashby_checked: usize,
 }
 
-/// Kapı 17: Kanonik yasalardaki tüm altın sayısal referans çapalarını (`reference_checks`)
-/// değerlendirerek boyutsuz katsayı hatalarını (örn. 6π vs 4π, 1/4 vs π, 1/3 vs 1/4) yakalar.
-pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<usize, String> {
+/// Kapı 17: Kanonik yasalardaki tüm altın sayısal referans çapalarını (`reference_checks`),
+/// en az 3 bağımsız kaynak zorunluluğunu ve her yasanın her girdi değişkeni için sıfır-dışı sonlu
+/// `Dual64` Jakobyen kısmi türevini (ölü/sadeleşmiş değişken & durağan nokta kalkanı) doğrular.
+pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<(usize, usize), String> {
     let manifest_db = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../database/canonical_laws.json");
     let cwd_db = std::path::Path::new("database/canonical_laws.json");
     let json_content = if manifest_db.exists() {
@@ -61,8 +65,13 @@ pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<usize, String> {
         .map_err(|e| format!("reference_checks JSON ayrıştırma hatası: {}", e))?;
 
     let mut checked = 0usize;
+    let mut jacobian_checked = 0usize;
     let mut missing_anchor_laws = Vec::new();
+    let mut missing_source_laws = Vec::new();
     for item in &raw_laws {
+        if item.sources.len() < 3 {
+            missing_source_laws.push(item.id.clone());
+        }
         if item.reference_checks.is_empty() {
             missing_anchor_laws.push(item.id.clone());
             continue;
@@ -71,7 +80,7 @@ pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<usize, String> {
             .laws
             .get(&item.id)
             .ok_or_else(|| format!("Referans çapalı yasa graf içinde bulunamadı: '{}'", item.id))?;
-        for anchor in &item.reference_checks {
+        for (a_idx, anchor) in item.reference_checks.iter().enumerate() {
             let env: HashMap<&str, f64> = anchor
                 .inputs
                 .iter()
@@ -92,9 +101,36 @@ pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<usize, String> {
                 ));
             }
             checked += 1;
+
+            // Evrensel Dual64 Jakobyen Sıfır-Dışılık Kalkanı:
+            // İlk çapa noktasında yasanın BİLDİRİLEN HER BİR GİRDİSİ için df/dx_i sonlu ve != 0 olmalıdır.
+            if a_idx == 0 {
+                for inp in &law.inputs {
+                    let d = law.rhs.eval_dual(&env, inp).map_err(|e| {
+                        format!(
+                            "Dual64 Jakobyen türev hatası [{} / d/d({})]: {}",
+                            item.id, inp, e
+                        )
+                    })?;
+                    if !d.der.is_finite() || d.der.abs() <= 1e-300 {
+                        return Err(format!(
+                            "EVRENSEL JAKOBYEN YENİLGİSİ (ÖLÜ/DURAĞAN ÇAPA) [{}]: d({})/d({}) = {:.3e} (sıfır veya NaN!)",
+                            item.id, law.target, inp, d.der
+                        ));
+                    }
+                    jacobian_checked += 1;
+                }
+            }
         }
     }
 
+    if !missing_source_laws.is_empty() {
+        return Err(format!(
+            "%100 3-kaynak zorunluluğu ihlali: {} yasada <3 kaynak var (ilkler: {:?})",
+            missing_source_laws.len(),
+            &missing_source_laws[..missing_source_laws.len().min(5)]
+        ));
+    }
     if !missing_anchor_laws.is_empty() {
         return Err(format!(
             "%100 altın referans çapa zorunluluğu ihlali: {} yasada reference_checks eksik (ilkler: {:?})",
@@ -109,7 +145,7 @@ pub fn verify_reference_anchors(kg: &KnowledgeGraph) -> Result<usize, String> {
             kg.laws.len()
         ));
     }
-    Ok(checked)
+    Ok((checked, jacobian_checked))
 }
 
 fn eval_law(kg: &KnowledgeGraph, id: &str, pairs: &[(&str, f64)]) -> Result<f64, String> {
@@ -306,17 +342,106 @@ pub fn verify_cross_law_closures(kg: &KnowledgeGraph) -> Result<usize, String> {
     let q_pipe = eval_law(kg, "law_dynamic_pressure", &[("rho", rho_f), ("v", v_f)])?;
     check_rel("Fanno_Darcy==dP_dw/q_dyn", f_param, dp_dw / q_pipe, 1e-12)?;
 
-    Ok(15)
+    // 16. Radyoaktif Bozunma Yarı-Ömür & Ortalama Yaşam Kapanışı: t_half == tau*ln(2) & N(t_half) == N0/2
+    let lam_nuc = 0.05;
+    let t_half_n = eval_law(kg, "law_radioactive_half_life", &[("lambda_decay", lam_nuc)])?;
+    let tau_n = eval_law(kg, "law_radioactive_mean_lifetime", &[("lambda_decay", lam_nuc)])?;
+    check_rel("Nuclear_t_half==tau*ln2", t_half_n, tau_n * 2.0_f64.ln(), 1e-12)?;
+    let n_rem = eval_law(
+        kg,
+        "law_radioactive_decay_population",
+        &[("N_atoms_0", 1000.0), ("lambda_decay", lam_nuc), ("t", t_half_n)],
+    )?;
+    check_rel("Nuclear_N(t_half)==N0/2", n_rem, 500.0, 1e-12)?;
+
+    // 17. Nötron Ortalama Serbest Yol & Makroskopik Tesir Kesiti Kapanışı: lambda_mfp * Sigma_mac == 1
+    let sig_mac = eval_law(kg, "law_nuclear_macroscopic_cross_section", &[("n_num", 5e28), ("sigma_xs", 1e-27)])?;
+    let lam_mfp = eval_law(kg, "law_neutron_mean_free_path", &[("n_num", 5e28), ("sigma_xs", 1e-27)])?;
+    check_rel("Neutron_mfp*Sigma==1", lam_mfp * sig_mac, 1.0, 1e-12)?;
+
+    // 18. Radyasyon Zırhlama HVL Kapanışı: I_rad(x_hvl) == I_rad_0 / 2
+    let x_hvl = eval_law(kg, "law_half_value_layer_shielding", &[("mu_att", 77.0)])?;
+    let i_hvl = eval_law(
+        kg,
+        "law_radiation_beer_attenuation",
+        &[("I_rad_0", 1000.0), ("mu_att", 77.0), ("x_shield", x_hvl)],
+    )?;
+    check_rel("Shielding_I(HVL)==I0/2", i_hvl, 500.0, 1e-12)?;
+
+    // 19. Termoelektrik ZT + Wiedemann-Franz Katı-Hal Kapanışı: ZT == S_seeb^2 / L_lorenz
+    let s_seeb = 200.0e-6;
+    let zt_val = eval_law(
+        kg,
+        "law_thermoelectric_figure_of_merit_zt",
+        &[("S_seeb", s_seeb), ("sigma_elec", 5.96e7), ("T", 300.0), ("k_th", k_wf)],
+    )?;
+    check_rel("Thermoelectric_ZT==S^2/L_lorenz", zt_val, (s_seeb * s_seeb) / l_lor, 1e-12)?;
+
+    // 20. Yarı İletken p-n Eklemi Dahili Bariyer & Termal Gerilim Kapanışı: V_bi(ratio=e^10) == 10 * V_T
+    let v_th = eval_law(kg, "law_semiconductor_thermal_voltage", &[("k_B", kb), ("T", 300.0), ("q_e", qe)])?;
+    let v_bi = eval_law(
+        kg,
+        "law_pn_junction_builtin_potential",
+        &[("k_B", kb), ("T", 300.0), ("q_e", qe), ("N_accept", 1e20 * 10.0_f64.exp()), ("N_donor", 1e20), ("n_intr", 1e20)],
+    )?;
+    check_rel("Semiconductor_V_bi==10*V_T", v_bi, 10.0 * v_th, 1e-11)?;
+
+    // 21. Fotovoltaik Doluluk Faktörü & Güneş Hücresi Verimi Kapanışı: eta_pv * I_irr * A == P_mp
+    let ff_pv = eval_law(kg, "law_solar_cell_fill_factor", &[("P_mp", 4.8), ("V_oc", 0.68), ("I_sc", 8.8)])?;
+    let eta_pv = eval_law(
+        kg,
+        "law_solar_cell_power_efficiency",
+        &[("FF_pv", ff_pv), ("V_oc", 0.68), ("I_sc", 8.8), ("I_irr", 1000.0), ("A_cell", 0.024)],
+    )?;
+    check_rel("PV_eta*Irr*A==P_mp", eta_pv * 1000.0 * 0.024, 4.8, 1e-12)?;
+
+    // 22. Griffith-Irwin Kırılma Çift-Yönlülüğü & Yayılı Yük Kiriş Oranı (48/5 = 9.6)
+    let sig_fr = eval_law(kg, "law_griffith_fracture_stress", &[("G_Ic", 100.0), ("E_mod", e_mod), ("a_crack", 0.002)])?;
+    let a_back = eval_law(kg, "law_griffith_irwin_critical_crack", &[("G_Ic", 100.0), ("E_mod", e_mod), ("sigma_ax", sig_fr)])?;
+    check_rel("Griffith_a(sigma_f(a))==a", a_back, 0.002, 1e-12)?;
+    let d_cudl = eval_law(kg, "law_euler_bernoulli_uniform_cantilever_deflection", &[("w_udl", 2000.0), ("L", 2.0), ("E_mod", e_mod), ("I_area", 1e-5)])?;
+    let d_sudl = eval_law(kg, "law_simply_supported_uniform_beam_deflection", &[("w_udl", 2000.0), ("L", 2.0), ("E_mod", e_mod), ("I_area", 1e-5)])?;
+    check_rel("BeamUDL_Cantilever/SimplySupported==9.6", d_cudl / d_sudl, 9.6, 1e-12)?;
+
+    // 23. Darcy Sızma Debisi & Fotometri 7. SI Ekseni (J - Kandela) Kapanışları
+    let v_dc = eval_law(kg, "law_darcy_seepage_velocity", &[("K_hyd", 1e-4), ("i_hyd", 0.05)])?;
+    let q_sp = eval_law(kg, "law_darcy_volumetric_seepage", &[("K_hyd", 1e-4), ("A_cross", 20.0), ("delta_h_head", 2.0), ("L_seep", 40.0)])?;
+    check_rel("Darcy_Q_seep==v_darcy*A", q_sp, v_dc * 20.0, 1e-12)?;
+    let e_il = eval_law(kg, "law_photometry_inverse_square_illuminance", &[("I_lum", 100.0), ("r_dist", 2.0)])?;
+    let phi_l = eval_law(kg, "law_isotropic_point_luminous_flux", &[("I_lum", 100.0)])?;
+    check_rel("Photometry_Phi==4*pi*r^2*E", phi_l, 4.0 * PI * 4.0 * e_il, 1e-12)?;
+
+    // 24. Fabry-Perot OPL, RC Kesim Frekansı & Johnson-Nyquist Termal Gürültü Kapanışları
+    let opl = eval_law(kg, "law_optical_path_length", &[("n_ref", 1.5), ("L_opt", 0.1)])?;
+    let fsr = eval_law(kg, "law_fabry_perot_free_spectral_range", &[("c", c), ("n_ref", 1.5), ("L_opt", 0.1)])?;
+    check_rel("Optics_FSR*2*OPL==c", fsr * 2.0 * opl, c, 1e-12)?;
+    let tau_rc = eval_law(kg, "law_rc_time_constant", &[("R_elec", 1000.0), ("C_cap", 1e-6)])?;
+    let fc_rc = eval_law(kg, "law_rc_lowpass_cutoff_frequency", &[("R_elec", 1000.0), ("C_cap", 1e-6)])?;
+    check_rel("Circuit_fc*2*pi*tau_rc==1", fc_rc * 2.0 * PI * tau_rc, 1.0, 1e-12)?;
+    let v_jn = eval_law(kg, "law_johnson_nyquist_noise_voltage", &[("k_B", kb), ("T", 300.0), ("R_elec", 1000.0), ("B_bw", 1e6)])?;
+    let p_ns = eval_law(kg, "law_thermal_noise_power_floor", &[("k_B", kb), ("T", 300.0), ("B_bw", 1e6)])?;
+    check_rel("ThermalNoise_Vjn^2/(4R)==kTB", (v_jn * v_jn) / (4.0 * 1000.0), p_ns, 1e-12)?;
+
+    // 25. Genel Görelilik Foton Küresi (r_ph / r_s == 1.5) & Kimyasal 1. Mertebe Yarı-Ömür Kapanışı
+    let r_ph = eval_law(kg, "law_schwarzschild_photon_sphere_radius", &[("G", g), ("M_body", m_bh), ("c", c)])?;
+    check_rel("GR_PhotonSphere/Schwarzschild==1.5", r_ph / r_s, 1.5, 1e-12)?;
+    let t_ch = eval_law(kg, "law_first_order_reaction_half_life", &[("k_rate_1", 0.02)])?;
+    let c_rem = eval_law(kg, "law_first_order_reaction_decay", &[("c_react_0", 500.0), ("k_rate_1", 0.02), ("t", t_ch)])?;
+    check_rel("ChemKinetics_C(t_half)==C0/2", c_rem, 250.0, 1e-12)?;
+
+    Ok(25)
 }
 
-/// Kapı 19: Asimptotik klasik limit yakınsaması (5 limit) ve Dual64 kısmi türev işaret/monotonluk (12 işaret) denetimi.
+/// Kapı 19: Asimptotik klasik limit yakınsaması (8 limit) ve Dual64 kısmi türev işaret/monotonluk (20 işaret) denetimi.
 pub fn verify_asymptotic_limits_and_monotonicity(kg: &KnowledgeGraph) -> Result<usize, String> {
     let c = PhysicalConstants::C;
     let g = PhysicalConstants::G;
     let hbar = PhysicalConstants::HBAR;
     let kb = PhysicalConstants::K_B;
+    let r_univ = PhysicalConstants::R_GAS;
+    let sig_sb = PhysicalConstants::SIGMA_SB;
 
-    // --- A. 5 Asimptotik Limit ---
+    // --- A. 8 Asimptotik Limit ---
     // A1: Göreli kinetik enerji (v << c) -> 0.5 * m * v^2
     let v_slow = 1.0e-4 * c;
     let m_test = 10.0;
@@ -356,7 +481,28 @@ pub fn verify_asymptotic_limits_and_monotonicity(kg: &KnowledgeGraph) -> Result<
     let v_sw = eval_law(kg, "law_shallow_water_wave_speed", &[("g_0", PhysicalConstants::G0), ("h_col", 10.0)])?;
     check_rel("Limit_Torricelli/ShallowWater==sqrt(2)", v_ef / v_sw, 2.0_f64.sqrt(), 1e-12)?;
 
-    // --- B. 12 Dual64 Kısmi Türev İşaret (Fiziksel Monotonluk) Denetimi ---
+    // A6: Net Stefan-Boltzmann ışınımı (T_surr -> 0) -> saf karacisim/gri ışıma
+    let q_net0 = eval_law(
+        kg,
+        "law_stefan_boltzmann_net_radiation_exchange",
+        &[("eps_emiss", 1.0), ("sigma_SB", sig_sb), ("A", 2.0), ("T", 600.0), ("T_surr", 1e-4)],
+    )?;
+    let e_bb = eval_law(kg, "law_blackbody_emissive_power", &[("sigma_SB", sig_sb), ("T", 600.0)])?;
+    check_rel("Limit_NetRad_Tsurr->0==A*E_bb", q_net0, 2.0 * e_bb, 1e-10)?;
+
+    // A7: 2. derece sistem aşımı (zeta -> 0+) -> 1.0 (%100 sönümsüz aşım)
+    let mp_lim = eval_law(kg, "law_second_order_percent_overshoot", &[("zeta_damp", 1e-9)])?;
+    check_rel("Limit_Overshoot_zeta->0==1", mp_lim, 1.0, 1e-8)?;
+
+    // A8: İzotermal ideal gaz işi küçük genleşme (dV/V = 1e-6) -> n*R*T*(dV/V)
+    let w_sm = eval_law(
+        kg,
+        "law_ideal_gas_isothermal_work",
+        &[("n_mol", 1.0), ("R_univ", r_univ), ("T", 300.0), ("V_final", 1.0 + 1e-6), ("V_init", 1.0)],
+    )?;
+    check_rel("Limit_IsothermalWork_small_dV==nRT*eps", w_sm, r_univ * 300.0 * 1e-6, 1e-5)?;
+
+    // --- B. 20 Dual64 Kısmi Türev İşaret (Fiziksel Monotonluk) Denetimi ---
     type MonotonicityCase<'a> = (&'a str, &'a str, i8, &'a [(&'a str, f64)]);
     let mono_cases: &[MonotonicityCase<'_>] = &[
         ("law_hawking_black_hole_temperature", "M_body", -1, &[("hbar", hbar), ("c", c), ("G", g), ("M_body", 1e30), ("k_B", kb)]),
@@ -371,6 +517,14 @@ pub fn verify_asymptotic_limits_and_monotonicity(kg: &KnowledgeGraph) -> Result<
         ("law_resonator_quality_factor", "zeta_damp", -1, &[("zeta_damp", 0.05)]),
         ("law_planetary_equilibrium_temperature", "A_bond", -1, &[("T_star", 5778.0), ("A_bond", 0.3), ("R_star", 6.957e8), ("a_orb", 1.496e11)]),
         ("law_gravitational_time_dilation", "M_body", -1, &[("t", 100.0), ("G", g), ("M_body", 5e32), ("r", 8e6), ("c", c)]),
+        ("law_radioactive_decay_population", "t", -1, &[("N_atoms_0", 1000.0), ("lambda_decay", 0.1), ("t", 5.0)]),
+        ("law_radioactive_half_life", "lambda_decay", -1, &[("lambda_decay", 0.1)]),
+        ("law_griffith_fracture_stress", "a_crack", -1, &[("G_Ic", 100.0), ("E_mod", 200e9), ("a_crack", 0.001)]),
+        ("law_terzaghi_effective_stress", "u_pore", -1, &[("sigma_tot", 200e3), ("u_pore", 80e3)]),
+        ("law_second_order_percent_overshoot", "zeta_damp", -1, &[("zeta_damp", 0.4)]),
+        ("law_fabry_perot_free_spectral_range", "L_opt", -1, &[("c", c), ("n_ref", 1.5), ("L_opt", 0.1)]),
+        ("law_rc_lowpass_cutoff_frequency", "C_cap", -1, &[("R_elec", 1000.0), ("C_cap", 1e-6)]),
+        ("law_cylindrical_pipe_conduction_resistance", "k_th", -1, &[("r_out", 0.04), ("r_in", 0.02), ("k_th", 1.0), ("L", 1.0)]),
     ];
 
     for &(law_id, var_name, expected_sign, pts) in mono_cases {
@@ -396,7 +550,7 @@ pub fn verify_asymptotic_limits_and_monotonicity(kg: &KnowledgeGraph) -> Result<
         }
     }
 
-    Ok(5 + mono_cases.len())
+    Ok(8 + mono_cases.len())
 }
 
 struct AshbyEnvelope {
@@ -486,6 +640,34 @@ fn category_envelope(category: &str) -> Option<AshbyEnvelope> {
             t_max_k: (350.0, 750.0),
             k_wmk: (0.05, 1.0),
         }),
+        "civil_structural" => Some(AshbyEnvelope {
+            rho: (450.0, 8000.0),
+            e_gpa: (8.0, 220.0),
+            ys_mpa: (20.0, 600.0),
+            t_max_k: (350.0, 1200.0),
+            k_wmk: (0.10, 60.0),
+        }),
+        "elastomer_seal" => Some(AshbyEnvelope {
+            rho: (900.0, 2100.0),
+            e_gpa: (0.001, 0.050),
+            ys_mpa: (4.0, 35.0),
+            t_max_k: (380.0, 560.0),
+            k_wmk: (0.12, 0.45),
+        }),
+        "electrical_magnetic" => Some(AshbyEnvelope {
+            rho: (4500.0, 19500.0),
+            e_gpa: (70.0, 220.0),
+            ys_mpa: (25.0, 500.0),
+            t_max_k: (350.0, 1300.0),
+            k_wmk: (3.0, 440.0),
+        }),
+        "biomedical_alloy" => Some(AshbyEnvelope {
+            rho: (900.0, 9000.0),
+            e_gpa: (0.6, 250.0),
+            ys_mpa: (20.0, 1200.0),
+            t_max_k: (340.0, 1200.0),
+            k_wmk: (0.3, 35.0),
+        }),
         "ablative_tps" => Some(AshbyEnvelope {
             rho: (150.0, 900.0),
             e_gpa: (0.05, 5.0),
@@ -564,7 +746,7 @@ pub fn verify_single_material_envelope(m: &Material) -> Result<(), String> {
     if m.condition.trim().is_empty() {
         return Err(format!("MALZEME METADATA EKSİĞİ [{}]: 'condition' (ısıl işlem/durum) boş!", m.id));
     }
-    let valid_modes = ["ductile", "brittle", "composite_laminate", "ablative", "foam_insulator"];
+    let valid_modes = ["ductile", "brittle", "composite_laminate", "ablative", "foam_insulator", "elastomer"];
     if !valid_modes.contains(&m.failure_mode.as_str()) {
         return Err(format!(
             "MALZEME METADATA HATASI [{}]: geçersiz failure_mode '{}'",
@@ -598,12 +780,13 @@ pub fn run_full_epistemic_audit(
     kg: &KnowledgeGraph,
     mdb: &MaterialsDatabase,
 ) -> Result<EpistemicAuditReport, String> {
-    let reference_anchors_checked = verify_reference_anchors(kg)?;
+    let (reference_anchors_checked, jacobian_partials_checked) = verify_reference_anchors(kg)?;
     let cross_law_closures_checked = verify_cross_law_closures(kg)?;
     let asymptotic_and_monotonicity_checked = verify_asymptotic_limits_and_monotonicity(kg)?;
     let materials_ashby_checked = verify_materials_ashby_envelopes(mdb)?;
     Ok(EpistemicAuditReport {
         reference_anchors_checked,
+        jacobian_partials_checked,
         cross_law_closures_checked,
         asymptotic_and_monotonicity_checked,
         materials_ashby_checked,
@@ -619,10 +802,11 @@ mod tests {
         let kg = KnowledgeGraph::new();
         let mdb = MaterialsDatabase::load_canonical();
         let rep = run_full_epistemic_audit(&kg, &mdb).expect("4-katmanlı epistemik denetim geçmeli!");
-        assert!(rep.reference_anchors_checked >= 307);
-        assert_eq!(rep.cross_law_closures_checked, 15);
-        assert_eq!(rep.asymptotic_and_monotonicity_checked, 17);
-        assert_eq!(rep.materials_ashby_checked, 60);
+        assert!(rep.reference_anchors_checked >= 367);
+        assert!(rep.jacobian_partials_checked >= 1000);
+        assert_eq!(rep.cross_law_closures_checked, 25);
+        assert_eq!(rep.asymptotic_and_monotonicity_checked, 28);
+        assert_eq!(rep.materials_ashby_checked, 80);
     }
 
     #[test]

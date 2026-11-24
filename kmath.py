@@ -622,11 +622,14 @@ def cmd_audit() -> bool:
         print(f"[FAIL] 10. USSA-1976 / Öz İvme denetimi hatası: {e}")
         failures += 1
 
-    # 11. Altın Sayısal Referans Çapaları (%100 Kapsam — Boyutsuz Katsayı Kayması Kalkanı)
+    # 11. Altın Sayısal Referans Çapaları + >=3 Bağımsız Kaynak (%100 Kapsam)
     try:
         anchor_count = 0
         missing_anchors = []
+        missing_sources = []
         for law in laws:
+            if len(law.get("sources", [])) < 3:
+                missing_sources.append(law["id"])
             anchors = law.get("reference_checks", [])
             if not anchors:
                 missing_anchors.append(law["id"])
@@ -645,7 +648,8 @@ def cmd_audit() -> bool:
                 )
                 anchor_count += 1
         assert not missing_anchors, f"%100 çapa kapsamı ihlali — {len(missing_anchors)} yasada reference_checks eksik: {missing_anchors[:5]}"
-        print(f"[PASS] 11. Altın Sayısal Referans Çapaları (%100 Kapsam): {anchor_count}/{len(laws)} yasa test vektörü doğrulandı.")
+        assert not missing_sources, f"%100 3-kaynak ihlali — {len(missing_sources)} yasada <3 kaynak: {missing_sources[:5]}"
+        print(f"[PASS] 11. Altın Sayısal Referans Çapaları & 3-Kaynak (%100 Kapsam): {anchor_count}/{len(laws)} yasa test vektörü ve >=3 kaynak doğrulandı.")
     except Exception as e:
         print(f"[FAIL] 11. Altın Sayısal Referans Çapaları hatası: {e}")
         failures += 1
@@ -688,7 +692,19 @@ def cmd_audit() -> bool:
         dp_dw = _eval_l("law_darcy_weisbach_pressure_drop", {"f_darcy": 0.02, "L": 10.0, "D_pipe": 0.1, "rho": 1000.0, "v": 2.0})
         q_dyn = _eval_l("law_dynamic_pressure", {"rho": 1000.0, "v": 2.0})
         assert abs(fanno_v - (dp_dw / q_dyn)) / fanno_v < 1e-12, "Fanno Darcy == dP_dw / q_dyn kapanışı bozuk!"
-        print("[PASS] 12. Çapraz-Yasa Kapanış & Asimptotik Limitler: Kara delik 1. yasa, Elastisite, Carnot, Fanno-Darcy ve Göreli->Klasik limit doğrulandı.")
+
+        t_h_nuc = _eval_l("law_radioactive_half_life", {"lambda_decay": 0.05})
+        n_half = _eval_l("law_radioactive_decay_population", {"N_atoms_0": 1000.0, "lambda_decay": 0.05, "t": t_h_nuc})
+        assert abs(n_half - 500.0) / 500.0 < 1e-12, "Nükleer yarı-ömür bozunma kapanışı bozuk!"
+
+        sig_f = _eval_l("law_griffith_fracture_stress", {"G_Ic": 100.0, "E_mod": 200e9, "a_crack": 0.002})
+        a_back = _eval_l("law_griffith_irwin_critical_crack", {"G_Ic": 100.0, "E_mod": 200e9, "sigma_ax": sig_f})
+        assert abs(a_back - 0.002) / 0.002 < 1e-12, "Griffith kırılma gerilmesi <-> kritik çatlak kapanışı bozuk!"
+
+        e_il = _eval_l("law_photometry_inverse_square_illuminance", {"I_lum": 100.0, "r_dist": 2.0})
+        phi_l = _eval_l("law_isotropic_point_luminous_flux", {"I_lum": 100.0})
+        assert abs(phi_l - 4.0 * _math.pi * 4.0 * e_il) / phi_l < 1e-12, "Fotometri J-ekseni akı-aydınlanma kapanışı bozuk!"
+        print("[PASS] 12. Çapraz-Yasa Kapanış & Asimptotik Limitler: Kara delik 1. yasa, Elastisite, Carnot, Fanno-Darcy, Nükleer, Griffith, Fotometri J ve Göreli->Klasik limit doğrulandı.")
     except Exception as e:
         print(f"[FAIL] 12. Çapraz-Yasa Kapanış / Limit hatası: {e}")
         failures += 1
@@ -696,7 +712,7 @@ def cmd_audit() -> bool:
     # 13. Malzeme Ashby Fiziksel Zarfları, Isıl İşlem/Kırılma Modu ve >=3 Kaynak Uzlaşma Kalkanı
     try:
         mdb_env = MaterialsDatabase(MAT_PATH)
-        valid_modes = {"ductile", "brittle", "composite_laminate", "ablative", "foam_insulator"}
+        valid_modes = {"ductile", "brittle", "composite_laminate", "ablative", "foam_insulator", "elastomer"}
         for m in mdb_env.materials.values():
             ys = m.yield_strength / 1e6
             uts = m.tensile_strength / 1e6

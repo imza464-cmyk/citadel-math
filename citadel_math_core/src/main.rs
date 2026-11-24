@@ -342,11 +342,12 @@ fn run_audit() {
     let ep_rep = citadel_math_core::epistemic_audit::run_full_epistemic_audit(&kg, &mat_db_cad)
         .expect("Epistemik öz-doğrulama kalkanı (Kapı 17-20) ihlali!");
     println!(
-        "[PASS] 17. Altın Sayısal Referans Çapaları: {} bağımsız NIST/literatür test vektörü boyutsuz katsayı kaymasına karşı doğrulandı.",
-        ep_rep.reference_anchors_checked
+        "[PASS] 17. Altın Sayısal Çapalar, 3-Kaynak & Evrensel Dual64 Jakobyen: {} çapa (%100, >=3 kaynak) + {} sıfır-dışı kısmi türev doğrulandı.",
+        ep_rep.reference_anchors_checked,
+        ep_rep.jacobian_partials_checked
     );
     println!(
-        "[PASS] 18. Çapraz-Yasa Cebirsel Kapanış İspatları: {} fiziksel özdeşlik (Kara Delik 1. Yasa, Elastisite, Maxwell, Carnot, Planck, Akışkanlar) mühürlendi.",
+        "[PASS] 18. Çapraz-Yasa Cebirsel Kapanış İspatları: {} fiziksel özdeşlik (Kara Delik, Elastisite, Maxwell, Carnot, Nükleer, ZT/WF, Kırılma, Fotometri J) mühürlendi.",
         ep_rep.cross_law_closures_checked
     );
     println!(
@@ -354,7 +355,7 @@ fn run_audit() {
         ep_rep.asymptotic_and_monotonicity_checked
     );
     println!(
-        "[PASS] 20. Malzeme Ashby Fiziksel Zarfları & 3-Kaynak Uzlaşması: {} malzeme (durum/kırılma modu, aralık, >=3 kaynak) doğrulandı.",
+        "[PASS] 20. Malzeme Ashby Fiziksel Zarfları & 3-Kaynak Uzlaşması: {} malzeme (17 kategori, durum/kırılma modu, aralık, >=3 kaynak) doğrulandı.",
         ep_rep.materials_ashby_checked
     );
 

@@ -1378,5 +1378,465 @@
       55.0,
       85.0
     ]
+  },
+  {
+    "id": "mat_steel_s355",
+    "name": "Structural Steel S355J2 (EN 10025-2)",
+    "category": "civil_structural",
+    "density_kg_m3": 7850.0,
+    "tensile_strength_mpa": 510.0,
+    "yield_strength_mpa": 355.0,
+    "youngs_modulus_gpa": 210.0,
+    "max_temperature_k": 823.0,
+    "thermal_conductivity_w_mk": 50.0,
+    "condition": "Hot-rolled normalized plate (t<=16 mm, EN 10025-2)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      335.0,
+      365.0
+    ],
+    "description": "Avrupa köprü, çelik konstrüksiyon ve ağır makine gövdeleri için standart yüksek dayanımlı yapı çeliği.",
+    "sources": [
+      "EN 10025-2:2019 Hot Rolled Products of Structural Steels",
+      "Eurocode 3 (EN 1993-1-1) Design of Steel Structures",
+      "MatWeb S355J2 Structural Steel Datasheet"
+    ]
+  },
+  {
+    "id": "mat_steel_astm_a36",
+    "name": "Structural Carbon Steel ASTM A36",
+    "category": "civil_structural",
+    "density_kg_m3": 7850.0,
+    "tensile_strength_mpa": 400.0,
+    "yield_strength_mpa": 250.0,
+    "youngs_modulus_gpa": 200.0,
+    "max_temperature_k": 773.0,
+    "thermal_conductivity_w_mk": 51.9,
+    "condition": "Hot-rolled structural plate (ASTM A36)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      248.0,
+      260.0
+    ],
+    "description": "Kuzey Amerika standart genel amaçlı kaynaklanabilir yapısal karbon çeliği.",
+    "sources": [
+      "ASTM A36/A36M Standard Specification for Carbon Structural Steel",
+      "AISC Steel Construction Manual (15th Ed.)",
+      "ASM Handbook Vol. 1: Properties and Selection: Irons, Steels"
+    ]
+  },
+  {
+    "id": "mat_concrete_c30_37",
+    "name": "Structural Concrete C30/37 (Compressive Design)",
+    "category": "civil_structural",
+    "density_kg_m3": 2400.0,
+    "tensile_strength_mpa": 37.0,
+    "yield_strength_mpa": 30.0,
+    "youngs_modulus_gpa": 33.0,
+    "max_temperature_k": 773.0,
+    "thermal_conductivity_w_mk": 1.6,
+    "condition": "28-day cured cylinder/cube compressive rating (EN 206 / EC2)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      28.0,
+      37.0
+    ],
+    "description": "Standart betonarme yapı betonu (not: 30 MPa karakteristik silindir basınç f_ck, 37 MPa küp basınç dayanımı; çekme dayanımı ~2.9 MPa).",
+    "sources": [
+      "Eurocode 2 (EN 1992-1-1 Table 3.1) Strength and Deformation Characteristics for Concrete",
+      "ACI 318-19 Building Code Requirements for Structural Concrete",
+      "Neville, Properties of Concrete (5th Ed., Pearson)"
+    ]
+  },
+  {
+    "id": "mat_concrete_c60_75",
+    "name": "High-Strength Concrete C60/75 (Compressive Design)",
+    "category": "civil_structural",
+    "density_kg_m3": 2450.0,
+    "tensile_strength_mpa": 75.0,
+    "yield_strength_mpa": 60.0,
+    "youngs_modulus_gpa": 39.0,
+    "max_temperature_k": 773.0,
+    "thermal_conductivity_w_mk": 1.8,
+    "condition": "28-day cured silica-fume HSC compressive rating (EN 206 / EC2)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      55.0,
+      75.0
+    ],
+    "description": "Yüksek katlı yapılar ve öngerilmeli köprü kirişleri için yüksek dayanımlı beton (f_ck=60 MPa silindir / 75 MPa küp basınç).",
+    "sources": [
+      "Eurocode 2 (EN 1992-1-1 Table 3.1)",
+      "ACI 363R Report on High-Strength Concrete",
+      "fib Model Code for Concrete Structures 2010"
+    ]
+  },
+  {
+    "id": "mat_timber_douglas_fir",
+    "name": "Douglas Fir Structural Timber (Parallel to Grain)",
+    "category": "civil_structural",
+    "density_kg_m3": 530.0,
+    "tensile_strength_mpa": 85.0,
+    "yield_strength_mpa": 45.0,
+    "youngs_modulus_gpa": 13.4,
+    "max_temperature_k": 423.0,
+    "thermal_conductivity_w_mk": 0.14,
+    "condition": "Kiln-dried 12% moisture content, parallel to grain",
+    "failure_mode": "composite_laminate",
+    "yield_strength_range_mpa": [
+      38.0,
+      55.0
+    ],
+    "description": "Lif doğrultusunda yüksek özgül mukavemete sahip doğal anizotropik yapısal ahşap (45 MPa basınç / 85 MPa eğilme MOR).",
+    "sources": [
+      "USDA Forest Products Laboratory Wood Handbook (Ch. 5, Table 5-3a)",
+      "Eurocode 5 (EN 1995-1-1) Design of Timber Structures",
+      "Ashby, Materials Selection in Mechanical Design (5th Ed.)"
+    ]
+  },
+  {
+    "id": "mat_granite_structural",
+    "name": "Structural Granite (Intact Rock Compressive)",
+    "category": "civil_structural",
+    "density_kg_m3": 2680.0,
+    "tensile_strength_mpa": 160.0,
+    "yield_strength_mpa": 130.0,
+    "youngs_modulus_gpa": 55.0,
+    "max_temperature_k": 846.0,
+    "thermal_conductivity_w_mk": 2.9,
+    "condition": "Intact dry crystalline igneous rock (ASTM C170)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      100.0,
+      220.0
+    ],
+    "description": "Hassas metroloji tezgahları ve jeoteknik kaya mekaniği için düşük sürünmeli kristalin granit (tek eksenli basınç UCS).",
+    "sources": [
+      "ASTM C170 Standard Test Method for Compressive Strength of Dimension Stone",
+      "Goodman, Introduction to Rock Mechanics (2nd Ed., Wiley)",
+      "Carmichael, Practical Handbook of Physical Properties of Rocks and Minerals (CRC)"
+    ]
+  },
+  {
+    "id": "mat_viton_fkm",
+    "name": "Viton FKM Fluoroelastomer (75 Shore A)",
+    "category": "elastomer_seal",
+    "density_kg_m3": 1850.0,
+    "tensile_strength_mpa": 13.5,
+    "yield_strength_mpa": 10.5,
+    "youngs_modulus_gpa": 0.009,
+    "max_temperature_k": 478.0,
+    "thermal_conductivity_w_mk": 0.22,
+    "condition": "75 Shore A peroxide-cured seal compound (ASTM D2000 HK)",
+    "failure_mode": "elastomer",
+    "yield_strength_range_mpa": [
+      8.0,
+      15.0
+    ],
+    "description": "Yüksek sıcaklık, jet yakıtı, hidrolik yağ ve kimyasallara dayanıklı havacılık/vakum O-ring floroelastomeri.",
+    "sources": [
+      "Chemours Viton Fluoroelastomer Engineering Properties Guide",
+      "Parker O-Ring Handbook (ORD 5700)",
+      "ASTM D2000 / MatWeb FKM 75 Shore A"
+    ]
+  },
+  {
+    "id": "mat_silicone_vmq",
+    "name": "Silicone Elastomer VMQ (70 Shore A)",
+    "category": "elastomer_seal",
+    "density_kg_m3": 1200.0,
+    "tensile_strength_mpa": 8.0,
+    "yield_strength_mpa": 6.0,
+    "youngs_modulus_gpa": 0.005,
+    "max_temperature_k": 503.0,
+    "thermal_conductivity_w_mk": 0.25,
+    "condition": "70 Shore A post-cured silicone (ASTM D2000 GE)",
+    "failure_mode": "elastomer",
+    "yield_strength_range_mpa": [
+      4.5,
+      9.5
+    ],
+    "description": "Geniş sıcaklık aralığında (-60 °C .. +230 °C) esnekliğini koruyan ozon ve UV dirençli silikon conta elastomeri.",
+    "sources": [
+      "Parker O-Ring Handbook (ORD 5700)",
+      "Dow Corning High Consistency Silicone Rubber Selection Guide",
+      "Ashby, Materials Selection in Mechanical Design (5th Ed.)"
+    ]
+  },
+  {
+    "id": "mat_epdm_70a",
+    "name": "EPDM Elastomer (70 Shore A)",
+    "category": "elastomer_seal",
+    "density_kg_m3": 1150.0,
+    "tensile_strength_mpa": 14.0,
+    "yield_strength_mpa": 10.0,
+    "youngs_modulus_gpa": 0.007,
+    "max_temperature_k": 423.0,
+    "thermal_conductivity_w_mk": 0.25,
+    "condition": "70 Shore A peroxide-cured EPDM (ASTM D2000 CA)",
+    "failure_mode": "elastomer",
+    "yield_strength_range_mpa": [
+      7.0,
+      16.0
+    ],
+    "description": "Sıcak su, buhar, fren hidroliği (Skydrol) ve dış ortam hava koşullarına üstün dayanımlı sızdırmazlık elastomeri.",
+    "sources": [
+      "Parker O-Ring Handbook (ORD 5700)",
+      "ASTM D2000 Standard Classification System for Rubber Products",
+      "MatWeb EPDM 70 Shore A Elastomer"
+    ]
+  },
+  {
+    "id": "mat_nitrile_nbr_70a",
+    "name": "Nitrile Rubber NBR / Buna-N (70 Shore A)",
+    "category": "elastomer_seal",
+    "density_kg_m3": 1220.0,
+    "tensile_strength_mpa": 15.0,
+    "yield_strength_mpa": 11.0,
+    "youngs_modulus_gpa": 0.008,
+    "max_temperature_k": 393.0,
+    "thermal_conductivity_w_mk": 0.24,
+    "condition": "70 Shore A sulfur-cured NBR (ASTM D2000 BG)",
+    "failure_mode": "elastomer",
+    "yield_strength_range_mpa": [
+      8.0,
+      18.0
+    ],
+    "description": "Endüstriyel hidrolik yağ ve petrol yakıt hatlarında standart aşınma dirençli nitril conta elastomeri.",
+    "sources": [
+      "Parker O-Ring Handbook (ORD 5700)",
+      "ASTM D2000 Standard Classification System for Rubber Products",
+      "MatWeb Buna-N / NBR 70 Shore A"
+    ]
+  },
+  {
+    "id": "mat_silver_pure_ag",
+    "name": "Pure Silver Ag 99.99% (Annealed)",
+    "category": "electrical_magnetic",
+    "density_kg_m3": 10490.0,
+    "tensile_strength_mpa": 170.0,
+    "yield_strength_mpa": 55.0,
+    "youngs_modulus_gpa": 83.0,
+    "max_temperature_k": 1100.0,
+    "thermal_conductivity_w_mk": 429.0,
+    "condition": "Annealed 99.99% pure metallic Ag",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      40.0,
+      80.0
+    ],
+    "description": "Tüm saf metaller arasında en yüksek elektriksel (6.30e7 S/m) ve ısıl (429 W/mK) iletkenliğe sahip RF/kontak metali.",
+    "sources": [
+      "CRC Handbook of Chemistry and Physics (104th Ed.)",
+      "ASM Handbook Vol. 2: Nonferrous Alloys and Special-Purpose Materials",
+      "Kaye & Laby, Tables of Physical and Chemical Constants (NPL)"
+    ]
+  },
+  {
+    "id": "mat_gold_pure_au",
+    "name": "Pure Gold Au 99.99% (Annealed)",
+    "category": "electrical_magnetic",
+    "density_kg_m3": 19300.0,
+    "tensile_strength_mpa": 120.0,
+    "yield_strength_mpa": 30.0,
+    "youngs_modulus_gpa": 79.0,
+    "max_temperature_k": 1200.0,
+    "thermal_conductivity_w_mk": 318.0,
+    "condition": "Annealed 99.99% pure metallic Au",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      25.0,
+      50.0
+    ],
+    "description": "Oksitlenmeyen yüksek kızılötesi yansıtıcılık (uzay aynası / MLI) ve mikroelektronik tel bağlama soy metali.",
+    "sources": [
+      "CRC Handbook of Chemistry and Physics (104th Ed.)",
+      "ASM Handbook Vol. 2: Nonferrous Alloys and Special-Purpose Materials",
+      "Kaye & Laby, Tables of Physical and Chemical Constants (NPL)"
+    ]
+  },
+  {
+    "id": "mat_silicon_steel_m19",
+    "name": "Electrical Silicon Steel M19 (3% Si Non-Oriented)",
+    "category": "electrical_magnetic",
+    "density_kg_m3": 7650.0,
+    "tensile_strength_mpa": 480.0,
+    "yield_strength_mpa": 345.0,
+    "youngs_modulus_gpa": 195.0,
+    "max_temperature_k": 973.0,
+    "thermal_conductivity_w_mk": 28.0,
+    "condition": "Fully processed 0.35 mm motor lamination (ASTM A677)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      310.0,
+      410.0
+    ],
+    "description": "Elektrik motorları ve yüksek verimli transformatör stator çekirdekleri için düşük çekirdek kayıplı silisyumlu sac.",
+    "sources": [
+      "ASTM A677 Standard Specification for Nonoriented Electrical Steel",
+      "AK Steel / Cleveland-Cliffs M19 Electrical Steel Product Data Bulletin",
+      "ASM Handbook Vol. 1: Properties and Selection: Irons, Steels"
+    ]
+  },
+  {
+    "id": "mat_ndfeb_n52",
+    "name": "Sintered Neodymium Magnet Nd2Fe14B (Grade N52)",
+    "category": "electrical_magnetic",
+    "density_kg_m3": 7500.0,
+    "tensile_strength_mpa": 80.0,
+    "yield_strength_mpa": 75.0,
+    "youngs_modulus_gpa": 160.0,
+    "max_temperature_k": 353.0,
+    "thermal_conductivity_w_mk": 9.0,
+    "condition": "Sintered anisotropic rare-earth magnet (MMPA 0100, BHmax ~400 kJ/m^3)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      60.0,
+      90.0
+    ],
+    "description": "En yüksek ticari enerji çarpımına (~52 MGOe) sahip nadir toprak kalıcı mıknatısı; 80 °C üzerinde geri dönüşsüz demanyetizasyon riski taşır.",
+    "sources": [
+      "MMPA Standard 0100-00 Standard Specifications for Permanent Magnet Materials",
+      "Arnold Magnetic Technologies Sintered NdFeB N52 Engineering Datasheet",
+      "Coey, Magnetism and Magnetic Materials (Cambridge University Press)"
+    ]
+  },
+  {
+    "id": "mat_ferrite_mnzn",
+    "name": "Soft Magnetic MnZn Ferrite (Power Core)",
+    "category": "electrical_magnetic",
+    "density_kg_m3": 4800.0,
+    "tensile_strength_mpa": 65.0,
+    "yield_strength_mpa": 50.0,
+    "youngs_modulus_gpa": 150.0,
+    "max_temperature_k": 473.0,
+    "thermal_conductivity_w_mk": 4.2,
+    "condition": "Sintered polycrystalline MnZn ceramic ferrite (IEC 62317)",
+    "failure_mode": "brittle",
+    "yield_strength_range_mpa": [
+      35.0,
+      70.0
+    ],
+    "description": "Yüksek frekanslı (20 kHz - 1 MHz) güç elektroniği transformatör ve endüktörleri için düşük girdap akımlı yumuşak ferrit.",
+    "sources": [
+      "TDK / Ferroxcube Soft Ferrites and Accessories Data Handbook",
+      "Snelling, Soft Ferrites: Properties and Applications (2nd Ed., Butterworths)",
+      "IEC 62317 Ferrite Cores Dimensions and Magnetic Standards"
+    ]
+  },
+  {
+    "id": "mat_cocrmo_f75",
+    "name": "Co-28Cr-6Mo Surgical Alloy (ASTM F75)",
+    "category": "biomedical_alloy",
+    "density_kg_m3": 8300.0,
+    "tensile_strength_mpa": 655.0,
+    "yield_strength_mpa": 450.0,
+    "youngs_modulus_gpa": 210.0,
+    "max_temperature_k": 1173.0,
+    "thermal_conductivity_w_mk": 13.0,
+    "condition": "Investment cast & solution annealed (ASTM F75)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      448.0,
+      520.0
+    ],
+    "description": "Omurga pedikül çubukları, kalça/diz eklem protezleri ve diş implantları için aşınma ve korozyon dirençli biyouyumlu kobalt-krom alaşımı.",
+    "sources": [
+      "ASTM F75-18 Standard Specification for Co-28Cr-6Mo Alloy Castings for Surgical Implants",
+      "ASM Handbook Vol. 23: Materials for Medical Devices",
+      "MatWeb Co-28Cr-6Mo ASTM F75"
+    ]
+  },
+  {
+    "id": "mat_nitinol_sma",
+    "name": "Nitinol Ti-50.8Ni Shape-Memory Alloy (ASTM F2063)",
+    "category": "biomedical_alloy",
+    "density_kg_m3": 6450.0,
+    "tensile_strength_mpa": 960.0,
+    "yield_strength_mpa": 380.0,
+    "youngs_modulus_gpa": 75.0,
+    "max_temperature_k": 673.0,
+    "thermal_conductivity_w_mk": 18.0,
+    "condition": "Austenitic superelastic annealed (ASTM F2063)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      195.0,
+      690.0
+    ],
+    "description": "%8'e kadar geri kazanılabilir süperelastik şekil değiştirme sunan damar stenti, ortodonti ve uzay açılır mekanizma şekil hafızalı alaşımı.",
+    "sources": [
+      "ASTM F2063 Wrought Nickel-Titanium Shape Memory Alloys for Medical Devices",
+      "Nitinol Devices & Components (NDC / Confluent) Material Properties Datasheet",
+      "ASM Handbook Vol. 23: Materials for Medical Devices"
+    ]
+  },
+  {
+    "id": "mat_ti6al4v_eli_f136",
+    "name": "Ti-6Al-4V ELI Grade 23 Surgical Implant (ASTM F136)",
+    "category": "biomedical_alloy",
+    "density_kg_m3": 4430.0,
+    "tensile_strength_mpa": 860.0,
+    "yield_strength_mpa": 795.0,
+    "youngs_modulus_gpa": 113.8,
+    "max_temperature_k": 673.0,
+    "thermal_conductivity_w_mk": 6.7,
+    "condition": "Annealed Extra-Low Interstitial Grade 23 (ASTM F136)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      760.0,
+      860.0
+    ],
+    "description": "Omurga vidaları, travma plakları ve kriyojenik tanklar için ekstra-düşük oksijenli yüksek kırılma tokluklu cerrahi titanyum.",
+    "sources": [
+      "ASTM F136-13 Wrought Ti-6Al-4V ELI Alloy for Surgical Implant Applications",
+      "ASM Handbook Vol. 23: Materials for Medical Devices",
+      "MatWeb Titanium Ti-6Al-4V ELI Grade 23"
+    ]
+  },
+  {
+    "id": "mat_ss_316lvm_f138",
+    "name": "Stainless Steel 316LVM Surgical Implant (ASTM F138)",
+    "category": "biomedical_alloy",
+    "density_kg_m3": 7950.0,
+    "tensile_strength_mpa": 860.0,
+    "yield_strength_mpa": 690.0,
+    "youngs_modulus_gpa": 193.0,
+    "max_temperature_k": 1073.0,
+    "thermal_conductivity_w_mk": 16.3,
+    "condition": "Cold-worked vacuum-remelted surgical bar (ASTM F138)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      600.0,
+      760.0
+    ],
+    "description": "Vakum ark yeniden ergitilmiş (VAR), sıfır inklüzyonlu ortopedik fiksasyon ve omurga implantı paslanmaz çeliği.",
+    "sources": [
+      "ASTM F138-19 Wrought 18Cr-14Ni-2.5Mo Stainless Steel Bar for Surgical Implants",
+      "ASM Handbook Vol. 23: Materials for Medical Devices",
+      "MatWeb 316LVM Cold-Worked Implant Grade"
+    ]
+  },
+  {
+    "id": "mat_uhmwpe_gur1020",
+    "name": "Medical UHMWPE GUR 1020 (Arthroplasty, ASTM F648)",
+    "category": "biomedical_alloy",
+    "density_kg_m3": 935.0,
+    "tensile_strength_mpa": 46.0,
+    "yield_strength_mpa": 22.0,
+    "youngs_modulus_gpa": 0.72,
+    "max_temperature_k": 353.0,
+    "thermal_conductivity_w_mk": 0.42,
+    "condition": "Compression-molded surgical bearing grade (ASTM F648 / ISO 5834-2)",
+    "failure_mode": "ductile",
+    "yield_strength_range_mpa": [
+      20.0,
+      26.0
+    ],
+    "description": "Yapay disk protezleri ve total kalça/diz artroplasti yatak yüzeyleri için ultra-düşük sürtünmeli cerrahi polietilen.",
+    "sources": [
+      "ASTM F648 Ultra-High-Molecular-Weight Polyethylene Powder and Fabricated Form for Surgical Implants",
+      "Kurtz, UHMWPE Biomaterials Handbook (3rd Ed., Academic Press)",
+      "Celanese GUR 1020 Medical Grade Datasheet (ISO 5834-2)"
+    ]
   }
 ]

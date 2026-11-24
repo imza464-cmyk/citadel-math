@@ -736,7 +736,7 @@ def kmath_materials(
     sort_by: Annotated[str, Field(description="Sıralama kriteri: 'breaking_length' (km), 'specific_strength', 'yield_strength' (MPa), veya 'max_temp' (K).")] = "breaking_length",
     category: Annotated[str, Field(description="Malzeme kategorisi: 'all', 'nanomaterial', 'composite', 'metal_alloy', 'superalloy', 'copper_superalloy', 'refractory_metal', 'ceramic_composite', 'uhtc_ceramic', 'technical_ceramic', 'semiconductor_optical', 'polymer', 'ablative_tps', 'insulator'.")] = "all",
 ) -> str:
-    """SSOT havacılık, uzay, yarı iletken, polimer, seramik ve aşırı ortam malzeme veritabanını (60 sertifikalı malzeme, >=3 kaynak doğrulamalı) sorgular ve sıralar."""
+    """SSOT havacılık, yapısal, elastomer, manyetik, biyomedikal, seramik, yarı iletken, polimer ve TPS malzeme veritabanını (80 sertifikalı malzeme, 17 kategori, >=3 kaynak doğrulamalı) sorgular ve sıralar."""
     mdb = MaterialsDatabase(MAT_PATH)
     all_mats = list(mdb.materials.values())
     available_categories = sorted({m.category for m in all_mats})

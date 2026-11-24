@@ -328,6 +328,13 @@ DIMENSIONS: Dict[str, Dimension] = {
     "molar_flux": Dimension(l=-2, t=-1, n=1),                      # mol/(m^2*s) (Fick difüzyon akısı)
     "thermal_resistance": Dimension(m=-1, l=-2, t=3, theta=1),     # K/W (Isıl direnç)
     "molar_attenuation": Dimension(l=2, n=-1),                     # m^2/mol (Beer-Lambert molar soğurma)
+    "illuminance": Dimension(l=-2, j=1),                           # lx = cd*sr/m^2 (Aydınlanma şiddeti — 7. SI ekseni J)
+    "luminous_efficacy": Dimension(m=-1, l=-2, t=3, j=1),          # lm/W (Işık etkinliği — 7. SI ekseni J)
+    "magnetic_moment": Dimension(l=2, i=1),                        # A*m^2 = J/T (Manyetik dipol momenti)
+    "seebeck_coeff": Dimension(m=1, l=2, t=-3, i=-1, theta=-1),    # V/K (Seebeck termoelektrik katsayısı)
+    "triple_product": Dimension(l=-3, t=1, theta=1),               # K*s/m^3 (Lawson füzyon üçlü çarpımı)
+    "stress_intensity_sq": Dimension(m=2, l=-1, t=-4),             # Pa^2*m (Irwin K_I^2 = G_I*E)
+    "volumetric_heat_gen": Dimension(m=1, l=-1, t=-3),             # W/m^3 (Hacimsel ısı üretimi)
 }
 
 

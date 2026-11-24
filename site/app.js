@@ -986,6 +986,10 @@ ${esc(cur.json)}</pre>
     technical_ceramic: "oklch(0.79 0.14 96)",
     semiconductor_optical: "oklch(0.76 0.15 215)",
     polymer: "oklch(0.74 0.14 330)",
+    elastomer_seal: "oklch(0.72 0.15 355)",
+    civil_structural: "oklch(0.71 0.08 75)",
+    electrical_magnetic: "oklch(0.77 0.16 275)",
+    biomedical_alloy: "oklch(0.76 0.14 175)",
     ablative_tps: "oklch(0.69 0.19 25)",
     insulator: "oklch(0.73 0.13 345)",
   };

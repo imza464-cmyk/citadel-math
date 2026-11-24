@@ -1108,6 +1108,25 @@ mod tests {
                 "a" => 15.0,
                 "a_c" => 25.0,
 
+                // Faz 2 Eklenen Evrensel Fizik / Optik / Yarı İletken / Elektrokimya / Jeoteknik Sembolleri
+                "n_core" => 1.48,
+                "n_clad" => 1.46,
+                "r_out" => 0.04,
+                "r_in" => 0.02,
+                "V_final" => 2.0,
+                "V_init" => 1.0,
+                "T_surr" => 250.0,
+                "sigma_tot" => 200_000.0,
+                "u_pore" => 80_000.0,
+                "J_curr" => 100.0,
+                "J_exch" => 1.0,
+                "N_accept" => 1e23,
+                "N_donor" => 1e22,
+                "n_intr" => 1e16,
+                "delta_G_m" => -237_130.0,
+                "delta_H_m" => -285_830.0,
+                "zeta_damp" => 0.4,
+
                 _ => base_seed + (idx as f64) * 0.7,
             };
             let adjusted_val = if let Some(bound) = law.domain_bounds.get(inp) {

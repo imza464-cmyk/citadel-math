@@ -105,6 +105,13 @@ impl Dimension {
     pub const fn molar_flux() -> Self { Self::new(0, -2, -1, 0, 0, 1, 0) }
     pub const fn thermal_resistance() -> Self { Self::new(-1, -2, 3, 0, 1, 0, 0) }
     pub const fn molar_attenuation() -> Self { Self::new(0, 2, 0, 0, 0, -1, 0) }
+    pub const fn illuminance() -> Self { Self::new(0, -2, 0, 0, 0, 0, 1) }
+    pub const fn luminous_efficacy() -> Self { Self::new(-1, -2, 3, 0, 0, 0, 1) }
+    pub const fn magnetic_moment() -> Self { Self::new(0, 2, 0, 1, 0, 0, 0) }
+    pub const fn seebeck_coeff() -> Self { Self::new(1, 2, -3, -1, -1, 0, 0) }
+    pub const fn triple_product() -> Self { Self::new(0, -3, 1, 0, 1, 0, 0) }
+    pub const fn stress_intensity_sq() -> Self { Self::new(2, -1, -4, 0, 0, 0, 0) }
+    pub const fn volumetric_heat_gen() -> Self { Self::new(1, -1, -3, 0, 0, 0, 0) }
 
     pub const fn is_dimensionless(&self) -> bool {
         self.m == 0 && self.l == 0 && self.t == 0 && self.i == 0 &&
@@ -297,6 +304,13 @@ impl Dimension {
             "molar_flux" => Some(Self::molar_flux()),
             "thermal_resistance" => Some(Self::thermal_resistance()),
             "molar_attenuation" => Some(Self::molar_attenuation()),
+            "illuminance" => Some(Self::illuminance()),
+            "luminous_efficacy" => Some(Self::luminous_efficacy()),
+            "magnetic_moment" => Some(Self::magnetic_moment()),
+            "seebeck_coeff" => Some(Self::seebeck_coeff()),
+            "triple_product" => Some(Self::triple_product()),
+            "stress_intensity_sq" => Some(Self::stress_intensity_sq()),
+            "volumetric_heat_gen" => Some(Self::volumetric_heat_gen()),
             _ => None,
         }
     }
