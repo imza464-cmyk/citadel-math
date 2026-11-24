@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Citadel-Math v0.2.1 — Deterministik Fizik &amp; Boyut Doğrulama Motoru</title>
-  <meta name="description" content="Citadel-Math v0.2.1 (citadel_math_core + kmath-mcp): Saf Rust (#![forbid(unsafe_code)]) Z^7 boyutsal kalkan, checked_i64 cebirsel ispat çekirdeği, IEEE 1788-2015 Interval64 ve 15 araçlı çevrimdışı MCP sunucusu.">
+  <meta name="description" content="Citadel-Math v0.2.1 (citadel_math_core + kmath-mcp): Saf Rust (#![forbid(unsafe_code)]) Z^7 boyutsal kalkan, checked_i64 cebirsel eşdeğerlik denetleyicisi, IEEE 1788-2015 Interval64 ve 15 araçlı çevrimdışı MCP sunucusu.">
   <meta property="og:title" content="Citadel-Math v0.2.1 — Deterministik Matematik &amp; Fizik Doğrulama Motoru">
   <meta property="og:description" content="LLM halüsinasyonuna karşı Saf Rust + Python/SymPy 15 araçlı MCP sunucusu · 367 Kanonik Yasa · 618 Z^7 Sembolü · 80 Malzeme · AGPL-3.0 / Ticari.">
   <meta property="og:type" content="website">
@@ -69,7 +69,7 @@
             </h1>
 
             <p class="hero-sub">
-              Yapay zekâ ajanlarının birim hatalarını, payda tekilliği kayıplarını ve IEEE-754 yuvarlama sızıntılarını <strong>saf Rust</strong> çekirdeği ve <strong>15 çevrimdışı MCP aracıyla</strong> mikrosaniyeler içinde durdurun.
+              Yapay zekâ ajanlarının birim hatalarını, payda tekilliği kayıplarını ve IEEE-754 yuvarlama sızıntılarını <strong>saf Rust</strong> çekirdeği ve <strong>15 çevrimdışı MCP aracıyla</strong> milisaniyeler içinde (5.30 ms MCP p50 · ~23 ms tam 20-kapılı Rust denetimi) durdurun.
             </p>
 
             <div class="quickrun-box">
@@ -90,7 +90,7 @@
             <div class="cta-row">
               <button class="btn primary" data-nav="sandbox">Z⁷ Motorunu Aç</button>
               <a class="btn" href="https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.1" target="_blank" rel="noopener">v0.2.1 İndir</a>
-              <button class="btn" id="heroCmdBtn">1.225 Kayıtta Ara <kbd class="hide-mobile">Ctrl K</kbd></button>
+              <button class="btn" id="heroCmdBtn">1.435 Kayıtta Ara <kbd class="hide-mobile">Ctrl K</kbd></button>
             </div>
           </div>
 
@@ -99,9 +99,9 @@
             <div class="console-head">
               <span class="console-dots">
                 <span class="live-dot" aria-hidden="true"></span>
-                <span>kmath-mcp // live-z7-ast-guard</span>
+                <span>browser-z7-preview // zero-eval</span>
               </span>
-              <span id="heroTiming">0.1 ms · zero-eval</span>
+              <span id="heroTiming">Tarayıcı JS: 0.1 ms · Canlı MCP p50: 5.30 ms</span>
             </div>
             <div class="console-body">
               <div class="preset-strip" id="heroPresets">
@@ -120,7 +120,7 @@
               <div id="heroConsoleOutput"></div>
 
               <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;">
-                <span class="mono" style="font-size:0.7rem;color:var(--text-dim);">İstemci AST önizlemesi · 0 eval()</span>
+                <span class="mono" style="font-size:0.7rem;color:var(--text-dim);">Tarayıcı JS önizlemesi · Üretim otoritesi: Rust ikilisi</span>
                 <button id="heroOpenSandbox" class="mini-btn">Tam Stüdyoda Aç →</button>
               </div>
             </div>
@@ -172,8 +172,8 @@
         <div class="audience-grid">
           <article class="audience-card featured">
             <div class="audience-top">
-              <span class="tag accent">01 · EN BÜYÜK PAZAR</span>
-              <span class="mono audience-latency">~5 ms çevrimdışı</span>
+              <span class="tag accent">01 · ANA KULLANIM ALANI</span>
+              <span class="mono audience-latency">5.30 ms p50 çevrimdışı</span>
             </div>
             <h3>Yapay Zekâ Ajanı &amp; Mühendislik Copilot Ekipleri</h3>
             <p>Claude, Cursor, Windsurf veya kurum içi AI ajanlarıyla mühendislik kodu ve hesabı üreten ekipler. LLM'lerin birim kayması (<code>kN</code> vs <code>N</code>), kayıp payda tekilliği (<code>x != 1</code>), rejim ihlali ve yuvarlama halüsinasyonlarını üretim öncesi deterministik olarak durdurur.</p>
@@ -234,7 +234,7 @@
             <p>Formül veya tasarımlarını bulut çözücülere (Wolfram/bulut MATLAB) gönderemeyen ekipler. <code>--network=none --read-only</code> Docker konteynerinde %100 yerel çalışır; kapalı kaynak entegrasyon için <strong>Ticari Çift Lisans</strong> sunar.</p>
             <div class="audience-tools">
               <code>docker --network=none</code>
-              <code>kmath_audit (26 kapı)</code>
+              <code>kmath_audit (33 kapı)</code>
               <code>AGPL-3.0 / Commercial</code>
             </div>
           </article>
@@ -265,7 +265,7 @@
       <div id="tab-install-docker" class="tab-panel active" role="tabpanel">
         <p>Host makinede Rust veya Python kurulu olmadan, non-root <code>UID 10001</code>, salt-okunur dosya sistemi ve sıfır ağ erişimiyle doğrudan GHCR'den çalıştırın (herkese açık, <code>docker login</code> gerekmez):</p>
         <div class="code-head">
-          <span>ghcr.io/imza464-cmyk/citadel-math:0.2.1 · 26/26 kapı sertleştirilmiş konteynerde doğrulandı</span>
+          <span>ghcr.io/imza464-cmyk/citadel-math:0.2.1 · sertleştirilmiş non-root konteyner (main dalı: 33/33 kapı)</span>
           <button class="mini-btn" data-copy="docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --pids-limit=128 --memory=512m --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.1">Kopyala</button>
         </div>
         <pre class="code-block">docker run -i --rm \
@@ -290,7 +290,7 @@ kmath stats &amp;&amp; kmath audit &amp;&amp; kmath rust audit</pre>
       </div>
 
       <div id="tab-install-source" class="tab-panel" role="tabpanel">
-        <p>Katkıcılar ve yerel geliştirme için kaynaktan derleme ve tüm 26 kapı + güvenlik test paketi:</p>
+        <p>Katkıcılar ve yerel geliştirme için kaynaktan derleme, 85 Rust modül testi, 33 denetim kapısı ve 13 Python güvenlik/kahin testi:</p>
         <div class="code-head">
           <span>cargo + pip editable install</span>
           <button class="mini-btn" data-copy="git clone https://github.com/imza464-cmyk/citadel-math.git &amp;&amp; cd citadel-math &amp;&amp; cargo build --release --manifest-path citadel_math_core/Cargo.toml &amp;&amp; pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit">Kopyala</button>
@@ -375,8 +375,8 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
 
     <!-- 3. KANONİK YASALAR -->
     <section id="sec-laws" class="section">
-      <h1>Kanonik Yasalar Kataloğu (<code>canonical_laws.json</code>)</h1>
-      <p>37 fizik, nükleer, elektrokimya, yarı iletken, kırılma/triboloji, hidroloji/jeoteknik, fotometri, malzeme bilimi, akışkanlar, termodinamik, optik, akustik, kontrol, astrofizik, havacılık ve biyomekanik disiplinini kapsayan 367 SSOT denklemi. Her kayıt <code>dim(LHS) == dim(RHS)</code>, ≥3 kaynak, altın sayısal çapa ve <code>Dual64</code> Jakobyen testinden geçmiştir.</p>
+      <h1>Kanonik Yasalar Kataloğu</h1>
+      <p>37 fizik, nükleer, elektrokimya, yarı iletken, kırılma/triboloji, hidroloji/jeoteknik, fotometri, malzeme bilimi, akışkanlar, termodinamik, optik, akustik, kontrol, astrofizik, havacılık ve biyomekanik disiplinini kapsayan 367 SSOT denklemi. Her kayıt <code>dim(LHS) == dim(RHS)</code>, ≥3 kaynak (kartlarda açıkça listeli), altın sayısal çapa ve <code>Dual64</code> Jakobyen testinden geçmiştir · <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/database/canonical_laws.json" target="_blank" rel="noopener">Kaynak: database/canonical_laws.json</a></p>
 
       <div class="controls-row">
         <input id="lawSearch" class="input grow" type="search" placeholder="Yasa adı, ID, denklem veya sembol ara (kısayol: / veya Ctrl+K)...">
@@ -392,8 +392,8 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
 
     <!-- 4. Z7 SEMBOL ONTOLOJİSİ -->
     <section id="sec-ontology" class="section">
-      <h1>Z⁷ Sembol Ontolojisi (<code>ONTOLOGY.json</code>)</h1>
-      <p>Kanonik yasalarda kullanılan 618 tekil sembolün 7 temel SI ekseni <code>[M, L, T, I, Θ, N, J]</code> boyut vektörü ve yasa grafı bağlantıları.</p>
+      <h1>Z⁷ Sembol Ontolojisi</h1>
+      <p>Kanonik yasalarda kullanılan 618 tekil sembolün 7 temel SI ekseni <code>[M, L, T, I, Θ, N, J]</code> boyut vektörü ve yasa grafı bağlantıları · <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/database/ONTOLOGY.json" target="_blank" rel="noopener">Kaynak: database/ONTOLOGY.json</a></p>
 
       <div class="controls-row">
         <input id="ontSearch" class="input grow" type="search" placeholder="Sembol, boyut adı veya yasa ID ara...">
@@ -421,8 +421,8 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
 
     <!-- 5. NIST CODATA 2022 -->
     <section id="sec-codata" class="section">
-      <h1>NIST CODATA 2022 Sabitleri (<code>nist_constants.json</code>)</h1>
-      <p>355 temel fiziksel sabit. Her denetim kapısında 2019 SI tam ilişkileri ve Maxwell vakum özdeşliği (μ₀·ε₀·c² = 1) sınanır.</p>
+      <h1>NIST CODATA 2022 Sabitleri</h1>
+      <p>355 temel fiziksel sabit. Her denetim kapısında 2019 SI tam ilişkileri ve Maxwell vakum özdeşliği (μ₀·ε₀·c² = 1) sınanır · <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/data/nist_constants.json" target="_blank" rel="noopener">Kaynak: data/nist_constants.json</a></p>
 
       <div class="controls-row">
         <input id="nistSearch" class="input grow" type="search" placeholder="Sabit ara (örn. speed of light, Planck, Boltzmann, electron)...">
@@ -448,8 +448,8 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
 
     <!-- 6. MALZEMELER + INTERACTIVE ASHBY SCATTER PLOT -->
     <section id="sec-materials" class="section">
-      <h1>Yapısal &amp; Termal Koruma Malzemeleri (<code>materials.json</code>)</h1>
-      <p>80 havacılık, yapısal/inşaat, elastomer, elektriksel/manyetik, biyomedikal implant, süperalaşım, refrakter, teknik seramik, yarı iletken/optik, polimer, UHTC ve ablatif TPS malzemesi (17 Ashby kategorisi, her biri ≥3 kaynak). Grafikte herhangi bir noktanın üzerine gelin veya tabloda vurgulamak için tıklayın.</p>
+      <h1>Yapısal &amp; Termal Koruma Malzemeleri</h1>
+      <p>80 havacılık, yapısal/inşaat, elastomer, elektriksel/manyetik, biyomedikal implant, süperalaşım, refrakter, teknik seramik, yarı iletken/optik, polimer, UHTC ve ablatif TPS malzemesi (17 Ashby kategorisi, her biri ≥3 kaynak). Grafikte herhangi bir noktanın üzerine gelin veya tabloda vurgulamak için tıklayın · <a href="https://github.com/imza464-cmyk/citadel-math/blob/main/database/materials.json" target="_blank" rel="noopener">Kaynak: database/materials.json</a></p>
 
       <div class="chart-card">
         <div class="chart-head">
@@ -625,9 +625,10 @@ pip install -e . &amp;&amp; kmath audit &amp;&amp; kmath rust audit &amp;&amp; p
             <tr><td>USSA-1976 (0 / 11 / 47 km)</td><td class="mono">288.15 / 216.65 / 270.65 K</td><td class="mono">AtmosphereModel::state_at</td><td><span class="tag ok">&lt; 1e-3 K · a₀=340.294 m/s</span></td></tr>
             <tr><td>WGS84 J₂ Kritik Molniya Eğimi</td><td class="mono">63.4349488° (dω/dt = 0)</td><td class="mono">J2OrbitalModel</td><td><span class="tag ok">|dω/dt| &lt; 1e-16 rad/s</span></td></tr>
             <tr><td>WGS84 ISS LEO RAAN Drift</td><td class="mono">~ -4.998°/gün (NORAD)</td><td class="mono">J2OrbitalModel</td><td><span class="tag ok">-4.9979°/gün PASS</span></td></tr>
-            <tr><td>Lambert Transferi (90° LEO)</td><td class="mono">Vis-viva &amp; h korunumu</td><td class="mono">LambertSolver::solve</td><td><span class="tag ok">Bağıl hata &lt; 1e-9</span></td></tr>
-            <tr><td>IEEE 1788-2015 Interval64</td><td class="mono">1.0 ∈ (1/3)·3, 0 ∈ payda reddi</td><td class="mono">Interval64::div / mul</td><td><span class="tag ok">0/1-ULP tightest PASS</span></td></tr>
-            <tr><td>MCP Güvenlik &amp; Paketleme</td><td class="mono">11 RCE + ikili/wheel çözümü</td><td class="mono">tests/test_mcp_security.py</td><td><span class="tag ok">10/10 Test · 0 eval()</span></td></tr>
+            <tr><td>Lambert Transferi (Curtis Örnek 5.2 &amp; 90° LEO)</td><td class="mono">v₁=[-5.9925, 1.9254, 3.2456] km/s · ε &amp; h</td><td class="mono">astrodynamics.rs (4 test)</td><td><span class="tag ok">&lt; 2 m/s · korunum &lt; 1e-10</span></td></tr>
+            <tr><td>IEEE 1788-2015 Interval64 Bağımsız Kahinleri</td><td class="mono">25.000+ tam ikili BigInt + 80-basamak Decimal</td><td class="mono">interval.rs (11) &amp; test_interval_oracle.py</td><td><span class="tag ok">0/1-ULP · float_roundtrip PASS</span></td></tr>
+            <tr><td>Modüler Rust Birim Test Dağılımı (16/18 Modül)</td><td class="mono">proof_kernel:24 · interval:11 · buckingham/dim/lib:5 · ast/astro/cad/mat/pareto/bounds:4 · codegen/epistemic/graph:3 · const/sim:1</td><td class="mono">cargo test --lib</td><td><span class="tag ok">85/85 Rust Testi PASS</span></td></tr>
+            <tr><td>MCP Güvenlik, Paketleme &amp; 80-Basamak Oracle</td><td class="mono">11 RCE + ikili/wheel + canlı Rust oracle</td><td class="mono">tests/test_mcp_security.py + oracle</td><td><span class="tag ok">13/13 Python Testi · 0 eval()</span></td></tr>
           </tbody>
         </table>
       </div>

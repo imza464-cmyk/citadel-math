@@ -571,7 +571,7 @@
 
     const res = evaluateZ7Pair(lhsEl.value, rhsEl.value);
     const timingEl = $("#heroTiming");
-    if (timingEl) timingEl.textContent = `${res.ms} ms · zero-eval`;
+    if (timingEl) timingEl.textContent = `Tarayıcı JS: ${res.ms} ms · Canlı MCP p50: 5.30 ms`;
 
     if (res.ok) {
       const note = res.scaleRatio !== null ? `${res.scaleRatio}× SI ölçek` : `${formatDim(res.l.dim)} vs ${formatDim(res.r.dim)}`;
