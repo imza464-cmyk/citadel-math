@@ -51,11 +51,11 @@ jobs:
           kmath stats
           python -c "import kmath_mcp, kmath; assert callable(kmath_mcp.main) and callable(kmath.main)"
 
-      - name: Run 16-gate native Rust verification suite
+      - name: Run 20-gate native Rust verification suite
         run: python kmath.py rust audit
 
-      - name: Run 10-gate Python & SSOT ontology verification suite
+      - name: Run 13-gate Python & SSOT ontology verification suite
         run: python kmath.py audit
 
-      - name: Run MCP security & end-to-end integration tests
+      - name: Run MCP security, packaging & 80-digit interval oracle tests
         run: python -m unittest discover -s tests -v
