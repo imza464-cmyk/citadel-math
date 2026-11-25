@@ -41,7 +41,7 @@ jobs:
       - name: Build release binary
         run: cargo build --release --manifest-path citadel_math_core/Cargo.toml
 
-      - name: Smoke-test 16-gate Rust audit on release binary
+      - name: Smoke-test 20-gate Rust audit on release binary
         shell: bash
         run: ./"${{ matrix.bin_src }}" audit
 
@@ -110,7 +110,7 @@ jobs:
       - name: Build container image locally for hardened verification
         run: docker buildx build --load -t citadel-math:smoke .
 
-      - name: Smoke-test 26 audit gates inside hardened UID 10001 read-only container
+      - name: Smoke-test 33 audit gates inside hardened UID 10001 read-only container
         run: |
           docker run --rm \
             --read-only \
@@ -122,7 +122,7 @@ jobs:
             --network=none \
             --entrypoint python \
             citadel-math:smoke \
-            -c "import json, kmath_mcp; r=json.loads(kmath_mcp.kmath_audit()); assert r['status']=='ok', r; print('DOCKER_HARDENED_26_GATES_OK')"
+            -c "import json, kmath_mcp; r=json.loads(kmath_mcp.kmath_audit()); assert r['status']=='ok', r; print('DOCKER_HARDENED_33_GATES_OK')"
 
       - name: Tag and push verified image to GHCR
         env:

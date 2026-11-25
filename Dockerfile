@@ -41,7 +41,7 @@ COPY --from=rust-builder --chmod=0555 /build/citadel_math_core_bin /usr/local/bi
 COPY engine ./engine
 COPY database ./database
 COPY data ./data
-COPY kmath.py kmath_mcp.py AGENTS.md LICENSE COMMERCIAL_LICENSE.md ./
+COPY kmath.py kmath_mcp.py AGENTS.md DISCLAIMER.md LICENSE COMMERCIAL_LICENSE.md ./
 
 # Create unprivileged user (UID 10001) — zero root execution at runtime
 RUN useradd --uid 10001 --create-home --shell /usr/sbin/nologin kmath && \

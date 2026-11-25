@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "kmath-mcp"
-version = "0.2.1"
+version = "0.2.2"
 description = "Citadel-Math: Deterministic Z^7 dimensional shield, checked-i64 algebraic identity checker, IEEE 1788-2015 Interval64, and 15-tool offline MCP server"
 readme = "README.md"
 license = "AGPL-3.0-only"

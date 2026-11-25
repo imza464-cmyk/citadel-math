@@ -4,6 +4,27 @@ All notable changes to **Citadel-Math (`citadel_math_core` + `kmath-mcp`)** are 
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.2.2] - 2026-11-25
+
+### Fixed (6 Real Physics & Numerical Bugs Caught by Independent Oracles & Anchors)
+- **JSON Float Input Roundtrip (`Cargo.toml`):** Enabled `serde_json = { version = "1.0", features = ["float_roundtrip"] }`. Previously, default `serde_json` shifted inputs like `13.769785044591707` by `+1 ULP` to `13.769785044591709`, causing a 15-ULP containment breach in `exp(x)` caught by our 80-digit `Decimal` oracle.
+- **`Interval64::pow` & `Dual64::pow` Integer-Snapping Bug (`interval.rs`):** Replaced sloppy `< 1e-12` tolerance with exact IEEE-754 `p.fract() == 0.0` / `p == 0.5`, preventing ~30,000-ULP containment violations on near-integer exponents such as `1000^(2 + 5e-13)`.
+- **`Interval64::add_directed` Extreme & Subnormal Boundary Bug (`interval.rs`):** Fixed spurious `+Inf` on `f64::MAX + (-1.0)` and subnormal underflow on `5e-324 + 1e307` via a 3-regime exact error-free transform (`|a|,|b|<1e307` TwoSum, `|a|,|b|>=1e290` half-scaled TwoSum, and direct sign-side 1-ULP rule for huge+small).
+- **`Interval64::from_rel_uncertainty` & `from_pm` (`interval.rs`):** Replaced round-to-nearest radius multiplication with outward-rounded `mul_directed(...).1` + Knuth `add_directed`, preventing subnormal uncertainty underflow.
+- **Near-Parabolic Stumpff Catastrophic Cancellation (`astrodynamics.rs`):** Raised Taylor threshold in `stumpff_c/s/c_prime/s_prime` from `1e-5` to `0.1` with exact 7-term series (`< 5e-21` truncation error), recovering 9–12 lost digits on near-parabolic Lambert orbits (`1e-5 < |z| < 0.05`).
+- **4× Darcy-vs-Fanning Fanno Flow Bug (`database/canonical_laws.json`):** Fixed `law_fanno_friction_parameter` from `(4 * f_darcy * L) / D_pipe` to `(f_darcy * L) / D_pipe` (since $f_D = 4 f_{\text{Fanning}}$), locked permanently by Cross-Law Closure #15 (`fanno_param == delta_P_dw / q_dyn`), and lowered Planck-scale relative-error denominator floor from `1e-30` to `1e-300`.
+
+### Added
+- **4-Layer Epistemic Self-Verification Shield (`epistemic_audit.rs`, `kmath.py` — 33 Total Audit Gates: 20 Rust + 13 Python):**
+  - **100% (`367/367`) Golden Numerical Reference Anchors** + **100% (`367/367`) `≥3` Authoritative Sources** + **Universal `Dual64` Jacobian Non-Degeneracy Shield (`1,031/1,031` finite non-zero partial derivatives)**.
+  - **25 Cross-Law Algebraic Closures** (Black Hole 1st Law, Elasticity triangle, Maxwell/Planck triads, Carnot COP, Fanno–Darcy, Nuclear half-life/HVL, Thermoelectric `ZT = S²/L`, Semiconductor `V_bi = 10 V_T`, Griffith fracture duality, Photometry `J`-axis, etc.) and **28 Asymptotic Limit + `Dual64` Monotonicity Checks**.
+  - **17-Category Ashby Material Physical Envelopes** (`80/80` materials verified with `condition`, `failure_mode`, `yield_strength_range_mpa`, and `≥3` independent sources).
+- **3-Source-Verified SSOT Expansion:** Expanded from `217 → 367` canonical laws (`37` domains, **all 7/7 SI base axes** `M, L, T, I, Θ, N, J` active across `618` unique symbols) and `30 → 80` certified materials (`+civil_structural`, `+elastomer_seal`, `+electrical_magnetic`, `+biomedical_alloy`, `+technical_ceramic`, `+semiconductor_optical`, `+polymer`).
+- **Independent High-Precision Oracles & Balanced Module Unit Tests (`34 → 85` Rust tests across `16/18` modules + `13/13` Python tests):**
+  - Self-contained exact infinite-precision `BigInt` dyadic oracle (`25,000+` vectors in `interval.rs`) + live 80-digit `decimal.Decimal` oracle (`tests/test_interval_oracle.py`).
+  - Independent textbook/analytical module unit tests in `interval`, `dimensions`, `ast`, `buckingham` (Reynolds, Taylor-Sedov `1/5`), `pareto` (exact 2D hypervolume), `astrodynamics` (Curtis Ex. 5.2 Lambert, SMAD SSO, ISS RAAN, Molniya), `materials`, `physical_bounds`, `codegen`, `graph`, and `constants`.
+- **Governance, Discovery & Docs:** Added bilingual `DISCLAIMER.md` (AGPL-3.0 §§ 15–16 voluntary use & AI/MCP liability waiver), `server.json` (Official MCP Registry manifest), `smithery.yaml`, README Before/After guardrail table + animated SVG demo (`docs/demo_guardrail.svg`), `docs/LAUNCH_KIT.md`, and aligned website latency/terminology/oracle transparency.
+
 ## [0.2.1] - 2026-11-23
 
 ### Fixed

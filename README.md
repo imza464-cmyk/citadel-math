@@ -67,18 +67,18 @@ Citadel-Math is positioned as an **offline, deterministic physics, unit, and int
 Choose the workflow that fits your environment — **Rust is NOT required** if you use pre-built release binaries or Docker.
 
 ### Option A — Zero-Build Install via Wheel / `uvx` + Pre-Built Binary (No Rust or Git Required)
-1. **Download the self-contained Rust core binary** (`1.14 MB` Windows / `1.49 MB` Linux, embedded SSOT JSONs) from [GitHub Releases](https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.1) and verify its SHA-256 checksum against `SHA256SUMS.txt`:
+1. **Download the self-contained Rust core binary** (embedded SSOT JSONs) from [GitHub Releases](https://github.com/imza464-cmyk/citadel-math/releases/tag/v0.2.2) and verify its SHA-256 checksum against `SHA256SUMS.txt`:
    - Linux x86_64: `citadel_math_core-linux-x86_64` (`chmod +x` and place on `PATH` or point `KMATH_RUST_BIN` to it)
    - Windows x86_64: `citadel_math_core-windows-x86_64.exe` (place on `PATH` or point `KMATH_RUST_BIN` to it)
 2. **Install directly from the release wheel (no `git` or Rust needed) or run via [`uvx`](https://docs.astral.sh/uv/):**
    ```bash
    # Fastest direct wheel install (gives you `kmath` and `kmath-mcp` CLI commands)
-   pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl
+   pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl
    kmath stats && kmath audit && kmath rust audit
 
    # Or run ephemerally via uvx
-   uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl kmath stats
-   KMATH_RUST_BIN=/path/to/citadel_math_core uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl kmath-mcp
+   uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl kmath stats
+   KMATH_RUST_BIN=/path/to/citadel_math_core uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl kmath-mcp
    ```
 3. **MCP Client Configuration (`uvx`):**
    ```json
@@ -86,7 +86,7 @@ Choose the workflow that fits your environment — **Rust is NOT required** if y
      "mcpServers": {
        "kmath": {
          "command": "uvx",
-         "args": ["--from", "https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl", "kmath-mcp"],
+         "args": ["--from", "https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl", "kmath-mcp"],
          "env": {
            "KMATH_RUST_BIN": "/ABSOLUTE/PATH/TO/citadel_math_core",
            "OPENBLAS_NUM_THREADS": "1",
@@ -109,10 +109,10 @@ docker run -i --rm \
   --pids-limit=128 \
   --memory=512m \
   --network=none \
-  ghcr.io/imza464-cmyk/citadel-math:0.2.1
+  ghcr.io/imza464-cmyk/citadel-math:0.2.2
 
 # Or build locally from source
-docker build -t citadel-math:0.2.1 .
+docker build -t citadel-math:0.2.2 .
 ```
 See [`docker-compose.yml`](./docker-compose.yml) for the declarative hardened service definition. To attach Docker directly in Claude Desktop / Cursor:
 ```json
@@ -126,7 +126,7 @@ See [`docker-compose.yml`](./docker-compose.yml) for the declarative hardened se
         "--cap-drop=ALL",
         "--security-opt=no-new-privileges:true",
         "--network=none",
-        "ghcr.io/imza464-cmyk/citadel-math:0.2.1"
+        "ghcr.io/imza464-cmyk/citadel-math:0.2.2"
       ]
     }
   }

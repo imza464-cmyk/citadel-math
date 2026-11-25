@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
-// Citadel-Math v0.2.1 — Precision Engineering Studio, Zero-Eval Z^7 AST Engine, SVG Ashby Plot & ⌘K Global Palette
+// Citadel-Math v0.2.2 — Precision Engineering Studio, Zero-Eval Z^7 AST Engine, SVG Ashby Plot & ⌘K Global Palette
 
 (() => {
   "use strict";
@@ -126,9 +126,9 @@
   ];
 
   const QUICKRUN_COMMANDS = {
-    docker: "docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.1",
-    pip: "pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl",
-    uvx: "uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.1/kmath_mcp-0.2.1-py3-none-any.whl kmath stats",
+    docker: "docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.2",
+    pip: "pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl",
+    uvx: "uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl kmath stats",
   };
 
   const LATENCY_BENCHMARKS = [
