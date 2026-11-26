@@ -472,7 +472,12 @@ def _resolve_expression_dimension(
 
 @_async_mcp_tool
 def kmath_audit() -> str:
-    """Matematik Çekirdeğinin hem 13 katmanlı Python SSOT denetimini hem de 20 katmanlı saf-Rust Citadel-Math kanıt ve 4-katmanlı epistemik öz-doğrulama denetimini (toplam 33 kapı) koşturur."""
+    """Matematik Çekirdeğinin hem 13 katmanlı Python SSOT denetimini hem de 20 katmanlı saf-Rust Citadel-Math kanıt ve 4-katmanlı epistemik öz-doğrulama denetimini (toplam 33 kapı) koşturur.
+
+    Example:
+        kmath_audit()
+        -> {"status": "ok", "python_ssot_audit": {"canonical_laws": 367, ...}, "rust_citadel_core_audit": {"passed": true, ...}}
+    """
     if not os.path.exists(DB_PATH):
         return json.dumps(
             {"status": "error", "message": f"canonical_laws.json bulunamadı: {DB_PATH}"},
@@ -563,7 +568,12 @@ def kmath_dimension_check(
     rhs: Annotated[str, Field(description="Sağ taraf ifadesi, SI birimi veya boyut adı (örn: 'kg * m / s^2', 'Pa', 'G * m1 * m2 / r**2').")],
     var_dimensions_json: Annotated[str, Field(description="Opsiyonel özel değişken boyut sözlüğü JSON'u. SI ekseni ('L', 'M', 'T', 'M L T^-2'), kategori ('length', 'pressure') veya SI birimi ('Pa', 'm') kabul eder (örn: '{\"d\": \"L\", \"P\": \"pressure\"}').")] = "",
 ) -> str:
-    """İki fiziksel ifadenin, SI biriminin veya denklemin Z^7 ([M, L, T, I, Theta, N, J]) boyutsal homojenliğini ve birim ölçek eşliğini denetler."""
+    """İki fiziksel ifadenin, SI biriminin veya denklemin Z^7 ([M, L, T, I, Theta, N, J]) boyutsal homojenliğini ve birim ölçek eşliğini denetler.
+
+    Example:
+        kmath_dimension_check("kN", "kg * m / s^2")
+        -> {"status": "ok", "homogeneous": true, "si_scale_ratio_lhs_over_rhs": 1000.0, "verdict": "DIMENSIONALLY_HOMOGENEOUS_BUT_UNIT_SCALE_MISMATCH"}
+    """
     extra_dims: Optional[Dict[str, str]] = None
     if var_dimensions_json.strip():
         try:
@@ -631,7 +641,12 @@ def kmath_dimension_check(
 def kmath_constant(
     query: Annotated[str, Field(description="Sabit sembolü ('c', 'G', 'h', 'hbar', 'k_B', 'e', 'm_e', 'm_p', 'mu_0', 'eps_0', 'sigma_SB', 'N_A', 'R_gas', 'g0', 'alpha', 'M_earth', 'mu_earth') veya İngilizce NIST adı/alt-dizesi ('Planck', 'magnetic', 'proton').")],
 ) -> str:
-    """355 resmi NIST CODATA fiziksel sabiti ve IAU gezegen parametreleri içerisinden kesin değer, birim ve tam duyarlılık sorgular."""
+    """355 resmi NIST CODATA fiziksel sabiti ve IAU gezegen parametreleri içerisinden kesin değer, birim ve tam duyarlılık sorgular.
+
+    Example:
+        kmath_constant("c")
+        -> {"status": "ok", "symbol": "c", "nist_name": "speed of light in vacuum", "value": 299792458.0, "unit": "m s^-1"}
+    """
     q = query.strip()
     if not q:
         return json.dumps({"status": "error", "message": "Boş sabit sorgusu."}, ensure_ascii=False)
@@ -736,7 +751,12 @@ def kmath_materials(
     sort_by: Annotated[str, Field(description="Sıralama kriteri: 'breaking_length' (km), 'specific_strength', 'yield_strength' (MPa), veya 'max_temp' (K).")] = "breaking_length",
     category: Annotated[str, Field(description="Malzeme kategorisi: 'all', 'nanomaterial', 'composite', 'metal_alloy', 'superalloy', 'copper_superalloy', 'refractory_metal', 'ceramic_composite', 'uhtc_ceramic', 'technical_ceramic', 'semiconductor_optical', 'polymer', 'ablative_tps', 'insulator'.")] = "all",
 ) -> str:
-    """SSOT havacılık, yapısal, elastomer, manyetik, biyomedikal, seramik, yarı iletken, polimer ve TPS malzeme veritabanını (80 sertifikalı malzeme, 17 kategori, >=3 kaynak doğrulamalı) sorgular ve sıralar."""
+    """SSOT havacılık, yapısal, elastomer, manyetik, biyomedikal, seramik, yarı iletken, polimer ve TPS malzeme veritabanını (80 sertifikalı malzeme, 17 kategori, >=3 kaynak doğrulamalı) sorgular ve sıralar.
+
+    Example:
+        kmath_materials(sort_by="yield_strength", category="metal_alloy")
+        -> {"status": "ok", "total_materials": 8, "sorted_by": "yield_strength", "materials": [...]}
+    """
     mdb = MaterialsDatabase(MAT_PATH)
     all_mats = list(mdb.materials.values())
     available_categories = sorted({m.category for m in all_mats})
@@ -806,7 +826,12 @@ def kmath_stress_check(
     speed_ms: Annotated[float, Field(description="Uçuş hızı (m/s, Sutton-Graves ısınma ve PICA-X TPS hesabı için).")] = 7800.0,
     tank_pressure_bar: Annotated[float, Field(description="İç tank basıncı (bar).")] = 3.0,
 ) -> str:
-    """Tekil kaynaklı (SSOT) saf-Rust çekirdeğiyle ince cidarlı silindirik gövdede Biaxial Von Mises akma, NASA SP-8007 + Euler burkulma ve Sutton-Graves / PICA-X ablatif ısı kalkanı denetimini yürütür."""
+    """Tekil kaynaklı (SSOT) saf-Rust çekirdeğiyle ince cidarlı silindirik gövdede Biaxial Von Mises akma, NASA SP-8007 + Euler burkulma ve Sutton-Graves / PICA-X ablatif ısı kalkanı denetimini yürütür.
+
+    Example:
+        kmath_stress_check("mat_alli_2195", mass_kg=45000, g_load=4.5, max_q_pa=35000, radius_m=1.8, length_m=14.0, wall_thickness_mm=5.0, speed_ms=2400, tank_pressure_bar=4.0)
+        -> {"overall_pass": true, "yield_safety_factor": 4.215, "buckling_safety_factor": 2.486, ...}
+    """
     rc, rust_out, rust_err = _run_rust_cli(
         [
             "mcp",
@@ -835,7 +860,12 @@ def kmath_stress_check(
 def kmath_simulate_trajectory(
     vehicle_type: Annotated[str, Field(description="Simüle edilecek referans fırlatma aracı: 'compare' (3 mimari karşılaştırması), 'chemical' (2-kademeli LOX/RP-1), 'beamed' (Lazer SSTO) veya 'kinetic' (Kinetik hibrit).")] = "compare",
 ) -> str:
-    """Gerçek 4-aşamalı Runge-Kutta (RK4, O(dt^4)) yörünge entegratörü ile 2D atmosferik uçuş, G-kısma (throttle), Kepler yörünge (enberi/enöte/e) ve canlı ısı yükü simülasyonunu koşturur."""
+    """Gerçek 4-aşamalı Runge-Kutta (RK4, O(dt^4)) yörünge entegratörü ile 2D atmosferik uçuş, G-kısma (throttle), Kepler yörünge (enberi/enöte/e) ve canlı ısı yükü simülasyonunu koşturur.
+
+    Example:
+        kmath_simulate_trajectory(vehicle_type="beamed")
+        -> {"status": "ok", "integrator": "RK4 (dt=0.1s)", "results": [{"vehicle": "...", "max_altitude_km": ...}]}
+    """
     if vehicle_type == "compare":
         rc, rust_out, _ = _run_rust_cli(["simulate"])
         if rc == 0 and rust_out:
@@ -866,7 +896,12 @@ def kmath_solve_for(
     equation: Annotated[str, Field(description="Terslenecek 'LHS = RHS' denklemi (örn: 'delta_v = (g_0 * I_sp) * ln(m_0 / m_f)' veya 'P_beam = (F * v_e) / (2 * eta)').")],
     target_var: Annotated[str, Field(description="Yalnız bırakılacak hedef değişken adı (örn: 'm_0', 'I_sp', 'eta', 'v').")],
 ) -> str:
-    """Sembolik bir 'LHS = RHS' denklemini hedef değişken için cebirsel olarak tersler, zorunlu tanım kümesi yan koşullarını (!= 0, > 0, >= 0) ve ±sqrt dal uyarılarını çıkarır, sıfır-panik Rust kodu üretir."""
+    """Sembolik bir 'LHS = RHS' denklemini hedef değişken için cebirsel olarak tersler, zorunlu tanım kümesi yan koşullarını (!= 0, > 0, >= 0) ve ±sqrt dal uyarılarını çıkarır, sıfır-panik Rust kodu üretir.
+
+    Example:
+        kmath_solve_for("delta_v = (g_0 * I_sp) * ln(m_0 / m_f)", "m_0")
+        -> {"status": "ok", "target": "m_0", "isolated_rhs": "...", "domain_guards": [...]}
+    """
     rc, out, err = _run_rust_cli(["mcp", "solve_for", equation, target_var])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)
@@ -879,7 +914,12 @@ def kmath_prove_identity(
     rhs: Annotated[str, Field(description="Sağ cebirsel ifade (örn: 'x^2 + y^2 + z^2 + 2*x*y + 2*x*z + 2*y*z' veya 'x + 1').")],
     max_degree: Annotated[int, Field(description="Maksimum polinom derece bütçesi (varsayılan: 16).")] = 16,
 ) -> str:
-    """İki cebirsel ifadenin çok değişkenli kanonik polinom halkası Z[x_1, ..., x_n] (grevlex, checked_i64 taşma korumalı) üzerinde tam özdeşliğini ve tanım kümesi yan koşul korunumunu ispatlar."""
+    """İki cebirsel ifadenin çok değişkenli kanonik polinom halkası Z[x_1, ..., x_n] (grevlex, checked_i64 taşma korumalı) üzerinde tam özdeşliğini ve tanım kümesi yan koşul korunumunu ispatlar.
+
+    Example:
+        kmath_prove_identity("(x^2 - 1) / (x - 1)", "x + 1")
+        -> {"status": "ok", "proven_identical": false, "lhs_domain_guards": ["(x - 1) != 0"]}
+    """
     rc, out, err = _run_rust_cli(["mcp", "prove_poly", lhs, rhs, str(max_degree)])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)
@@ -892,7 +932,12 @@ def kmath_interval_eval(
     intervals_json: Annotated[str, Field(description="Değişken aralık haritası JSON'u: '{\"x\": [lo, hi], ...}' (örn: '{\"P\": [390000, 410000], \"r\": [1.795, 1.805], \"t\": [0.0049, 0.0051]}').")],
     diff_var: Annotated[str, Field(description="Opsiyonel sembolik türev alınacak değişken adı (örn: 't', 'I_sp').")] = "",
 ) -> str:
-    """IEEE-754 dışa yuvarlamalı Interval64, bağımlılık eleyen Taylor/Mean-Value aralığı, Dual64 tam gradyan ve sembolik türev hesaplar."""
+    """IEEE-754 dışa yuvarlamalı Interval64, bağımlılık eleyen Taylor/Mean-Value aralığı, Dual64 tam gradyan ve sembolik türev hesaplar.
+
+    Example:
+        kmath_interval_eval("(P * r) / t", '{"P": [390000, 410000], "r": [1.795, 1.805], "t": [0.0049, 0.0051]}', "t")
+        -> {"status": "ok", "outward_interval": [137260784.31, 151030612.25], ...}
+    """
     cmd = ["mcp", "interval_eval", expression, intervals_json]
     if diff_var.strip():
         cmd.append(diff_var.strip())
@@ -908,7 +953,12 @@ def kmath_synthesize(
     target_var: Annotated[str, Field(description="Sentezlenecek hedef fiziksel nicelik (örn: 'E_k', 'P_beam', 'delta_v', 'm_0').")],
     max_depth: Annotated[int, Field(description="Maksimum hipergraf zincirleme derinliği (varsayılan: 4).")] = 4,
 ) -> str:
-    """Çift-yönlü AND-OR bilgi hipergrafı üzerinde eldeki girdilerden hedef fiziksel niceliği türeten tüm Z^7 doğrulamalı sembolik formülleri ve sıfır-panik Rust fonksiyonlarını sentezler."""
+    """Çift-yönlü AND-OR bilgi hipergrafı üzerinde eldeki girdilerden hedef fiziksel niceliği türeten tüm Z^7 doğrulamalı sembolik formülleri ve sıfır-panik Rust fonksiyonlarını sentezler.
+
+    Example:
+        kmath_synthesize("delta_v,g_0,I_sp,m_f", "m_0", max_depth=3)
+        -> {"status": "ok", "target": "m_0", "candidates": [...]}
+    """
     rc, out, err = _run_rust_cli(["mcp", "synthesize", inputs_csv, target_var, str(max_depth)])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)
@@ -922,7 +972,12 @@ def kmath_inverse_design(
     max_g_limit: Annotated[float, Field(description="İzin verilen azami ivme yükü ve motor kısma sınırı (G, örn: 4.5 veya 8.5).")] = 8.5,
     min_safety_factor: Annotated[float, Field(description="Minimum akma ve NASA SP-8007 burkulma emniyet katsayısı (örn: 1.35).")] = 1.35,
 ) -> str:
-    """Kapalı döngü tersine mühendislik ve Pareto optimizasyon motorunu (6.912 aday x G-kısmalı RK4 + sıkı Kepler enberi >= target_orbit_km + Von Mises + NASA SP-8007 burkulma + PICA-X TPS) çalıştırır."""
+    """Kapalı döngü tersine mühendislik ve Pareto optimizasyon motorunu (6.912 aday x G-kısmalı RK4 + sıkı Kepler enberi >= target_orbit_km + Von Mises + NASA SP-8007 burkulma + PICA-X TPS) çalıştırır.
+
+    Example:
+        kmath_inverse_design(payload_kg=500.0, target_orbit_km=200.0, max_g_limit=8.5, min_safety_factor=1.35)
+        -> {"status": "ok", "exact_skyline_count": ..., "pareto_optimal_designs": [...]}
+    """
     rc, out, err = _run_rust_cli(
         [
             "mcp",
@@ -953,7 +1008,12 @@ def kmath_physical_bounds_check(
     temp_cold_k: Annotated[Optional[float], Field(description="Soğuk kaynak sıcaklığı T_cold (K, > 0 ve <= T_hot).")] = None,
     entropy_delta_j_k: Annotated[Optional[float], Field(description="İzole sistem entropi değişimi dS (J/K, >= 0).")] = None,
 ) -> str:
-    """AGENTS.md Değişmez 2 uyarınca bir fiziksel/mühendislik adayını Termodinamik 1./2. Yasa, Carnot sınırı, Özel Görelilik nedenselliği (v < c) ve Momentum korunumuna karşı erken çıkış yapmadan denetler ve tespit edilen TÜM ihlalleri raporlar."""
+    """AGENTS.md Değişmez 2 uyarınca bir fiziksel/mühendislik adayını Termodinamik 1./2. Yasa, Carnot sınırı, Özel Görelilik nedenselliği (v < c) ve Momentum korunumuna karşı erken çıkış yapmadan denetler ve tespit edilen TÜM ihlalleri raporlar.
+
+    Example:
+        kmath_physical_bounds_check(velocity_ms=2400.0, temp_hot_k=3200.0, temp_cold_k=300.0, efficiency=0.68)
+        -> {"physically_realizable": true, "violations": [], ...}
+    """
     payload = {
         k: v
         for k, v in {
@@ -982,7 +1042,12 @@ def kmath_regime_check(
     law_id: Annotated[str, Field(description="Kanonik yasa ID'si (örn: 'law_prandtl_glauert_subsonic_cp', 'law_ackeret_supersonic_wave_cp', 'law_lorentz_factor', 'law_mm1_mean_response_time').")],
     bindings_json: Annotated[str, Field(description="Sayısal değişken değerleri JSON'u (örn: '{\"Mach\": 0.55, \"C_p0\": -0.4}' veya '{\"v\": 299792458.0, \"c\": 299792458.0}').")],
 ) -> str:
-    """Faz 1.3 Fiziksel Geçerlilik Bölgesi (DomainBounds) kalkanı: Verilen sayısal girdilerin kanonik bir yasanın Mach, hız, basınç veya ergodik kararlılık rejim sınırları içinde kalıp kalmadığını denetler."""
+    """Faz 1.3 Fiziksel Geçerlilik Bölgesi (DomainBounds) kalkanı: Verilen sayısal girdilerin kanonik bir yasanın Mach, hız, basınç veya ergodik kararlılık rejim sınırları içinde kalıp kalmadığını denetler.
+
+    Example:
+        kmath_regime_check("law_prandtl_glauert_subsonic_cp", '{"Mach": 0.55, "C_p0": -0.4}')
+        -> {"status": "ok", "valid_in_regime": true, ...}
+    """
     rc, out, err = _run_rust_cli(["mcp", "regime_check", law_id, bindings_json])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)
@@ -996,7 +1061,12 @@ def kmath_buckingham_pi(
     samples_json: Annotated[str, Field(description="Opsiyonel deneysel/simülasyon örneklem dizisi JSON'u (örn: '[{\"r\": 80.5, \"E\": 8.4e13, \"rho\": 1.225, \"t\": 0.006}]').")] = "",
     repeating_csv: Annotated[str, Field(description="Opsiyonel tekrarlayan (pivot) taban değişkenleri öncelik listesi (örn: 'rho,v,L_char').")] = "",
 ) -> str:
-    """Tam tamsayı Z^7 çekirdek uzayı (nullspace) üzerinde Buckingham-Pi boyutsuz benzerlik gruplarını keşfeder, hedef ölçekleme yasasını ve sıfır-panik Rust kodunu sentezler, örneklem verilirse kalibre eder."""
+    """Tam tamsayı Z^7 çekirdek uzayı (nullspace) üzerinde Buckingham-Pi boyutsuz benzerlik gruplarını keşfeder, hedef ölçekleme yasasını ve sıfır-panik Rust kodunu sentezler, örneklem verilirse kalibre eder.
+
+    Example:
+        kmath_buckingham_pi("r,E,rho,t", "r")
+        -> {"status": "ok", "dimensional_rank": 3, "num_pi_groups": 1, ...}
+    """
     cmd = [
         "mcp",
         "buckingham",
@@ -1017,7 +1087,12 @@ def kmath_pareto_front(
     objectives_json: Annotated[str, Field(description="Amaç tanım dizisi JSON'u (örn: '[{\"name\": \"mass_kg\", \"direction\": \"min\", \"unit\": \"kg\"}, {\"name\": \"safety_factor\", \"direction\": \"max\", \"unit\": \"x\"}]').")],
     candidates_json: Annotated[str, Field(description="Aday noktalar dizisi JSON'u (örn: '[{\"id\": \"A\", \"values\": [1000.0, 1.4]}, {\"id\": \"B\", \"values\": [1220.0, 2.1]}]').")],
 ) -> str:
-    """Çok amaçlı kesin Pareto cephesi (Exact Skyline / NSGA-II Rank 0), kalabalık mesafesi, Ütopya/Nadir vektörleri, uzlaşma diz-noktası (Knee) ve 2B süpürme hiperhacmini hesaplar."""
+    """Çok amaçlı kesin Pareto cephesi (Exact Skyline / NSGA-II Rank 0), kalabalık mesafesi, Ütopya/Nadir vektörleri, uzlaşma diz-noktası (Knee) ve 2B süpürme hiperhacmini hesaplar.
+
+    Example:
+        kmath_pareto_front('[{"name": "mass_kg", "direction": "min"}, {"name": "sf", "direction": "max"}]', '[{"id": "A", "values": [1000.0, 1.4]}, {"id": "B", "values": [1220.0, 2.1]}]')
+        -> {"status": "ok", ...}
+    """
     rc, out, err = _run_rust_cli(["mcp", "pareto", objectives_json, candidates_json])
     if rc != 0:
         return json.dumps({"status": "error", "message": err or out}, ensure_ascii=False)

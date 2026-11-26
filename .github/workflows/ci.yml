@@ -57,5 +57,11 @@ jobs:
       - name: Run 13-gate Python & SSOT ontology verification suite
         run: python kmath.py audit
 
-      - name: Run MCP security, packaging & 80-digit interval oracle tests
+      - name: Run MCP security, all-15-tools coverage & 80-digit interval oracle tests
         run: python -m unittest discover -s tests -v
+
+      - name: Verify runnable Python & Rust examples
+        run: |
+          cargo run --manifest-path citadel_math_core/Cargo.toml --example interval_and_proof
+          python examples/quickstart_all_15_tools.py
+          python examples/aerospace_tank_guardrail.py

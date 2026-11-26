@@ -177,9 +177,16 @@ flowchart LR
 | **4** | `kmath_interval_eval("(P * r) / t", '{"P":[390000,410000],"r":[1.795,1.805],"t":[0.0049,0.0051]}', "t")` | **Guaranteed Tolerance Bounds:** IEEE 1788-2015 outward-rounded hoop stress **`[137.26 MPa, 151.03 MPa]`** (midpoint `144.00 MPa`, width `13.77 MPa`), exact symbolic derivative `-(P * r) / t^2`, sensitivity **`∂σ/∂t = -2.88 × 10¹⁰ Pa/m`** (`-2.88 MPa` per `+0.1 mm` wall thickness). |
 | **5** | `kmath_physical_bounds_check(mass_kg=45000, velocity_ms=2400, exhaust_velocity_ms=3400, mass_flow_kg_s=280, thrust_n=952000, temp_hot_k=3200, temp_cold_k=300, efficiency=0.68)` | **Thermodynamic & Causality Seal:** `carnot_max_efficiency = 0.90625` (`0.68 < 0.90625`), `lorentz_gamma = 1.000000000032` (`v ≪ c`), momentum `F = ṁ·v_e = 952 kN` exact → **`physically_realizable: true`**. |
 
-### Additional Standalone Checks / Tekil Canlı Örnekler
+### Additional Standalone Checks / Tekil Canlı Örnekler (All 15 Tools Covered)
 - **Domain-Guard Preservation (`kmath_prove_identity`):** `kmath_prove_identity("(x^2 - 1) / (x - 1)", "x + 1")` returns `"proven_identical": false` with `"lhs_domain_guards": ["(x - 1) != 0"]`, rejecting singular cancellation at `x = 1`.
 - **Exact Dimensionless Groups (`kmath_buckingham_pi`):** `kmath_buckingham_pi("r,E,rho,t", "r")` derives Taylor-Sedov blast scaling $r \propto (E t^2 / \rho)^{1/5}$ over exact `i128` rational $\mathbb{Z}^7$ nullspace.
+- **NIST CODATA & IAU Constants (`kmath_constant`):** `kmath_constant("c")` returns exact `299792458.0 m s^-1`; `kmath_constant("mu_earth")` returns IAU `GM` (`3.986004418e14 m^3 s^-2`).
+- **Symbolic Inversion + Safe Rust Codegen (`kmath_solve_for`):** `kmath_solve_for("delta_v = (g_0 * I_sp) * ln(m_0 / m_f)", "m_0")` solves `m_0 = m_f * exp(delta_v / (g_0 * I_sp))` with domain guards and zero-panic Rust code.
+- **AND-OR Hypergraph Synthesis (`kmath_synthesize`):** `kmath_synthesize("delta_v,g_0,I_sp,m_f", "m_0", max_depth=3)` chains canonical SSOT laws to synthesize dimensional-verified candidate formulas.
+- **RK4 Trajectory Simulation (`kmath_simulate_trajectory`):** `kmath_simulate_trajectory("beamed")` integrates 2D USSA-1976 atmospheric ascent, Max-Q, and orbital perigee/apogee.
+- **Closed-Loop Pareto Sizing (`kmath_inverse_design` & `kmath_pareto_front`):** `kmath_inverse_design(payload_kg=500, target_orbit_km=200, max_g_limit=8.5, min_safety_factor=1.35)` sweeps 6,912 configurations; `kmath_pareto_front(...)` extracts exact Rank-0 Skyline and Utopia knee points.
+- **Regime Guard & 33-Gate Self-Audit (`kmath_regime_check` & `kmath_audit`):** `kmath_regime_check("law_prandtl_glauert_subsonic_cp", '{"Mach": 0.55, "C_p0": -0.4}')` verifies subsonic validity; `kmath_audit()` runs all 13 Python + 20 Rust epistemic/proof gates.
+- **Runnable Offline Scripts (`examples/`):** Run `python examples/quickstart_all_15_tools.py`, `python examples/aerospace_tank_guardrail.py`, or `cargo run --manifest-path citadel_math_core/Cargo.toml --example interval_and_proof`.
 
 ---
 
@@ -226,9 +233,18 @@ Measured live on **Windows 11 x86_64** (Python 3.14, `OPENBLAS_NUM_THREADS=1`, r
 ├── kmath.py                        # Verification cockpit CLI (13 Python SSOT + 20 Rust audit gates)
 ├── kmath_mcp.py                    # 15-Tool Model Context Protocol (MCP) Server (zero-eval AST input parser)
 ├── mcp_config.example.json         # Portable local MCP client configuration example
+├── examples/
+│   ├── quickstart_all_15_tools.py  # Runnable showcase invoking all 15 deterministic MCP tools
+│   └── aerospace_tank_guardrail.py # 5-step cryogenic LOX tank Phase-A verification pipeline
 ├── tests/
-│   └── test_mcp_security.py        # Zero-eval RCE rejection, binary resolution & live MCP bridge tests
+│   ├── test_mcp_all_tools.py       # Full 15/15 MCP tool coverage, boundary & engine unit tests
+│   ├── test_mcp_security.py        # Zero-eval RCE rejection, binary resolution & live MCP bridge tests
+│   └── test_interval_oracle.py     # Independent 80-digit Decimal containment oracle for Interval64
 ├── citadel_math_core/              # Pure-Rust (#![forbid(unsafe_code)]) Engine & Native Binary
+│   ├── examples/
+│   │   └── interval_and_proof.rs   # Pure-Rust Z^7, GuardedPoly, Interval64 & Pareto showcase
+│   ├── tests/
+│   │   └── integration_core.rs     # Pure-Rust integration test suite
 │   └── src/
 │       ├── proof_kernel.rs         # Z[x] & MultiPolyZ (grevlex) algebraic equivalence + GuardedPoly guards
 │       ├── interval.rs             # IEEE 1788-2015 outward-rounded Interval64 + Dual64 differentiation
