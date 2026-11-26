@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://imza464-cmyk.github.io/citadel-math/sitemap.xml

@@ -4,11 +4,14 @@
 
 import json
 import os
+import subprocess
+import sys
 from datetime import datetime, timezone
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUT_PATH = os.path.join(SITE_DIR, "data", "ssot_bundle.js")
+KWEB_GATE = r"C:\Users\serit\projelerim\KALEOS\scripts\kweb_gate.py"
 
 
 def load_json(rel_path: str):
@@ -69,6 +72,11 @@ def main() -> None:
         f"[OK] Generated {OUT_PATH} ({size_kb:.1f} KB) | "
         f"{len(laws)} laws, {len(ontology)} symbols, {len(materials)} materials, {len(constants)} constants"
     )
+
+    if os.path.isfile(KWEB_GATE) and "--skip-gate" not in sys.argv:
+        res = subprocess.run([sys.executable, KWEB_GATE, ROOT_DIR], check=False)
+        if res.returncode != 0:
+            sys.exit(res.returncode)
 
 
 if __name__ == "__main__":

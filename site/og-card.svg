@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Citadel-Math Z7 Deterministik Fizik ve Boyut Doğrulama Motoru">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="56" y="56" width="1088" height="518" rx="24" fill="#111827" stroke="#334155" stroke-width="2"/>
+  <rect x="96" y="100" width="92" height="92" rx="18" fill="#1d4ed8"/>
+  <text x="142" y="160" text-anchor="middle" font-family="monospace" font-weight="700" font-size="42" fill="#f8fafc">Z7</text>
+  <text x="216" y="142" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="44" fill="#f8fafc">Citadel-Math v0.2.2</text>
+  <text x="216" y="182" font-family="system-ui, -apple-system, sans-serif" font-weight="500" font-size="24" fill="#93c5fd">Deterministik Fizik, Boyutsal Cebir &amp; Sembolik Doğrulama Motoru</text>
+  <text x="96" y="274" font-family="system-ui, -apple-system, sans-serif" font-size="26" fill="#cbd5e1">Saf Rust (#![forbid(unsafe_code)]) Z^7 boyutsal kalkan · IEEE 1788-2015 Interval64</text>
+  <text x="96" y="318" font-family="system-ui, -apple-system, sans-serif" font-size="26" fill="#cbd5e1">367 Kanonik Yasa · 618 Z^7 Sembolü · 355 NIST CODATA Sabiti · 80 Malzeme · 15 MCP Aracı</text>
+  <g transform="translate(96, 400)">
+    <rect width="230" height="64" rx="12" fill="#1e293b" stroke="#3b82f6"/>
+    <text x="115" y="40" text-anchor="middle" font-family="monospace" font-size="22" fill="#60a5fa">367 Kanonik Yasa</text>
+    <rect x="254" width="230" height="64" rx="12" fill="#1e293b" stroke="#3b82f6"/>
+    <text x="369" y="40" text-anchor="middle" font-family="monospace" font-size="22" fill="#60a5fa">618 Z^7 Sembol</text>
+    <rect x="508" width="240" height="64" rx="12" fill="#1e293b" stroke="#3b82f6"/>
+    <text x="628" y="40" text-anchor="middle" font-family="monospace" font-size="22" fill="#60a5fa">15 kmath MCP Aracı</text>
+    <rect x="772" width="236" height="64" rx="12" fill="#1e293b" stroke="#10b981"/>
+    <text x="890" y="40" text-anchor="middle" font-family="monospace" font-size="22" fill="#34d399">AGPL-3.0 / Ticari</text>
+  </g>
+</svg>
