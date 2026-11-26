@@ -7,6 +7,7 @@
 [![License: AGPL-3.0 | Commercial](https://img.shields.io/badge/License-AGPL--3.0_%7C_Commercial-blue.svg)](./LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-forbid%28unsafe__code%29-orange.svg)](./citadel_math_core/src/lib.rs)
 [![MCP Server](https://img.shields.io/badge/MCP-15_Deterministic_Tools-10b981.svg)](./kmath_mcp.py)
+[![M8ven Score](https://m8ven.ai/badge/mcp/imza464-cmyk-citadel-math-z9zqty?v=d4e0a271a356e8b6df046d192dc14470)](https://m8ven.ai/mcp/imza464-cmyk-citadel-math-z9zqty?s=readme)
 
 **$\mathbb{Z}^7$ Dimensional Analysis Shield, Checked-`i64` Algebraic Equivalence Checker, and Interval/Physics Verification Engine (Pure-Rust Core + Python/SymPy MCP Server).**  
 *$\mathbb{Z}^7$ Boyut Analizi Kalkanı, Taşma Korumalı `i64` Cebirsel Eşdeğerlik Denetleyicisi ve Aralık/Fizik Doğrulama Motoru (Saf-Rust Çekirdek + Python/SymPy MCP Sunucusu).*
