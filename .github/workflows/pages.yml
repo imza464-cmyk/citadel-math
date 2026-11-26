@@ -41,7 +41,7 @@ jobs:
       - name: Prepare static site output
         run: |
           mkdir -p _site
-          cp -r site/index.html site/styles.css site/app.js site/robots.txt site/sitemap.xml site/og-card.svg site/google26a3aba59ca8812e.html site/data _site/
+          cp -r site/index.html site/styles.css site/app.js site/robots.txt site/sitemap.xml site/og-card.svg site/og-card.png site/google26a3aba59ca8812e.html site/data _site/
           touch _site/.nojekyll
 
       - name: Configure GitHub Pages
