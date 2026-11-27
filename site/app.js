@@ -1323,17 +1323,22 @@ ${esc(cur.json)}</pre>
     if (btn) btn.textContent = currentTheme === "dark" ? "Açık" : "Koyu";
   }
 
+  function on(sel, ev, fn) {
+    const el = $(sel);
+    if (el) el.addEventListener(ev, fn);
+  }
+
   function bindEvents() {
     $$(".nav-pill").forEach((btn) => btn.addEventListener("click", () => switchSection(btn.dataset.sec)));
     $$("[data-cat-tab]").forEach((btn) => btn.addEventListener("click", () => switchCatalogTab(btn.dataset.catTab)));
-    $("#themeToggle").addEventListener("click", () => applyTheme(currentTheme === "dark" ? "light" : "dark"));
-    $("#cmdOpenBtn").addEventListener("click", openCmdPalette);
+    on("#themeToggle", "click", () => applyTheme(currentTheme === "dark" ? "light" : "dark"));
+    on("#cmdOpenBtn", "click", openCmdPalette);
 
     // X-Ray Inspector events
-    $("#xrayOpenSandboxBtn").addEventListener("click", () => {
+    on("#xrayOpenSandboxBtn", "click", () => {
       const cur = XRAY_FORMULA_CASES[activeXrayIdx] || XRAY_FORMULA_CASES[0];
-      $("#lhsInput").value = cur.lhs;
-      $("#rhsInput").value = cur.rhs;
+      if ($("#lhsInput")) $("#lhsInput").value = cur.lhs;
+      if ($("#rhsInput")) $("#rhsInput").value = cur.rhs;
       switchSection("sandbox");
     });
 
@@ -1341,10 +1346,12 @@ ${esc(cur.json)}</pre>
     $$("[data-quickrun]").forEach((btn) => {
       btn.addEventListener("click", () => {
         $$("[data-quickrun]").forEach((b) => b.classList.toggle("active", b === btn));
-        $("#heroQuickCmd").textContent = QUICKRUN_COMMANDS[btn.dataset.quickrun];
+        if ($("#heroQuickCmd")) $("#heroQuickCmd").textContent = QUICKRUN_COMMANDS[btn.dataset.quickrun];
       });
     });
-    $("#heroCopyBtn").addEventListener("click", () => copyText($("#heroQuickCmd").textContent, "Komut kopyalandı"));
+    on("#heroCopyBtn", "click", () => {
+      if ($("#heroQuickCmd")) copyText($("#heroQuickCmd").textContent, "Komut kopyalandı");
+    });
 
     // Ashby Y toggle & hover/click
     $$("[data-ashby-y]").forEach((btn) => {
@@ -1355,14 +1362,14 @@ ${esc(cur.json)}</pre>
       });
     });
 
-    $("#ashbySvg").addEventListener("mouseover", (e) => {
+    on("#ashbySvg", "mouseover", (e) => {
       const dot = e.target.closest("[data-ashby-id]");
       if (!dot) return;
       const mat = materialsEnriched.find((m) => m.id === dot.dataset.ashbyId);
       if (mat) renderAshbyHud(mat);
     });
 
-    $("#ashbySvg").addEventListener("click", (e) => {
+    on("#ashbySvg", "click", (e) => {
       const dot = e.target.closest("[data-ashby-id]");
       if (!dot) return;
       selectedMatId = dot.dataset.ashbyId;
@@ -1433,9 +1440,9 @@ ${esc(cur.json)}</pre>
 
     // Command palette
     const dlg = $("#cmdPalette");
-    dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
-    $("#cmdInput").addEventListener("input", (e) => renderCmdResults(e.target.value));
-    $("#cmdInput").addEventListener("keydown", (e) => {
+    if (dlg) dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+    on("#cmdInput", "input", (e) => renderCmdResults(e.target.value));
+    on("#cmdInput", "keydown", (e) => {
       if (!cmdMatches.length) return;
       if (e.key === "ArrowDown") {
         e.preventDefault();
@@ -1452,45 +1459,47 @@ ${esc(cur.json)}</pre>
     });
 
     // Sandbox
-    $("#runSandboxBtn").addEventListener("click", runSandbox);
-    $("#resetSandboxDraftBtn").addEventListener("click", () => {
-      $("#lhsInput").value = "kN";
-      $("#rhsInput").value = "kg * m / s^2";
+    on("#runSandboxBtn", "click", runSandbox);
+    on("#resetSandboxDraftBtn", "click", () => {
+      if ($("#lhsInput")) $("#lhsInput").value = "kN";
+      if ($("#rhsInput")) $("#rhsInput").value = "kg * m / s^2";
       runSandbox();
     });
-    $("#lhsInput").addEventListener("keydown", (e) => { if (e.key === "Enter") runSandbox(); });
-    $("#rhsInput").addEventListener("keydown", (e) => { if (e.key === "Enter") runSandbox(); });
-    $("#lhsInput").addEventListener("input", saveSandboxDraft);
-    $("#rhsInput").addEventListener("input", saveSandboxDraft);
+    on("#lhsInput", "keydown", (e) => { if (e.key === "Enter") runSandbox(); });
+    on("#rhsInput", "keydown", (e) => { if (e.key === "Enter") runSandbox(); });
+    on("#lhsInput", "input", saveSandboxDraft);
+    on("#rhsInput", "input", saveSandboxDraft);
     $$("#sandboxPresets .preset-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        $("#lhsInput").value = btn.dataset.lhs;
-        $("#rhsInput").value = btn.dataset.rhs;
+        if ($("#lhsInput")) $("#lhsInput").value = btn.dataset.lhs;
+        if ($("#rhsInput")) $("#rhsInput").value = btn.dataset.rhs;
         runSandbox();
       });
     });
 
     // Catalog Filters
-    $("#lawSearch").addEventListener("input", (e) => { lawState.q = e.target.value; lawState.page = 1; lawState.highlightId = ""; renderLaws(); });
-    $("#lawDomain").addEventListener("change", (e) => { lawState.domain = e.target.value; lawState.page = 1; renderLaws(); });
-    $("#lawRegime").addEventListener("change", (e) => { lawState.regime = e.target.value; lawState.page = 1; renderLaws(); });
-    $("#lawReset").addEventListener("click", () => {
+    on("#lawSearch", "input", (e) => { lawState.q = e.target.value; lawState.page = 1; lawState.highlightId = ""; renderLaws(); });
+    on("#lawDomain", "change", (e) => { lawState.domain = e.target.value; lawState.page = 1; renderLaws(); });
+    on("#lawRegime", "change", (e) => { lawState.regime = e.target.value; lawState.page = 1; renderLaws(); });
+    on("#lawReset", "click", () => {
       lawState.q = ""; lawState.domain = ""; lawState.regime = ""; lawState.page = 1; lawState.highlightId = "";
-      $("#lawSearch").value = ""; $("#lawDomain").value = ""; $("#lawRegime").value = "";
+      if ($("#lawSearch")) $("#lawSearch").value = "";
+      if ($("#lawDomain")) $("#lawDomain").value = "";
+      if ($("#lawRegime")) $("#lawRegime").value = "";
       renderLaws();
     });
 
-    $("#ontSearch").addEventListener("input", (e) => { ontState.q = e.target.value; ontState.page = 1; renderOntology(); });
-    $("#ontDimFilter").addEventListener("change", (e) => { ontState.dim = e.target.value; ontState.page = 1; renderOntology(); });
-    $("#ontReset").addEventListener("click", () => { ontState.q = ""; ontState.dim = ""; ontState.page = 1; $("#ontSearch").value = ""; $("#ontDimFilter").value = ""; renderOntology(); });
+    on("#ontSearch", "input", (e) => { ontState.q = e.target.value; ontState.page = 1; renderOntology(); });
+    on("#ontDimFilter", "change", (e) => { ontState.dim = e.target.value; ontState.page = 1; renderOntology(); });
+    on("#ontReset", "click", () => { ontState.q = ""; ontState.dim = ""; ontState.page = 1; if ($("#ontSearch")) $("#ontSearch").value = ""; if ($("#ontDimFilter")) $("#ontDimFilter").value = ""; renderOntology(); });
 
-    $("#nistSearch").addEventListener("input", (e) => { nistState.q = e.target.value; nistState.page = 1; renderNist(); });
-    $("#nistReset").addEventListener("click", () => { nistState.q = ""; nistState.page = 1; $("#nistSearch").value = ""; renderNist(); });
+    on("#nistSearch", "input", (e) => { nistState.q = e.target.value; nistState.page = 1; renderNist(); });
+    on("#nistReset", "click", () => { nistState.q = ""; nistState.page = 1; if ($("#nistSearch")) $("#nistSearch").value = ""; renderNist(); });
 
-    $("#matSearch").addEventListener("input", renderMaterials);
-    $("#matCategory").addEventListener("change", renderMaterials);
-    $("#matSort").addEventListener("change", renderMaterials);
-    $("#matReset").addEventListener("click", () => { $("#matSearch").value = ""; $("#matCategory").value = ""; $("#matSort").value = "breaking_desc"; renderMaterials(); });
+    on("#matSearch", "input", renderMaterials);
+    on("#matCategory", "change", renderMaterials);
+    on("#matSort", "change", renderMaterials);
+    on("#matReset", "click", () => { if ($("#matSearch")) $("#matSearch").value = ""; if ($("#matCategory")) $("#matCategory").value = ""; if ($("#matSort")) $("#matSort").value = "breaking_desc"; renderMaterials(); });
 
     // Global keyboard shortcuts & Hash sync
     window.addEventListener("hashchange", () => {

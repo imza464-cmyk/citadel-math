@@ -110,3 +110,18 @@ Bu belge, **Matematik Çekirdeği (`kmath` / `Citadel-Math`)** projesinde tespit
   2. `astrodynamics.rs`: Dört Stumpff fonksiyonunun Taylor eşiği 7-terimli tam seriyle (`kesme hatası < 5e-21`) **`0.1`**'e çıkarıldı.
   3. `citadel_math_core/Cargo.toml`: `serde_json = { version = "1.0", features = ["float_roundtrip"] }` zorunlu kılındı.
 - **Ampirik Doğrulama:** `cargo clippy --all-targets -- -D warnings` (0 uyarı, `4.93 s`), `cargo test` (**`85/85 PASS`**, `16/18` modül, `25.000+` sonsuz-hassasiyetli ikili rasyonel kahin vektörü + Curtis Örnek 5.2 Lambert + SMAD SSO + Taylor-Sedov + analitik 2B Pareto HV), `cargo build --release` PASS, `kmath.py audit` (`13/13 PASS`), `kmath.py rust audit` (`20/20 PASS`, `22.88 ms`), `python -m unittest discover -s tests -v` (**`13/13 PASS`**, canlı Rust ikilisi üzerinde 80-basamaklı bağımsız `Decimal` kahini `tests/test_interval_oracle.py` dahil).
+
+
+---
+
+## 🛡️ 2026-11-27 — GitHub Pages CDN `max-age=600` Önbellek Uyumsuzluğu (`?v=<sha256>` Eksikliği) ve `overflow-x: hidden` Mobil Flexbox Kırpma Hatası
+
+- **Belirti:** `site/index.html`, `site/styles.css` ve `site/app.js` üzerinde editoryal mimari yeniden tasarım sonrasında canlı `https://imza464-cmyk.github.io/citadel-math/` adresini daha önce ziyaret etmiş tarayıcılarda sayfa düzeninin bozulması ve butonların tepkisiz kalması; ayrıca dar mobil ekranlarda `.quickrun-cmd` satırının esnek kapsayıcıyı genişletme riski.
+- **Kök Neden (Adli / HTTP Kanıtı):**
+  1. **GitHub Pages Fastly CDN `Cache-Control: max-age=600` Uyumsuzluğu:** `index.html` içindeki `./styles.css`, `./data/ssot_bundle.js` ve `./app.js` referanslarında içerik özeti (`?v=<sha256>`) bulunmadığından, yeni `index.html` yüklendiğinde tarayıcı/CDN 10 dakika boyunca eski önbellekteki `styles.css` ve `app.js` dosyalarını sunmaya devam etti. Eski `app.js` kaldırılmış `#heroLhs` düğümünde `.addEventListener()` çağırarak `TypeError: null` fırlatıp tüm etkileşimi durdurdu; eski `styles.css` ise yeni `.study-desk-panel` / `.editorial-layout` sınıflarını içermediği için sayfa yapısını bozdu.
+  2. **`html, body { overflow-x: hidden }` ile Gizlenen Flexbox `min-width: auto` Taşması:** `html` ve `body` üzerinde birlikte `overflow-x: hidden` kullanıldığında `documentElement.scrollWidth` yapay olarak pencere genişliğine kilitleniyor ve `.quickrun-cmd code { white-space: nowrap; flex: 1; }` (`min-width: 0` eksik) dar görünümde taşmayı maskeleyebiliyordu.
+- **Çözüm & Kalıcı Kural:**
+  1. `site/build_site.py` içine `stamp_asset_hashes()` eklendi: her derlemede `styles.css`, `data/ssot_bundle.js` ve `app.js` dosyalarının 10 haneli `SHA-256` özeti hesaplanarak `site/index.html` içine otomatik `./styles.css?v=...` biçiminde mühürlenir.
+  2. `site/app.js` içindeki tüm DOM olay bağlamaları savunmacı `on(sel, ev, fn)` kontrolüne geçirildi; `site/styles.css` içinde `html { overflow-x: hidden }` kaldırılıp `.quickrun-cmd` ve `.step3-code` üzerine `min-width: 0; max-width: 100%;` eklendi.
+  3. Merkezi `KALEOS/scripts/kweb_gate.py` (`KAPI-6`) güncellenerek yalnızca `scrollWidth` değil, üst düzey yerleşim kapsayıcılarının gerçek `getBoundingClientRect().right` sınırları da denetlenmeye başlandı.
+- **Ampirik Doğrulama:** `7/7 kweb_gate.py PASS`, `EMOJI_COUNT=0`, ve Headless Chromium CDP üzerinde tüm 8 rota (`#baslangic`, `#dogrulama`, `#katalog/yasalar`, `#katalog/malzemeler`, `#katalog/sabitler`, `#katalog/semboller`, `#mcp`, `#karne`) hem `390x900` mobil (`iw=390, sw=390, maxR=390, errs=0`) hem `1440x1000` masaüstünde (`errs=0`) doğrulandı.

@@ -104,19 +104,24 @@
     box-sizing: border-box;
   }
 
-  html, body {
+  html {
     margin: 0;
     padding: 0;
-    max-width: 100%;
-    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
     background-color: var(--bg);
     color: var(--text);
     font-family: var(--font-sans);
     font-size: 15px;
     line-height: 1.62;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
   }
 }
 
@@ -891,6 +896,8 @@
     color: var(--text);
     overflow-x: auto;
     white-space: nowrap;
+    min-width: 0;
+    max-width: 100%;
   }
 
   /* 3. EDITORIAL TWO-COLUMN LAYOUT (Citadel Academy Sticky Rail + Reader) */
@@ -1100,6 +1107,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .quickrun-cmd code {
@@ -1110,7 +1119,9 @@
     color: var(--text);
     overflow-x: auto;
     white-space: nowrap;
-    flex: 1;
+    flex: 1 1 0%;
+    min-width: 0;
+    max-width: 100%;
   }
 
   .tab-bar {
@@ -1628,7 +1639,8 @@
   }
 
   .meter {
-    width: 90px;
+    width: 68px;
+    max-width: 100%;
     height: 5px;
     margin-top: 4px;
   }
@@ -1917,14 +1929,52 @@
     .hide-mobile {
       display: none !important;
     }
+    .topbar-inner {
+      padding: 8px 12px;
+      gap: 6px;
+    }
+    .brand {
+      gap: 8px;
+      min-width: 0;
+    }
+    .brand-sub {
+      font-size: 0.65rem;
+    }
+    .topbar-actions {
+      gap: 5px;
+    }
+    .icon-btn {
+      padding: 0 8px;
+      min-width: 32px;
+      height: 32px;
+      font-size: 0.74rem;
+    }
+    .cmd-trigger {
+      height: 32px;
+      padding: 0 8px;
+    }
     .shell {
-      padding: 16px 12px 52px;
+      padding: 14px 12px 48px;
     }
     .study-desk-panel {
       padding: 16px 14px;
+      gap: 18px;
     }
-    .cmd-trigger {
-      padding: 0 9px;
+    .desk-display-title {
+      font-size: 1.48rem;
+    }
+    .next-action-callout {
+      padding: 12px;
+    }
+    .next-action-callout .btn {
+      width: 100%;
+    }
+    .preview-code-line {
+      padding: 6px 7px;
+      gap: 7px;
+    }
+    .preview-code-line code {
+      font-size: 0.71rem;
     }
     .z7-grid {
       gap: 3px;
