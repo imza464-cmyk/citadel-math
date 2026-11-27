@@ -108,12 +108,12 @@
   };
 
   const MCP_TOOLS = [
-    { name: "kmath_audit", layer: "Python (10) + Rust (16)", desc: "26 katmanlı SSOT ontoloji, boyutsal homojenlik, CODATA ve cebirsel sağlamlık denetimini çalıştırır." },
+    { name: "kmath_audit", layer: "Python (13) + Rust (20)", desc: "33 katmanlı SSOT ontoloji, boyutsal homojenlik, CODATA ve cebirsel sağlamlık denetimini çalıştırır." },
     { name: "kmath_dimension_check", layer: "Zero-Eval AST + Z⁷", desc: "İki ifadenin Z⁷ SI boyut eşitliğini (dim(LHS) == dim(RHS)) ve ölçekli birim çarpan oranını denetler." },
     { name: "kmath_prove_identity", layer: "Rust · PolyZ / MultiPolyZ", desc: "Taşma korumalı checked_i64 polinom halkasında cebirsel özdeşliği ve payda yan koşullarını (GuardedPoly) doğrular." },
     { name: "kmath_interval_eval", layer: "Rust · Interval64 + Dual64", desc: "IEEE 1788-2015 0/1-ULP dışa yuvarlamalı aralık, Taylor kapanımı, Dual64 gradyan ve sembolik türev hesaplar." },
     { name: "kmath_constant", layer: "SSOT · NIST CODATA 2022", desc: "355 resmi NIST CODATA 2022 sabiti ve IAU gezegen parametrelerinden kesin değer ve birim getirir." },
-    { name: "kmath_materials", layer: "SSOT · 30 Malzeme", desc: "30 yapısal, kriyojenik, UHTC ve ablatif TPS malzemesini kopma uzunluğu ve sıcaklık sınırına göre sıralar." },
+    { name: "kmath_materials", layer: "SSOT · 80 Malzeme", desc: "80 yapısal, kriyojenik, seramik, polimer, UHTC ve ablatif TPS malzemesini dayanım ve sıcaklık sınırına göre sıralar." },
     { name: "kmath_stress_check", layer: "Rust · NASA SP-8007", desc: "İnce cidarlı silindirik kabuk Von Mises gerilmesi, eksenel burkulma ve Sutton-Graves TPS dayanımını denetler." },
     { name: "kmath_simulate_trajectory", layer: "Python + Rust · RK4 / USSA-1976", desc: "7 katmanlı USSA-1976 hidrostatik atmosfer altında 4. derece Runge-Kutta yörünge entegrasyonu koşturur." },
     { name: "kmath_solve_for", layer: "Rust · Symbolic Inverter", desc: "Kanonik bir denklemi hedef değişken için cebirsel tersler, yan koşulları çıkarır ve sıfır-panik Rust kodu üretir." },
@@ -126,8 +126,8 @@
   ];
 
   const QUICKRUN_COMMANDS = {
-    docker: "docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.2",
     pip: "pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl",
+    docker: "docker run -i --rm --read-only --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.2",
     uvx: "uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl kmath stats",
   };
 
@@ -975,23 +975,23 @@ ${esc(cur.json)}</pre>
   }));
 
   const CAT_COLORS = {
-    metal_alloy: "oklch(0.70 0.16 244)",
-    composite: "oklch(0.74 0.16 155)",
-    nanomaterial: "oklch(0.76 0.14 195)",
-    superalloy: "oklch(0.72 0.16 305)",
-    copper_superalloy: "oklch(0.75 0.16 55)",
-    refractory_metal: "oklch(0.76 0.11 265)",
-    uhtc_ceramic: "oklch(0.81 0.16 82)",
-    ceramic_composite: "oklch(0.78 0.15 115)",
-    technical_ceramic: "oklch(0.79 0.14 96)",
-    semiconductor_optical: "oklch(0.76 0.15 215)",
-    polymer: "oklch(0.74 0.14 330)",
-    elastomer_seal: "oklch(0.72 0.15 355)",
-    civil_structural: "oklch(0.71 0.08 75)",
-    electrical_magnetic: "oklch(0.77 0.16 275)",
-    biomedical_alloy: "oklch(0.76 0.14 175)",
-    ablative_tps: "oklch(0.69 0.19 25)",
-    insulator: "oklch(0.73 0.13 345)",
+    metal_alloy: "#18181b",
+    composite: "#3f3f46",
+    nanomaterial: "#27272a",
+    superalloy: "#52525b",
+    copper_superalloy: "#4b5563",
+    refractory_metal: "#374151",
+    uhtc_ceramic: "#1f2937",
+    ceramic_composite: "#6b7280",
+    technical_ceramic: "#4b5563",
+    semiconductor_optical: "#52525b",
+    polymer: "#71717a",
+    elastomer_seal: "#6b7280",
+    civil_structural: "#52525b",
+    electrical_magnetic: "#3f3f46",
+    biomedical_alloy: "#27272a",
+    ablative_tps: "#18181b",
+    insulator: "#71717a",
   };
 
   let ashbyYMode = "yield";
@@ -1258,20 +1258,20 @@ ${esc(cur.json)}</pre>
     }
   }
 
-  let currentTheme = readStorage("citadel_theme_v2", "dark");
+  let currentTheme = readStorage("citadel_theme_v3", "light");
   function applyTheme(theme) {
-    currentTheme = theme === "light" ? "light" : "dark";
-    writeStorage("citadel_theme_v2", currentTheme);
+    currentTheme = theme === "dark" ? "dark" : "light";
+    writeStorage("citadel_theme_v3", currentTheme);
     document.documentElement.setAttribute("data-theme", currentTheme);
     const btn = $("#themeToggle");
-    if (btn) btn.textContent = currentTheme === "dark" ? "☀" : "☾";
+    if (btn) btn.textContent = currentTheme === "dark" ? "Açık" : "Koyu";
   }
 
   function bindEvents() {
     $$(".nav-pill").forEach((btn) => btn.addEventListener("click", () => switchSection(btn.dataset.sec)));
     $("#themeToggle").addEventListener("click", () => applyTheme(currentTheme === "dark" ? "light" : "dark"));
     $("#cmdOpenBtn").addEventListener("click", openCmdPalette);
-    $("#heroCmdBtn").addEventListener("click", openCmdPalette);
+    if ($("#heroCmdBtn")) $("#heroCmdBtn").addEventListener("click", openCmdPalette);
 
     // Hero live console
     $("#heroLhs").addEventListener("input", runHeroConsole);

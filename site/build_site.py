@@ -43,7 +43,7 @@ def main() -> None:
 
     bundle = {
         "meta": {
-            "version": "0.2.1",
+            "version": "0.2.2",
             "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "law_count": len(laws),
             "symbol_count": len(ontology),
