@@ -1,5 +1,5 @@
 // Copyright (c) 2026 Mekserina Karaosmanoğlu. Dual-licensed under GNU AGPL-3.0-only OR Commercial License (see LICENSE and COMMERCIAL_LICENSE.md).
-// Citadel-Math v0.2.2 — Citadel Academy Architectural Studio, X-Ray Formula Inspector, 2-Column Catalog & Persistent Drafts (Zero Emoji)
+// Citadel-Math v0.2.2 — Precision Engineering Studio, Zero-Eval Z^7 AST Engine, SVG Ashby Plot & ⌘K Global Palette
 
 (() => {
   "use strict";
@@ -7,12 +7,12 @@
   const SSOT = window.CITADEL_SSOT;
   if (!SSOT) {
     document.body.innerHTML =
-      "<p style='padding:24px;font-family:monospace;color:#b91c1c;'>SSOT veri paketi (site/data/ssot_bundle.js) yüklenemedi. Önce 'python site/build_site.py' çalıştırın.</p>";
+      "<p style='padding:24px;font-family:monospace;color:#f87171;'>SSOT veri paketi (site/data/ssot_bundle.js) yüklenemedi. Önce 'python site/build_site.py' çalıştırın.</p>";
     return;
   }
 
   const G0 = 9.80665;
-  const Z7_AXES = ["M", "L", "T", "I", "Theta", "N", "J"];
+  const Z7_AXES = ["M", "L", "T", "I", "Θ", "N", "J"];
   const ZERO_DIM = [0, 0, 0, 0, 0, 0, 0];
 
   const DIMENSION_CATEGORIES = {
@@ -107,49 +107,13 @@
     T: [1.0, [1, 0, -2, -1, 0, 0, 0]],
   };
 
-  // Citadel Academy Style Click-a-Line X-Ray Formula Cases
-  const XRAY_FORMULA_CASES = [
-    {
-      ln: "01",
-      code: 'kmath_dimension_check("kN", "kg * m / s^2")',
-      lhs: "kN",
-      rhs: "kg * m / s^2",
-      title: "Satır #01 · 1000x Birim Ölçek Uyarısı",
-      note: "Boyut vektörü her iki tarafta da kuvvettir [M L T^-2]; ancak kN ile N (kg·m/s²) arasında 1000.0x çarpan farkı vardır. Mars Climate Orbiter tipi sessiz katsayı hatası engellendi.",
-    },
-    {
-      ln: "02",
-      code: 'kmath_prove_identity("(x^2 - 1)/(x - 1)", "x + 1")',
-      lhs: "(x^2 - 1) / (x - 1)",
-      rhs: "x + 1",
-      title: "Satır #02 · Yutulan Payda Tekilliği (GuardedPoly)",
-      note: "Dil modelleri bu ifadeyi koşulsuz x + 1 olarak sadeleştirir. GuardedPoly motoru x = 1 noktasındaki sıfıra bölme tekilliğini yakalar ve zorunlu (x - 1) != 0 bekçisi üretir.",
-    },
-    {
-      ln: "03",
-      code: 'kmath_dimension_check("P * r / t", "Pa")',
-      lhs: "P * r / t",
-      rhs: "Pa",
-      title: "Satır #03 · Örtük Sembol Çakışması Tespiti",
-      note: "SSOT ontolojisinde P varsayılan olarak Güç [M L^2 T^-3] ve t Zaman [T] olduğundan [M L^3 T^-4] != Basınç [M L^-1 T^-2] çakışması yakalanır; açık var_dimensions_json tanımı zorlanır.",
-    },
-    {
-      ln: "04",
-      code: 'kmath_dimension_check("delta_v", "v_e * ln(m_0 / m_f)")',
-      lhs: "delta_v",
-      rhs: "v_e * ln(m_0 / m_f)",
-      title: "Satır #04 · Aşkın Fonksiyon ve Tsiolkovsky Kanıtı",
-      note: "ln(m_0 / m_f) içindeki kütle oranı [1 (boyutsuz)] olduğu doğrulanır ve hız değişimi boyutu [L T^-1] her iki tarafta tam eşleşir.",
-    },
-  ];
-
   const MCP_TOOLS = [
-    { name: "kmath_audit", layer: "Python (13) + Rust (20)", desc: "33 katmanlı SSOT ontoloji, boyutsal homojenlik, CODATA ve cebirsel sağlamlık denetimini çalıştırır." },
-    { name: "kmath_dimension_check", layer: "Zero-Eval AST + Z7", desc: "İki ifadenin Z7 SI boyut eşitliğini (dim(LHS) == dim(RHS)) ve ölçekli birim çarpan oranını denetler." },
+    { name: "kmath_audit", layer: "Python (10) + Rust (16)", desc: "26 katmanlı SSOT ontoloji, boyutsal homojenlik, CODATA ve cebirsel sağlamlık denetimini çalıştırır." },
+    { name: "kmath_dimension_check", layer: "Zero-Eval AST + Z⁷", desc: "İki ifadenin Z⁷ SI boyut eşitliğini (dim(LHS) == dim(RHS)) ve ölçekli birim çarpan oranını denetler." },
     { name: "kmath_prove_identity", layer: "Rust · PolyZ / MultiPolyZ", desc: "Taşma korumalı checked_i64 polinom halkasında cebirsel özdeşliği ve payda yan koşullarını (GuardedPoly) doğrular." },
     { name: "kmath_interval_eval", layer: "Rust · Interval64 + Dual64", desc: "IEEE 1788-2015 0/1-ULP dışa yuvarlamalı aralık, Taylor kapanımı, Dual64 gradyan ve sembolik türev hesaplar." },
     { name: "kmath_constant", layer: "SSOT · NIST CODATA 2022", desc: "355 resmi NIST CODATA 2022 sabiti ve IAU gezegen parametrelerinden kesin değer ve birim getirir." },
-    { name: "kmath_materials", layer: "SSOT · 80 Malzeme", desc: "80 yapısal, kriyojenik, seramik, polimer, UHTC ve ablatif TPS malzemesini dayanım ve sıcaklık sınırına göre sıralar." },
+    { name: "kmath_materials", layer: "SSOT · 30 Malzeme", desc: "30 yapısal, kriyojenik, UHTC ve ablatif TPS malzemesini kopma uzunluğu ve sıcaklık sınırına göre sıralar." },
     { name: "kmath_stress_check", layer: "Rust · NASA SP-8007", desc: "İnce cidarlı silindirik kabuk Von Mises gerilmesi, eksenel burkulma ve Sutton-Graves TPS dayanımını denetler." },
     { name: "kmath_simulate_trajectory", layer: "Python + Rust · RK4 / USSA-1976", desc: "7 katmanlı USSA-1976 hidrostatik atmosfer altında 4. derece Runge-Kutta yörünge entegrasyonu koşturur." },
     { name: "kmath_solve_for", layer: "Rust · Symbolic Inverter", desc: "Kanonik bir denklemi hedef değişken için cebirsel tersler, yan koşulları çıkarır ve sıfır-panik Rust kodu üretir." },
@@ -157,23 +121,23 @@
     { name: "kmath_inverse_design", layer: "Rust · Pareto Sweeper", desc: "Kapalı döngü parametrik taramayla (RK4 + SP-8007 + PICA-X) Pareto-optimal ön tasarım adaylarını filtreler." },
     { name: "kmath_physical_bounds_check", layer: "Rust · Conservation Shield", desc: "Termodinamik 1./2. yasa (Carnot), nedensellik (v < c) ve momentum korunumu ihlallerini budar." },
     { name: "kmath_regime_check", layer: "Rust · DomainBounds", desc: "Sayısal girdilerin 18 fiziksel rejim (Mach, görelilik, ergodiklik) sınırı içinde kalıp kalmadığını denetler." },
-    { name: "kmath_buckingham_pi", layer: "Rust · Rat128 Nullspace", desc: "Tam tamsayı Z7 sıfır uzayı (Gauss-Jordan) üzerinden boyutsuz Buckingham-Pi gruplarını keşfeder." },
+    { name: "kmath_buckingham_pi", layer: "Rust · Rat128 Nullspace", desc: "Tam tamsayı Z⁷ sıfır uzayı (Gauss-Jordan) üzerinden boyutsuz Buckingham-Π gruplarını keşfeder." },
     { name: "kmath_pareto_front", layer: "Rust · NSGA-II / Skyline", desc: "Kesin Pareto Skyline (Rank 0), kalabalık mesafesi, Ütopya/Nadir vektörleri ve diz-noktasını hesaplar." },
   ];
 
   const QUICKRUN_COMMANDS = {
+    docker: "docker run -i --rm --read-only --tmpfs /tmp:size=64M,noexec,nosuid --cap-drop=ALL --security-opt=no-new-privileges:true --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.2",
     pip: "pip install https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl",
-    docker: "docker run -i --rm --read-only --network=none ghcr.io/imza464-cmyk/citadel-math:0.2.2",
     uvx: "uvx --from https://github.com/imza464-cmyk/citadel-math/releases/download/v0.2.2/kmath_mcp-0.2.2-py3-none-any.whl kmath stats",
   };
 
   const LATENCY_BENCHMARKS = [
     { name: 'kmath_constant("c")', p50: 0.28, p95: 0.33, cls: "py", note: "Python JSON" },
     { name: "kmath_dimension_check", p50: 3.60, p95: 4.81, cls: "py", note: "Zero-Eval AST" },
-    { name: "kmath_prove_identity", p50: 5.30, p95: 5.68, cls: "rust", note: "Rust Alt Süreç" },
-    { name: "kmath_interval_eval", p50: 5.45, p95: 5.72, cls: "rust", note: "Rust Alt Süreç" },
+    { name: "kmath_prove_identity", p50: 5.30, p95: 5.68, cls: "rust", note: "Rust Subprocess" },
+    { name: "kmath_interval_eval", p50: 5.45, p95: 5.72, cls: "rust", note: "Rust Subprocess" },
     { name: "kmath_stress_check", p50: 5.56, p95: 5.84, cls: "rust", note: "Py + Rust" },
-    { name: "kmath_audit (33 kapı)", p50: 45.65, p95: 47.73, cls: "audit", note: "13 Py + 20 Rust" },
+    { name: "kmath_audit (26 kapı)", p50: 45.65, p95: 47.73, cls: "audit", note: "10 Py + 16 Rust" },
   ];
 
   const SYMBOL_DIMS = { ...DEFAULT_PHYSICS_SYMBOLS };
@@ -592,67 +556,55 @@
           const diff = lv !== rv;
           const active = !diff && lv !== 0;
           const cls = diff ? "mismatch" : active ? "active-dim" : "";
-          const disp = diff ? `${lv}!=${rv}` : String(lv);
+          const disp = diff ? `${lv}≠${rv}` : String(lv);
           return `<div class="z7-cell ${cls}"><span class="z7-axis">${ax}</span><span class="z7-vals">${disp}</span></div>`;
         }).join("")}
       </div>
     `;
   }
 
-  // =========================================================================
-  // Study Desk Click-a-Line Obsidian X-Ray Formula Inspector
-  // =========================================================================
-  let activeXrayIdx = 0;
+  function runHeroConsole() {
+    const lhsEl = $("#heroLhs");
+    const rhsEl = $("#heroRhs");
+    const out = $("#heroConsoleOutput");
+    if (!lhsEl || !rhsEl || !out) return;
 
-  function renderXrayInspector(idx) {
-    const wrap = $("#xrayCodeLines");
-    if (!wrap) return;
-    activeXrayIdx = Math.max(0, Math.min(XRAY_FORMULA_CASES.length - 1, idx));
-    wrap.innerHTML = XRAY_FORMULA_CASES.map((item, i) => `
-      <button type="button" class="preview-code-line${i === activeXrayIdx ? " preview-line-active" : ""}" data-xray-idx="${i}">
-        <span class="preview-ln">${esc(item.ln)}</span>
-        <code>${esc(item.code)}</code>
-      </button>
-    `).join("");
+    const res = evaluateZ7Pair(lhsEl.value, rhsEl.value);
+    const timingEl = $("#heroTiming");
+    if (timingEl) timingEl.textContent = `Tarayıcı JS: ${res.ms} ms · Canlı MCP p50: 5.30 ms`;
 
-    const cur = XRAY_FORMULA_CASES[activeXrayIdx];
-    const lbl = $("#xrayFootLabel");
-    const note = $("#xrayFootNote");
-    if (lbl) lbl.textContent = cur.title;
-    if (note) note.textContent = cur.note;
-  }
-
-  // =========================================================================
-  // Sandbox with Persistent Draft State (Citadel Academy labDrafts Pattern)
-  // =========================================================================
-  const DRAFT_KEY = "citadel_math_sandbox_draft_v1";
-
-  function loadSandboxDraft() {
-    try {
-      const raw = readStorage(DRAFT_KEY, "");
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed.lhs === "string" && typeof parsed.rhs === "string") {
-        return parsed;
-      }
-    } catch (_) {}
-    return null;
-  }
-
-  function saveSandboxDraft() {
-    const lhsEl = $("#lhsInput");
-    const rhsEl = $("#rhsInput");
-    if (!lhsEl || !rhsEl) return;
-    writeStorage(DRAFT_KEY, JSON.stringify({ lhs: lhsEl.value, rhs: rhsEl.value }));
+    if (res.ok) {
+      const note = res.scaleRatio !== null ? `${res.scaleRatio}× SI ölçek` : `${formatDim(res.l.dim)} vs ${formatDim(res.r.dim)}`;
+      const scaleL = res.l.scale !== null ? ` · ölçek ${res.l.scale}×` : "";
+      const scaleR = res.r.scale !== null ? ` · ölçek ${res.r.scale}×` : "";
+      out.innerHTML = `
+        <div class="verdict-line ${res.cls}">
+          <span>${esc(res.verdict)}</span>
+          <span>${esc(note)}</span>
+        </div>
+        ${renderZ7Matrix(res.l.dim, res.r.dim)}
+        <div class="mono" style="font-size:0.72rem;color:var(--text-muted);background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:6px;padding:8px 10px;line-height:1.55;">
+          <div><span style="color:var(--text-dim);">LHS</span> → <strong>[${esc(formatDim(res.l.dim))}]</strong> <span style="color:var(--text-dim);">(${esc(res.l.mode)}${scaleL})</span></div>
+          <div><span style="color:var(--text-dim);">RHS</span> → <strong>[${esc(formatDim(res.r.dim))}]</strong> <span style="color:var(--text-dim);">(${esc(res.r.mode)}${scaleR})</span></div>
+        </div>
+      `;
+    } else {
+      out.innerHTML = `
+        <div class="verdict-line err">
+          <span>${esc(res.verdict)}</span>
+          <span>${res.isSec ? "AST Güvenlik Duvarı" : "Reddedildi"}</span>
+        </div>
+        <div class="mono" style="font-size:0.75rem;color:var(--text-muted);padding:4px 2px;">${esc(res.message)}</div>
+      `;
+    }
   }
 
   function runSandbox() {
     const out = $("#sandboxOutput");
     if (!out) return;
-    saveSandboxDraft();
     const res = evaluateZ7Pair($("#lhsInput").value, $("#rhsInput").value);
     if (res.ok) {
-      const note = res.scaleRatio !== null ? `SI Ölçek Oranı: ${res.scaleRatio}x` : `${res.l.mode} / ${res.r.mode}`;
+      const note = res.scaleRatio !== null ? `SI Ölçek Oranı: ${res.scaleRatio}×` : `${res.l.mode} / ${res.r.mode}`;
       out.innerHTML = `
         <div class="verdict-line ${res.cls}">
           <span>${esc(res.verdict)}</span>
@@ -672,6 +624,9 @@
     }
   }
 
+  // =========================================================================
+  // Sync Counts & Latency Chart
+  // =========================================================================
   function syncCounts() {
     const setTxt = (sel, val) => { const el = $(sel); if (el) el.textContent = String(val); };
     setTxt("#tocLawCount", SSOT.meta.law_count);
@@ -704,33 +659,37 @@
   }
 
   // =========================================================================
-  // 5-Step End-to-End Agent Scenario
+  // Interactive 5-Step End-to-End Agent Scenario
   // =========================================================================
   const AGENT_SCENARIO_STEPS = [
     {
       num: "01",
       tool: "kmath_materials",
       shortTitle: "Alaşım Seçimi",
-      badge: "PASS · 80 Malzeme",
+      badge: "PASS · 30 Malzeme",
       badgeClass: "ok",
       call: 'kmath_materials(sort_by="yield_strength", category="metal_alloy")',
-      summary: "Metal alaşımları akma dayanımına göre sıralanır; kriyojenik hafif tank için Al-Li 2195-T8 (550 MPa akma, 146.85 C tavan) seçilir.",
+      summary: "Metal alaşımları akma dayanımına göre sıralanır: Maraging C-300 (2000 MPa, 8000 kg/m³), 17-4 PH (1170 MPa), AISI 304L Cryo (960 MPa, 806.9 °C) karşılaştırılır; kriyojenik hafif tank için Al-Li 2195-T8 (550 MPa akma, 146.85 °C tavan) seçilir.",
       json: `{
   "selected": "mat_alli_2195 (Al-Li 2195-T8)",
-  "yield_strength_MPa": 550.0
+  "top3_yield_comparison": [
+    {"id": "mat_maraging_300", "yield_strength_MPa": 2000.0, "breaking_length_km": 25.5},
+    {"id": "mat_ss_17_4ph_h900", "yield_strength_MPa": 1170.0, "breaking_length_km": 15.3},
+    {"id": "mat_ss_304l_cryo", "yield_strength_MPa": 960.0, "max_temperature_C": 806.85}
+  ]
 }`,
     },
     {
       num: "02",
       tool: "kmath_dimension_check",
-      shortTitle: "Birim ve Sembol Kalkanı",
+      shortTitle: "Birim & Sembol Kalkanı",
       badge: "2 HATA YAKALANDI",
       badgeClass: "warn",
-      call: 'kmath_dimension_check("kN", "kg * m / s^2")',
-      summary: "Hesaplamadan önce kN ile kg·m/s² arasındaki 1000x SI ölçek farkı ve P·r/t sembol çakışması yakalanır.",
+      call: 'kmath_dimension_check("kN", "kg * m / s^2") && kmath_dimension_check("P * r / t", "Pa")',
+      summary: "Hesaplamadan önce iki klasik LLM hatası yakalanır: (a) kN ile kg·m/s² arasında 1000× SI ölçek farkı; (b) P·r/t ifadesinde P=Güç ve t=Zaman çakışması ([M L³ T⁻⁴] ≠ [M L⁻¹ T⁻²]). Açık var_dimensions_json ayrımı zorunlu kılınır.",
       json: `{
-  "si_scale_ratio_lhs_over_rhs": 1000.0,
-  "verdict": "DIMENSIONALLY_HOMOGENEOUS_BUT_UNIT_SCALE_MISMATCH"
+  "unit_scale_check": {"lhs": "kN", "rhs": "kg * m / s^2", "si_scale_ratio_lhs_over_rhs": 1000.0, "verdict": "DIMENSIONALLY_HOMOGENEOUS_BUT_UNIT_SCALE_MISMATCH"},
+  "symbol_collision_check": {"lhs": "P * r / t", "dim_lhs": "M L^3 T^-4", "dim_rhs": "M L^-1 T^-2", "verdict": "DIMENSIONAL_MISMATCH"}
 }`,
       sandboxLhs: "P * r / t",
       sandboxRhs: "Pa",
@@ -742,11 +701,12 @@
       badge: "PASS · 26.32 mm TPS",
       badgeClass: "ok",
       call: 'kmath_stress_check("mat_alli_2195", mass_kg=45000, g_load=4.5, max_q_pa=35000, radius_m=1.8, length_m=14.0, wall_thickness_mm=5.0, speed_ms=2400, tank_pressure_bar=4.0)',
-      summary: "Von Mises ve NASA SP-8007 burkulma emniyet katsayıları doğrulanır; 26.32 mm PICA-X ısı kalkanı boyutlandırılır.",
+      summary: "Yapısal dayanım ve NASA SP-8007 burkulma geçer (Von Mises 130.5 MPa, SF 4.215×; burkulma SF 2.486×). Çıplak duvar sıcaklığı 1951.5 °C ile 146.85 °C sınırını aşar; motor otomatik 26.32 mm PICA-X TPS (173.60 kg) boyutlandırır ve yapışma hattını 106.85 °C'ye indirir.",
       json: `{
-  "yield_safety_factor": 3.321,
-  "buckling_safety_factor": 2.717,
-  "overall_pass": true
+  "von_mises_mpa": 130.5, "yield_safety_factor": 4.215,
+  "sp8007_buckling_critical_mpa": 97.32, "buckling_safety_factor": 2.486,
+  "bare_wall_temp_c": 1951.53, "pica_x_thickness_mm": 26.32,
+  "pica_x_mass_kg": 173.60, "protected_bondline_temp_c": 106.85, "overall_pass": true
 }`,
     },
     {
@@ -756,23 +716,27 @@
       badge: "IEEE 1788-2015 PASS",
       badgeClass: "ok",
       call: 'kmath_interval_eval("(P * r) / t", \'{"P":[390000,410000],"r":[1.795,1.805],"t":[0.0049,0.0051]}\', "t")',
-      summary: "İmalat toleransları altında çember gerilmesi garantili dışa yuvarlamalı [137.26 MPa, 151.03 MPa] aralığına kilitlenir.",
+      summary: "İmalat toleransları (P ±10 kPa, r ±5 mm, t ±0.1 mm) altında çember gerilmesi garantili dışa yuvarlamalı [137.26 MPa, 151.03 MPa] aralığına kilitlenir; sembolik türev -(P·r)/t² ve kesin et kalınlığı duyarlılığı ∂σ/∂t = -2.88×10¹⁰ Pa/m hesaplanır.",
       json: `{
-  "outward_interval": [137264705.88, 151030612.24],
-  "status": "ok"
+  "outward_interval_Pa": [137264705.88, 151030612.24],
+  "midpoint_Pa": 144000000.0,
+  "symbolic_derivative": "(-((P * r) / t^2))",
+  "gradient": {"P": 360.0, "r": 80000000.0, "t": -28800000000.0}, "status": "ok"
 }`,
     },
     {
       num: "05",
       tool: "kmath_physical_bounds_check",
-      shortTitle: "Carnot ve Nedensellik",
-      badge: "GEÇERLİ",
+      shortTitle: "Carnot & Nedensellik",
+      badge: "FİZİKSEL GEÇERLİ",
       badgeClass: "ok",
-      call: "kmath_physical_bounds_check(mass_kg=45000, velocity_ms=2400, temp_hot_k=3200, temp_cold_k=300, efficiency=0.68)",
-      summary: "Carnot tavanı (0.68 < 0.90625) ve özel görelilik sınırı (v << c) tam doğrulanır.",
+      call: "kmath_physical_bounds_check(mass_kg=45000, velocity_ms=2400, exhaust_velocity_ms=3400, mass_flow_kg_s=280, thrust_n=952000, temp_hot_k=3200, temp_cold_k=300, efficiency=0.68)",
+      summary: "Carnot tavanı 0.90625 (0.68 < 0.90625), Lorentz faktörü γ = 1.000000000032 (v ≪ c) ve momentum korunumu F = ṁ·v_e = 952 kN tam doğrulanır; tasarım fiziksel olarak gerçekleştirilebilir mührü alır.",
       json: `{
   "carnot_max_efficiency": 0.90625,
-  "physically_realizable": true
+  "lorentz_gamma": 1.0000000000320444,
+  "physically_realizable": true,
+  "verdict": "FİZİKSEL OLARAK GEÇERLİ (Termodinamik 1./2. Yasa, Nedensellik ve Momentum Korunumu Doğrulandı)"
 }`,
     },
   ];
@@ -787,7 +751,7 @@
 
     bar.innerHTML = AGENT_SCENARIO_STEPS.map(
       (st, i) => `
-        <button type="button" class="step-btn${i === activeScenarioIdx ? " active" : ""}" role="tab" aria-selected="${i === activeScenarioIdx}" data-scenario-step="${i}">
+        <button class="step-btn${i === activeScenarioIdx ? " active" : ""}" role="tab" aria-selected="${i === activeScenarioIdx}" data-scenario-step="${i}">
           <span class="step-num">${esc(st.num)} · ${esc(st.tool)}</span>
           ${esc(st.shortTitle)}
         </button>
@@ -796,17 +760,17 @@
 
     const cur = AGENT_SCENARIO_STEPS[activeScenarioIdx];
     const sandboxAction = cur.sandboxLhs
-      ? `<button type="button" class="mini-btn" data-test-lhs="${esc(cur.sandboxLhs)}" data-test-rhs="${esc(cur.sandboxRhs)}">Doğrulama Odasında Aç</button>`
+      ? `<button class="mini-btn" data-test-lhs="${esc(cur.sandboxLhs)}" data-test-rhs="${esc(cur.sandboxRhs)}">Z⁷ Stüdyoda Aç →</button>`
       : "";
     card.innerHTML = `
-      <div class="step-header" style="margin-bottom:10px;">
+      <div class="step-header">
         <div class="step-title">Adım ${esc(cur.num)} · <code>${esc(cur.tool)}</code> — ${esc(cur.shortTitle)}</div>
         <span class="tag ${esc(cur.badgeClass)}">${esc(cur.badge)}</span>
       </div>
       <p>${esc(cur.summary)}</p>
       <div class="code-head">
-        <span>${esc(cur.tool)} doğrulama kaydı</span>
-        <button type="button" class="mini-btn" data-copy="${esc(cur.call)}">Çağrıyı Kopyala</button>
+        <span>${esc(cur.tool)} canlı doğrulama kaydı</span>
+        <button class="mini-btn" data-copy="${esc(cur.call)}">Çağrıyı Kopyala</button>
       </div>
       <pre class="code-block">&gt; ${esc(cur.call)}
 
@@ -814,15 +778,15 @@ ${esc(cur.json)}</pre>
       <div class="step-actions">
         <div>${sandboxAction}</div>
         <div style="display:flex;gap:6px;">
-          <button type="button" class="mini-btn" data-scenario-step="${activeScenarioIdx - 1}"${activeScenarioIdx === 0 ? " disabled" : ""}>Önceki</button>
-          <button type="button" class="mini-btn" data-scenario-step="${activeScenarioIdx + 1}"${activeScenarioIdx === AGENT_SCENARIO_STEPS.length - 1 ? " disabled" : ""}>Sonraki</button>
+          <button class="mini-btn" data-scenario-step="${activeScenarioIdx - 1}"${activeScenarioIdx === 0 ? " disabled" : ""}>← Önceki</button>
+          <button class="mini-btn" data-scenario-step="${activeScenarioIdx + 1}"${activeScenarioIdx === AGENT_SCENARIO_STEPS.length - 1 ? " disabled" : ""}>Sonraki →</button>
         </div>
       </div>
     `;
   }
 
   // =========================================================================
-  // Canonical Laws, Ontology, CODATA & Materials Catalog
+  // Canonical Laws Catalog
   // =========================================================================
   const lawState = { q: "", domain: "", regime: "", page: 1, perPage: 20, highlightId: "" };
 
@@ -916,7 +880,7 @@ ${esc(cur.json)}</pre>
               <div class="katex-slot" data-tex="${esc(law.latex || law.equation)}" data-eq="${esc(law.equation)}"><code>${esc(law.equation)}</code></div>
               <div class="mono" style="font-size:0.72rem;color:var(--text-dim);margin-top:4px;">ASCII: ${esc(law.equation)}</div>
             </div>
-            <button type="button" class="mini-btn" data-test-lhs="${esc(law.target)}" data-test-rhs="${esc(rhsExpr)}">Doğrulama Odasında Dene</button>
+            <button class="mini-btn" data-test-lhs="${esc(law.target)}" data-test-rhs="${esc(rhsExpr)}">Z⁷ Stüdyoda Test Et</button>
           </div>
           ${law.description ? `<p style="font-size:0.85rem;margin:6px 0;">${esc(law.description)}</p>` : ""}
           <div class="law-vars">Semboller: ${varsText}</div>
@@ -936,13 +900,16 @@ ${esc(cur.json)}</pre>
     const el = $(selector);
     if (total <= 1) { el.innerHTML = ""; return; }
     el.innerHTML = `
-      <button type="button" class="btn" ${page <= 1 ? "disabled" : ""} data-p="${page - 1}">Önceki</button>
+      <button class="btn" ${page <= 1 ? "disabled" : ""} data-p="${page - 1}">← Önceki</button>
       <span>Sayfa ${page} / ${total}</span>
-      <button type="button" class="btn" ${page >= total ? "disabled" : ""} data-p="${page + 1}">Sonraki</button>
+      <button class="btn" ${page >= total ? "disabled" : ""} data-p="${page + 1}">Sonraki →</button>
     `;
     el.querySelectorAll("button[data-p]").forEach((btn) => btn.addEventListener("click", () => onPage(Number(btn.dataset.p))));
   }
 
+  // =========================================================================
+  // Ontology & CODATA
+  // =========================================================================
   const ontList = Object.entries(SSOT.ontology)
     .map(([sym, info]) => ({ sym, ...info }))
     .sort((a, b) => a.sym.localeCompare(b.sym));
@@ -973,7 +940,7 @@ ${esc(cur.json)}</pre>
     $("#ontCountLabel").textContent = `${filtered.length} / ${ontList.length} SSOT sembolü`;
     $("#ontTableBody").innerHTML = slice.map((o) => {
       const allLaws = Array.from(new Set([...(o.produced_by || []), ...(o.consumed_by || [])]));
-      const links = allLaws.slice(0, 5).map((id) => `<button type="button" class="ref-link" data-jump-law="${esc(id)}">${esc(id)}</button>`).join("");
+      const links = allLaws.slice(0, 5).map((id) => `<button class="ref-link" data-jump-law="${esc(id)}">${esc(id)}</button>`).join("");
       const more = allLaws.length > 5 ? `<span class="mono" style="font-size:0.72rem;color:var(--text-dim);">+${allLaws.length - 5}</span>` : "";
       return `<tr><td class="mono"><strong>${esc(o.sym)}</strong></td><td class="mono">${esc(o.dimension_key)}</td><td class="mono">${esc(o.si_representation)}</td><td class="mono" style="color:var(--text-muted);">[${(o.z7_vector || ZERO_DIM).join(", ")}]</td><td>${links}${more}</td></tr>`;
     }).join("");
@@ -993,16 +960,39 @@ ${esc(cur.json)}</pre>
         <td>${esc(c.name)}</td>
         <td class="mono"><strong>${esc(c.raw_str)}</strong></td>
         <td class="mono" style="color:var(--text-muted);">${esc(c.unit || "1 (boyutsuz)")}</td>
-        <td><button type="button" class="mini-btn" data-copy="${esc(c.raw_str)}">Kopyala</button></td>
+        <td><button class="mini-btn" data-copy="${esc(c.raw_str)}">Kopyala</button></td>
       </tr>
     `).join("");
     renderPager("#nistPager", nistState.page, totalPages, (p) => { nistState.page = p; renderNist(); window.scrollTo({ top: 0, behavior: "auto" }); });
   }
 
+  // =========================================================================
+  // Aerospace & TPS Materials + Interactive SVG Ashby Scatter Plot
+  // =========================================================================
   const materialsEnriched = SSOT.materials.map((m) => ({
     ...m,
     breaking_length_km: (m.tensile_strength_mpa * 1e6) / (m.density_kg_m3 * G0 * 1000.0),
   }));
+
+  const CAT_COLORS = {
+    metal_alloy: "oklch(0.70 0.16 244)",
+    composite: "oklch(0.74 0.16 155)",
+    nanomaterial: "oklch(0.76 0.14 195)",
+    superalloy: "oklch(0.72 0.16 305)",
+    copper_superalloy: "oklch(0.75 0.16 55)",
+    refractory_metal: "oklch(0.76 0.11 265)",
+    uhtc_ceramic: "oklch(0.81 0.16 82)",
+    ceramic_composite: "oklch(0.78 0.15 115)",
+    technical_ceramic: "oklch(0.79 0.14 96)",
+    semiconductor_optical: "oklch(0.76 0.15 215)",
+    polymer: "oklch(0.74 0.14 330)",
+    elastomer_seal: "oklch(0.72 0.15 355)",
+    civil_structural: "oklch(0.71 0.08 75)",
+    electrical_magnetic: "oklch(0.77 0.16 275)",
+    biomedical_alloy: "oklch(0.76 0.14 175)",
+    ablative_tps: "oklch(0.69 0.19 25)",
+    insulator: "oklch(0.73 0.13 345)",
+  };
 
   let ashbyYMode = "yield";
   let selectedMatId = "mat_alli_2195";
@@ -1019,22 +1009,26 @@ ${esc(cur.json)}</pre>
     const hud = $("#ashbyHud");
     if (!hud || !mat) return;
     const tempC = Math.round(mat.max_temperature_k - 273.15);
+    const col = CAT_COLORS[mat.category] || "var(--accent)";
     const srcArr = Array.isArray(mat.sources) ? mat.sources : [];
     const srcHtml = srcArr.length
-      ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:0.7rem;color:var(--text-dim);line-height:1.4;"><strong style="color:var(--ok);">Doğrulanmış (${srcArr.length} Kaynak):</strong> ${srcArr.map((s) => esc(s)).join(" · ")}</div>`
+      ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-subtle);font-size:0.7rem;color:var(--text-dim);line-height:1.4;"><strong style="color:var(--ok);">✓ ${srcArr.length} Kaynak:</strong> ${srcArr.map((s) => esc(s)).join(" · ")}</div>`
       : "";
     hud.innerHTML = `
       <div>
-        <div class="mono" style="font-size:0.71rem;color:var(--text-dim);margin-bottom:4px;">${esc(mat.category)}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+          <span style="width:9px;height:9px;border-radius:50%;background:${col};display:inline-block;"></span>
+          <span class="mono" style="font-size:0.72rem;color:var(--text-muted);">${esc(mat.category)}</span>
+        </div>
         <div style="font-weight:650;font-size:0.9rem;color:var(--text);line-height:1.3;">${esc(mat.name)}</div>
-        <div class="mono" style="font-size:0.7rem;color:var(--text-dim);margin-top:3px;">${esc(mat.id)}${mat.condition ? ` · ${esc(mat.condition)}` : ""}</div>
+        <div class="mono" style="font-size:0.7rem;color:var(--text-dim);margin-top:3px;">${esc(mat.id)}${mat.condition ? ` · ${esc(mat.condition)}` : ""}${mat.failure_mode ? ` · ${esc(mat.failure_mode)}` : ""}</div>
         <p style="font-size:0.78rem;margin:8px 0 0;line-height:1.45;">${esc(mat.description || "")}</p>
         ${srcHtml}
       </div>
-      <div class="mono" style="font-size:0.75rem;display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:10px;border-top:1px solid var(--border);">
+      <div class="mono" style="font-size:0.75rem;display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:10px;border-top:1px solid var(--border-subtle);">
         <div><span style="color:var(--text-dim);display:block;font-size:0.66rem;">Yoğunluk</span><strong>${mat.density_kg_m3} kg/m³</strong></div>
         <div><span style="color:var(--text-dim);display:block;font-size:0.66rem;">Akma</span><strong>${mat.yield_strength_mpa} MPa</strong></div>
-        <div><span style="color:var(--text-dim);display:block;font-size:0.66rem;">T_max</span><strong>${mat.max_temperature_k.toFixed(0)} K (${tempC} C)</strong></div>
+        <div><span style="color:var(--text-dim);display:block;font-size:0.66rem;">T_max</span><strong>${mat.max_temperature_k.toFixed(0)} K (${tempC}°C)</strong></div>
         <div><span style="color:var(--text-dim);display:block;font-size:0.66rem;">Kopma L_b</span><strong>${mat.breaking_length_km.toFixed(1)} km</strong></div>
       </div>
     `;
@@ -1065,14 +1059,14 @@ ${esc(cur.json)}</pre>
     const gridLines = [
       ...xTicks.map((v) => {
         const x = xPos(v).toFixed(1);
-        return `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="var(--border)" stroke-dasharray="2 3"/>
+        return `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + plotH}" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>
                 <text x="${x}" y="${H - 16}" text-anchor="middle" fill="var(--text-dim)" font-family="JetBrains Mono,monospace" font-size="10">${v >= 1000 ? `${v / 1000}k` : v}</text>`;
       }),
       ...yTicks.map((v) => {
         const y = isYield
           ? (padT + plotH - ((Math.log10(v) - minY) / (maxY - minY)) * plotH).toFixed(1)
           : (padT + plotH - ((v - minY) / (maxY - minY)) * plotH).toFixed(1);
-        return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="var(--border)" stroke-dasharray="2 3"/>
+        return `<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="var(--border-subtle)" stroke-dasharray="2 3"/>
                 <text x="${padL - 8}" y="${Number(y) + 3}" text-anchor="end" fill="var(--text-dim)" font-family="JetBrains Mono,monospace" font-size="10">${v >= 1000 ? `${v / 1000}k` : v}</text>`;
       }),
     ].join("");
@@ -1080,19 +1074,20 @@ ${esc(cur.json)}</pre>
     const dots = filtered.map((m) => {
       const cx = xPos(m.density_kg_m3).toFixed(1);
       const cy = yPos(m).toFixed(1);
+      const col = CAT_COLORS[m.category] || "var(--accent)";
       const sel = m.id === selectedMatId;
       return `
         <g class="ashby-dot" data-ashby-id="${esc(m.id)}" tabindex="0" role="button" aria-label="${esc(m.name)}">
-          ${sel ? `<circle cx="${cx}" cy="${cy}" r="9.5" fill="none" stroke="var(--text)" stroke-width="1.5"/>` : ""}
-          <circle cx="${cx}" cy="${cy}" r="${sel ? 5 : 4}" fill="${sel ? "var(--text)" : "var(--text-muted)"}" stroke="var(--bg-code)" stroke-width="1.1"/>
+          ${sel ? `<circle cx="${cx}" cy="${cy}" r="10" fill="${col}" fill-opacity="0.22" stroke="${col}" stroke-width="1.5"/>` : ""}
+          <circle cx="${cx}" cy="${cy}" r="${sel ? 5.5 : 4.5}" fill="${col}" stroke="var(--bg-code)" stroke-width="1.2"/>
         </g>
       `;
     }).join("");
 
     svg.innerHTML = `
       ${gridLines}
-      <text x="${padL + plotW / 2}" y="${H - 3}" text-anchor="middle" fill="var(--text-muted)" font-family="JetBrains Mono,monospace" font-size="10">Yoğunluk (kg/m³, log ölçek)</text>
-      <text x="14" y="${padT + plotH / 2}" text-anchor="middle" transform="rotate(-90 14 ${padT + plotH / 2})" fill="var(--text-muted)" font-family="JetBrains Mono,monospace" font-size="10">${isYield ? "Akma Dayanımı (MPa, log)" : "T_max (K)"}</text>
+      <text x="${padL + plotW / 2}" y="${H - 3}" text-anchor="middle" fill="var(--text-muted)" font-family="JetBrains Mono,monospace" font-size="10">Yoğunluk ρ (kg/m³, log ölçek)</text>
+      <text x="14" y="${padT + plotH / 2}" text-anchor="middle" transform="rotate(-90 14 ${padT + plotH / 2})" fill="var(--text-muted)" font-family="JetBrains Mono,monospace" font-size="10">${isYield ? "Akma σ_y (MPa, log)" : "T_max (K)"}</text>
       ${dots}
     `;
 
@@ -1135,7 +1130,7 @@ ${esc(cur.json)}</pre>
           <td class="mono">${m.density_kg_m3.toLocaleString("en-US", { maximumFractionDigits: 1 })}</td>
           <td class="mono">${m.yield_strength_mpa.toLocaleString("en-US")} / ${m.tensile_strength_mpa.toLocaleString("en-US")}</td>
           <td class="mono">${m.youngs_modulus_gpa.toLocaleString("en-US", { maximumFractionDigits: 1 })}</td>
-          <td class="mono">${m.max_temperature_k.toFixed(0)} K <span style="color:var(--text-dim);">(${tempC} C)</span></td>
+          <td class="mono">${m.max_temperature_k.toFixed(0)} K <span style="color:var(--text-dim);">(${tempC}°C)</span></td>
           <td><div class="mono"><strong>${m.breaking_length_km.toLocaleString("en-US", { maximumFractionDigits: 1 })} km</strong></div><div class="meter"><div class="meter-fill" style="width:${pct.toFixed(1)}%"></div></div></td>
         </tr>
       `;
@@ -1153,7 +1148,7 @@ ${esc(cur.json)}</pre>
   }
 
   // =========================================================================
-  // Native HTML5 <dialog> Global Command Palette
+  // Native HTML5 <dialog> Global Command Palette (967 SSOT Entries)
   // =========================================================================
   const CMD_INDEX = [
     ...MCP_TOOLS.map((t) => ({ kind: "MCP", title: t.name, sub: t.desc, sec: "mcp", key: t.name })),
@@ -1190,7 +1185,7 @@ ${esc(cur.json)}</pre>
       return;
     }
     box.innerHTML = cmdMatches.map((it, idx) => `
-      <button type="button" class="cmd-item${idx === 0 ? " selected" : ""}" role="option" data-cmd-idx="${idx}">
+      <button class="cmd-item${idx === 0 ? " selected" : ""}" role="option" data-cmd-idx="${idx}">
         <div style="min-width:0;">
           <div style="font-weight:600;">${esc(it.title)}</div>
           <div class="cmd-item-sub">${esc(it.sub)}</div>
@@ -1209,149 +1204,99 @@ ${esc(cur.json)}</pre>
     if (it.kind === "YASA") {
       lawState.q = it.key; lawState.domain = ""; lawState.regime = ""; lawState.page = 1; lawState.highlightId = it.key;
       $("#lawSearch").value = it.key; $("#lawDomain").value = ""; $("#lawRegime").value = "";
-      switchCatalogTab("laws", true);
+      switchSection("laws");
     } else if (it.kind === "SEMBOL") {
       ontState.q = it.key; ontState.dim = ""; ontState.page = 1;
       $("#ontSearch").value = it.key; $("#ontDimFilter").value = "";
-      renderOntology(); switchCatalogTab("ontology", true);
+      renderOntology(); switchSection("ontology");
     } else if (it.kind === "CODATA") {
       nistState.q = it.key; nistState.page = 1;
       $("#nistSearch").value = it.key;
-      renderNist(); switchCatalogTab("codata", true);
+      renderNist(); switchSection("codata");
     } else if (it.kind === "MALZEME") {
       selectedMatId = it.key;
       $("#matSearch").value = ""; $("#matCategory").value = "";
-      renderMaterials(); switchCatalogTab("materials", true);
+      renderMaterials(); switchSection("materials");
     } else {
-      switchSection("mcp");
+      switchSection(it.sec);
     }
   }
 
   // =========================================================================
-  // Bidirectional Hash Routing & 2-Column Catalog Switching (Citadel Academy)
+  // Navigation (View Transitions API), Theme & Event Bindings
   // =========================================================================
-  const CATALOG_TABS = new Set(["laws", "materials", "codata", "ontology"]);
+  const VALID_SECTIONS = new Set(["overview", "sandbox", "laws", "ontology", "codata", "materials", "mcp", "benchmarks"]);
   let currentSection = "overview";
-  let currentCatalogTab = "laws";
   const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function buildHashForRoute(sec, catTab) {
-    if (sec === "sandbox") return "#dogrulama";
-    if (sec === "mcp") return "#mcp";
-    if (sec === "benchmarks") return "#karne";
-    if (sec === "catalog") {
-      const map = { laws: "yasalar", materials: "malzemeler", codata: "sabitler", ontology: "semboller" };
-      return `#katalog/${map[catTab] || "yasalar"}`;
-    }
-    return "#baslangic";
-  }
-
-  function parseRouteHash(rawHash) {
-    const h = String(rawHash || "").replace(/^#\/?/, "").trim().toLowerCase();
-    if (!h || h === "overview" || h === "baslangic") return { sec: "overview" };
-    if (h === "sandbox" || h === "dogrulama") return { sec: "sandbox" };
-    if (h === "mcp") return { sec: "mcp" };
-    if (h === "benchmarks" || h === "karne") return { sec: "benchmarks" };
-    if (h === "catalog" || h === "katalog" || h === "laws" || h === "katalog/yasalar") return { sec: "catalog", cat: "laws" };
-    if (h === "materials" || h === "katalog/malzemeler") return { sec: "catalog", cat: "materials" };
-    if (h === "codata" || h === "katalog/sabitler") return { sec: "catalog", cat: "codata" };
-    if (h === "ontology" || h === "katalog/semboller") return { sec: "catalog", cat: "ontology" };
-    return null;
-  }
-
-  function applyCatalogSubtab(catTab) {
-    if (!CATALOG_TABS.has(catTab)) catTab = "laws";
-    currentCatalogTab = catTab;
-    $$("[data-cat-tab]").forEach((btn) => {
-      const active = btn.dataset.catTab === catTab;
-      btn.classList.toggle("active", active);
-      btn.setAttribute("aria-selected", String(active));
-    });
-    $$(".catalog-subpane").forEach((pane) => {
-      pane.classList.toggle("active", pane.id === `cat-${catTab}`);
-    });
-    if (catTab === "laws") renderLaws();
-    if (catTab === "materials") renderMaterials();
-    if (catTab === "codata") renderNist();
-    if (catTab === "ontology") renderOntology();
-  }
-
-  function applySectionSwap(secName, catTab, pushHash) {
-    if (CATALOG_TABS.has(secName)) {
-      catTab = secName;
-      secName = "catalog";
-    }
-    if (!["overview", "sandbox", "catalog", "mcp", "benchmarks"].includes(secName)) {
-      secName = "overview";
-    }
+  function applySectionSwap(secName, pushHash) {
     currentSection = secName;
     $$(".nav-pill").forEach((b) => b.classList.toggle("active", b.dataset.sec === secName));
     $$(".section").forEach((s) => s.classList.toggle("active", s.id === `sec-${secName}`));
 
-    if (secName === "catalog") {
-      applyCatalogSubtab(catTab || currentCatalogTab);
-    } else if (secName === "sandbox") {
-      runSandbox();
+    const activeNav = document.querySelector(`.nav-pill[data-sec="${secName}"]`);
+    if (activeNav && activeNav.scrollIntoView) {
+      activeNav.scrollIntoView({ behavior: "auto", inline: "center", block: "nearest" });
     }
 
+    if (secName === "laws") renderLaws();
+    if (secName === "sandbox") runSandbox();
+    if (secName === "materials") renderMaterials();
+
     if (pushHash && window.history && window.history.replaceState) {
-      try {
-        window.history.replaceState(null, "", buildHashForRoute(secName, currentCatalogTab));
-      } catch (_) {}
+      try { window.history.replaceState(null, "", `#${secName}`); } catch (_) {}
     }
     window.scrollTo({ top: 0, behavior: "auto" });
   }
 
   function switchSection(secName, pushHash = true) {
+    if (!VALID_SECTIONS.has(secName)) secName = "overview";
     if (document.startViewTransition && !prefersReducedMotion && secName !== currentSection) {
-      document.startViewTransition(() => applySectionSwap(secName, null, pushHash));
+      document.startViewTransition(() => applySectionSwap(secName, pushHash));
     } else {
-      applySectionSwap(secName, null, pushHash);
+      applySectionSwap(secName, pushHash);
     }
   }
 
-  function switchCatalogTab(catTab, pushHash = true) {
-    applySectionSwap("catalog", catTab, pushHash);
-  }
-
-  let currentTheme = readStorage("citadel_theme_v3", "light");
+  let currentTheme = readStorage("citadel_theme_v2", "dark");
   function applyTheme(theme) {
-    currentTheme = theme === "dark" ? "dark" : "light";
-    writeStorage("citadel_theme_v3", currentTheme);
+    currentTheme = theme === "light" ? "light" : "dark";
+    writeStorage("citadel_theme_v2", currentTheme);
     document.documentElement.setAttribute("data-theme", currentTheme);
     const btn = $("#themeToggle");
-    if (btn) btn.textContent = currentTheme === "dark" ? "Açık" : "Koyu";
-  }
-
-  function on(sel, ev, fn) {
-    const el = $(sel);
-    if (el) el.addEventListener(ev, fn);
+    if (btn) btn.textContent = currentTheme === "dark" ? "☀" : "☾";
   }
 
   function bindEvents() {
     $$(".nav-pill").forEach((btn) => btn.addEventListener("click", () => switchSection(btn.dataset.sec)));
-    $$("[data-cat-tab]").forEach((btn) => btn.addEventListener("click", () => switchCatalogTab(btn.dataset.catTab)));
-    on("#themeToggle", "click", () => applyTheme(currentTheme === "dark" ? "light" : "dark"));
-    on("#cmdOpenBtn", "click", openCmdPalette);
+    $("#themeToggle").addEventListener("click", () => applyTheme(currentTheme === "dark" ? "light" : "dark"));
+    $("#cmdOpenBtn").addEventListener("click", openCmdPalette);
+    $("#heroCmdBtn").addEventListener("click", openCmdPalette);
 
-    // X-Ray Inspector events
-    on("#xrayOpenSandboxBtn", "click", () => {
-      const cur = XRAY_FORMULA_CASES[activeXrayIdx] || XRAY_FORMULA_CASES[0];
-      if ($("#lhsInput")) $("#lhsInput").value = cur.lhs;
-      if ($("#rhsInput")) $("#rhsInput").value = cur.rhs;
+    // Hero live console
+    $("#heroLhs").addEventListener("input", runHeroConsole);
+    $("#heroRhs").addEventListener("input", runHeroConsole);
+    $$("#heroPresets .preset-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        $("#heroLhs").value = btn.dataset.hlhs;
+        $("#heroRhs").value = btn.dataset.hrhs;
+        runHeroConsole();
+      });
+    });
+    $("#heroOpenSandbox").addEventListener("click", () => {
+      $("#lhsInput").value = $("#heroLhs").value;
+      $("#rhsInput").value = $("#heroRhs").value;
       switchSection("sandbox");
     });
 
-    // Quickrun toggle
+    // Hero quickrun toggle
     $$("[data-quickrun]").forEach((btn) => {
       btn.addEventListener("click", () => {
         $$("[data-quickrun]").forEach((b) => b.classList.toggle("active", b === btn));
-        if ($("#heroQuickCmd")) $("#heroQuickCmd").textContent = QUICKRUN_COMMANDS[btn.dataset.quickrun];
+        $("#heroQuickCmd").textContent = QUICKRUN_COMMANDS[btn.dataset.quickrun];
       });
     });
-    on("#heroCopyBtn", "click", () => {
-      if ($("#heroQuickCmd")) copyText($("#heroQuickCmd").textContent, "Komut kopyalandı");
-    });
+    $("#heroCopyBtn").addEventListener("click", () => copyText($("#heroQuickCmd").textContent, "Komut kopyalandı"));
 
     // Ashby Y toggle & hover/click
     $$("[data-ashby-y]").forEach((btn) => {
@@ -1362,14 +1307,14 @@ ${esc(cur.json)}</pre>
       });
     });
 
-    on("#ashbySvg", "mouseover", (e) => {
+    $("#ashbySvg").addEventListener("mouseover", (e) => {
       const dot = e.target.closest("[data-ashby-id]");
       if (!dot) return;
       const mat = materialsEnriched.find((m) => m.id === dot.dataset.ashbyId);
       if (mat) renderAshbyHud(mat);
     });
 
-    on("#ashbySvg", "click", (e) => {
+    $("#ashbySvg").addEventListener("click", (e) => {
       const dot = e.target.closest("[data-ashby-id]");
       if (!dot) return;
       selectedMatId = dot.dataset.ashbyId;
@@ -1380,12 +1325,6 @@ ${esc(cur.json)}</pre>
 
     // Global delegated clicks
     document.addEventListener("click", (e) => {
-      const xrayBtn = e.target.closest("[data-xray-idx]");
-      if (xrayBtn) {
-        renderXrayInspector(Number(xrayBtn.dataset.xrayIdx));
-        return;
-      }
-
       const tabBtn = e.target.closest(".tab-btn[data-tab]");
       if (tabBtn) {
         const bar = tabBtn.closest(".tab-bar");
@@ -1430,7 +1369,7 @@ ${esc(cur.json)}</pre>
         const id = lawRef.dataset.jumpLaw;
         lawState.q = id; lawState.domain = ""; lawState.regime = ""; lawState.page = 1; lawState.highlightId = id;
         $("#lawSearch").value = id; $("#lawDomain").value = ""; $("#lawRegime").value = "";
-        switchCatalogTab("laws");
+        switchSection("laws");
         return;
       }
 
@@ -1438,11 +1377,11 @@ ${esc(cur.json)}</pre>
       if (cmdItem) { executeCmdItem(Number(cmdItem.dataset.cmdIdx)); return; }
     });
 
-    // Command palette
+    // Command palette events
     const dlg = $("#cmdPalette");
-    if (dlg) dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
-    on("#cmdInput", "input", (e) => renderCmdResults(e.target.value));
-    on("#cmdInput", "keydown", (e) => {
+    dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+    $("#cmdInput").addEventListener("input", (e) => renderCmdResults(e.target.value));
+    $("#cmdInput").addEventListener("keydown", (e) => {
       if (!cmdMatches.length) return;
       if (e.key === "ArrowDown") {
         e.preventDefault();
@@ -1459,52 +1398,43 @@ ${esc(cur.json)}</pre>
     });
 
     // Sandbox
-    on("#runSandboxBtn", "click", runSandbox);
-    on("#resetSandboxDraftBtn", "click", () => {
-      if ($("#lhsInput")) $("#lhsInput").value = "kN";
-      if ($("#rhsInput")) $("#rhsInput").value = "kg * m / s^2";
-      runSandbox();
-    });
-    on("#lhsInput", "keydown", (e) => { if (e.key === "Enter") runSandbox(); });
-    on("#rhsInput", "keydown", (e) => { if (e.key === "Enter") runSandbox(); });
-    on("#lhsInput", "input", saveSandboxDraft);
-    on("#rhsInput", "input", saveSandboxDraft);
+    $("#runSandboxBtn").addEventListener("click", runSandbox);
+    $("#lhsInput").addEventListener("keydown", (e) => { if (e.key === "Enter") runSandbox(); });
+    $("#rhsInput").addEventListener("keydown", (e) => { if (e.key === "Enter") runSandbox(); });
     $$("#sandboxPresets .preset-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
-        if ($("#lhsInput")) $("#lhsInput").value = btn.dataset.lhs;
-        if ($("#rhsInput")) $("#rhsInput").value = btn.dataset.rhs;
+        $("#lhsInput").value = btn.dataset.lhs;
+        $("#rhsInput").value = btn.dataset.rhs;
         runSandbox();
       });
     });
 
-    // Catalog Filters
-    on("#lawSearch", "input", (e) => { lawState.q = e.target.value; lawState.page = 1; lawState.highlightId = ""; renderLaws(); });
-    on("#lawDomain", "change", (e) => { lawState.domain = e.target.value; lawState.page = 1; renderLaws(); });
-    on("#lawRegime", "change", (e) => { lawState.regime = e.target.value; lawState.page = 1; renderLaws(); });
-    on("#lawReset", "click", () => {
+    // Filters
+    $("#lawSearch").addEventListener("input", (e) => { lawState.q = e.target.value; lawState.page = 1; lawState.highlightId = ""; renderLaws(); });
+    $("#lawDomain").addEventListener("change", (e) => { lawState.domain = e.target.value; lawState.page = 1; renderLaws(); });
+    $("#lawRegime").addEventListener("change", (e) => { lawState.regime = e.target.value; lawState.page = 1; renderLaws(); });
+    $("#lawReset").addEventListener("click", () => {
       lawState.q = ""; lawState.domain = ""; lawState.regime = ""; lawState.page = 1; lawState.highlightId = "";
-      if ($("#lawSearch")) $("#lawSearch").value = "";
-      if ($("#lawDomain")) $("#lawDomain").value = "";
-      if ($("#lawRegime")) $("#lawRegime").value = "";
+      $("#lawSearch").value = ""; $("#lawDomain").value = ""; $("#lawRegime").value = "";
       renderLaws();
     });
 
-    on("#ontSearch", "input", (e) => { ontState.q = e.target.value; ontState.page = 1; renderOntology(); });
-    on("#ontDimFilter", "change", (e) => { ontState.dim = e.target.value; ontState.page = 1; renderOntology(); });
-    on("#ontReset", "click", () => { ontState.q = ""; ontState.dim = ""; ontState.page = 1; if ($("#ontSearch")) $("#ontSearch").value = ""; if ($("#ontDimFilter")) $("#ontDimFilter").value = ""; renderOntology(); });
+    $("#ontSearch").addEventListener("input", (e) => { ontState.q = e.target.value; ontState.page = 1; renderOntology(); });
+    $("#ontDimFilter").addEventListener("change", (e) => { ontState.dim = e.target.value; ontState.page = 1; renderOntology(); });
+    $("#ontReset").addEventListener("click", () => { ontState.q = ""; ontState.dim = ""; ontState.page = 1; $("#ontSearch").value = ""; $("#ontDimFilter").value = ""; renderOntology(); });
 
-    on("#nistSearch", "input", (e) => { nistState.q = e.target.value; nistState.page = 1; renderNist(); });
-    on("#nistReset", "click", () => { nistState.q = ""; nistState.page = 1; if ($("#nistSearch")) $("#nistSearch").value = ""; renderNist(); });
+    $("#nistSearch").addEventListener("input", (e) => { nistState.q = e.target.value; nistState.page = 1; renderNist(); });
+    $("#nistReset").addEventListener("click", () => { nistState.q = ""; nistState.page = 1; $("#nistSearch").value = ""; renderNist(); });
 
-    on("#matSearch", "input", renderMaterials);
-    on("#matCategory", "change", renderMaterials);
-    on("#matSort", "change", renderMaterials);
-    on("#matReset", "click", () => { if ($("#matSearch")) $("#matSearch").value = ""; if ($("#matCategory")) $("#matCategory").value = ""; if ($("#matSort")) $("#matSort").value = "breaking_desc"; renderMaterials(); });
+    $("#matSearch").addEventListener("input", renderMaterials);
+    $("#matCategory").addEventListener("change", renderMaterials);
+    $("#matSort").addEventListener("change", renderMaterials);
+    $("#matReset").addEventListener("click", () => { $("#matSearch").value = ""; $("#matCategory").value = ""; $("#matSort").value = "breaking_desc"; renderMaterials(); });
 
-    // Global keyboard shortcuts & Hash sync
+    // Global keyboard shortcuts (Ctrl/Cmd+K & /)
     window.addEventListener("hashchange", () => {
-      const parsed = parseRouteHash(window.location && window.location.hash);
-      if (parsed) applySectionSwap(parsed.sec, parsed.cat || null, false);
+      const h = (window.location && window.location.hash || "").replace(/^#/, "");
+      if (VALID_SECTIONS.has(h)) switchSection(h, false);
     });
 
     document.addEventListener("keydown", (e) => {
@@ -1516,7 +1446,7 @@ ${esc(cur.json)}</pre>
       const tag = document.activeElement ? document.activeElement.tagName : "";
       if (e.key === "/" && !["INPUT", "TEXTAREA", "SELECT"].includes(tag) && !dlg.open) {
         e.preventDefault();
-        switchCatalogTab("laws");
+        switchSection("laws");
         $("#lawSearch").focus();
       }
     });
@@ -1525,15 +1455,10 @@ ${esc(cur.json)}</pre>
   // Init
   applyTheme(currentTheme);
   syncCounts();
-  const savedDraft = loadSandboxDraft();
-  if (savedDraft) {
-    $("#lhsInput").value = savedDraft.lhs;
-    $("#rhsInput").value = savedDraft.rhs;
-  }
   initLawFilters();
   initOntologyFilter();
   initMaterialsFilter();
-  renderXrayInspector(0);
+  runHeroConsole();
   renderScenario(0);
   renderLatencyChart();
   renderLaws();
@@ -1544,10 +1469,8 @@ ${esc(cur.json)}</pre>
   runSandbox();
   bindEvents();
 
-  const initialRoute = parseRouteHash(window.location && window.location.hash);
-  if (initialRoute && (initialRoute.sec !== "overview" || initialRoute.cat)) {
-    applySectionSwap(initialRoute.sec, initialRoute.cat || null, false);
-  }
+  const initialHash = (window.location && window.location.hash || "").replace(/^#/, "");
+  if (VALID_SECTIONS.has(initialHash) && initialHash !== "overview") applySectionSwap(initialHash, false);
 
   window.addEventListener("load", () => {
     $$("#lawsList .katex-slot").forEach((slot) => renderLatexNode(slot, slot.dataset.tex, slot.dataset.eq));
