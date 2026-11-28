@@ -1475,4 +1475,50 @@ ${esc(cur.json)}</pre>
   window.addEventListener("load", () => {
     $$("#lawsList .katex-slot").forEach((slot) => renderLatexNode(slot, slot.dataset.tex, slot.dataset.eq));
   });
+
+  // KALE Çerezsiz, Şişirmesiz ve Bot-Filtreli Ziyaretçi Radarı
+  (function initKaleVisitorPulse() {
+    const PULSE_URL = "https://br-quiet-mouse-bhiv2cwm-citadelacademyapi.compute.c-10.eu-central-1.aws.neon.tech/telemetry/pulse";
+    const VID_KEY = "kale_vid_v1";
+    let lastP = "";
+    let lastT = 0;
+    function getVid() {
+      try {
+        const ex = window.localStorage.getItem(VID_KEY);
+        if (ex && ex.length >= 16 && ex.length <= 72) return ex;
+        const gen = (window.crypto && window.crypto.randomUUID)
+          ? window.crypto.randomUUID()
+          : "kv-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 14);
+        window.localStorage.setItem(VID_KEY, gen);
+        return gen;
+      } catch (_) {
+        return "kv-eph-" + Math.floor(Date.now() / 86400000);
+      }
+    }
+    function emitPulse() {
+      const vid = getVid();
+      if (!vid) return;
+      const h = (window.location && window.location.hash) || "#overview";
+      const now = Date.now();
+      if (h === lastP && now - lastT < 30000) return;
+      lastP = h;
+      lastT = now;
+      const body = JSON.stringify({
+        siteId: "matematik-cekirdegi",
+        vid: vid,
+        path: "/citadel-math/" + h,
+        ref: document.referrer || "",
+        vpW: window.innerWidth || 1280,
+        uaBot: Boolean(navigator.webdriver)
+      });
+      try {
+        if (navigator.sendBeacon && navigator.sendBeacon(PULSE_URL, new Blob([body], { type: "text/plain;charset=UTF-8" }))) {
+          return;
+        }
+      } catch (_) {}
+      fetch(PULSE_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=UTF-8" }, body: body, keepalive: true }).catch(function () {});
+    }
+    emitPulse();
+    window.addEventListener("hashchange", emitPulse);
+  })();
 })();
